@@ -1,0 +1,474 @@
+/* General Reset */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Lato', sans-serif; background-color: #f4f1ea; }
+
+/* Header Layout */
+.main-header {
+    background-color: #343a2f; 
+    color: #d4c5a1; 
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 40px;
+    height: 140px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+/* Left Section & Menu */
+.left-section { display: flex; align-items: center; gap: 40px; flex: 1; }
+
+.hamburger-menu { text-align: center; cursor: pointer; }
+.hamburger-icon { display: flex; flex-direction: column; gap: 6px; width: 30px; margin-bottom: 4px; }
+.hamburger-icon span { height: 1px; background: #d4c5a1; width: 100%; transition: 0.3s; }
+.menu-text { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; }
+
+/* Nav Links with Underline Hover */
+.nav-links { display: flex; gap: 25px; }
+.nav-links a {
+    color: #d4c5a1;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-size: 14px;
+    letter-spacing: 2px;
+    font-family: 'Cinzel', serif;
+    position: relative;
+    padding-bottom: 8px;
+}
+.nav-links a::after {
+    content: '';
+    position: absolute;
+    width: 0; height: 1px; bottom: 0; left: 0;
+    background-color: #d4c5a1;
+    transition: width 0.3s ease;
+}
+.nav-links a:hover::after { width: 100%; }
+
+/* Logo Area - Large Focal Point */
+.logo-area { flex: 1; display: flex; justify-content: center; }
+.logo-area img { height: 130px; width: auto; transition: transform 0.3s; }
+.logo-area img:hover { transform: scale(1.02); }
+
+/* CTA Buttons */
+.header-actions { display: flex; gap: 15px; flex: 1; justify-content: flex-end; }
+.btn {
+    padding: 14px 22px;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-size: 11px;
+    font-weight: bold;
+    letter-spacing: 1.5px;
+    border-radius: 2px;
+    transition: 0.3s;
+}
+.btn-outline { border: 1px solid #d4c5a1; color: #d4c5a1; }
+.btn-solid-dine { background-color: #c5a898; color: #fff; }
+.btn-solid-stay { background-color: #bfa36d; color: #fff; }
+.btn:hover { opacity: 0.9; filter: brightness(1.1); }
+
+/* Ensure the container height adapts to the image's proportions */
+.hero-gallery {
+    position: relative;
+    width: 100%;
+    /* This height calculation (56.25vw) maintains a 16:9 aspect ratio 
+       so the images fit perfectly across all screen widths */
+    height: 56.25vw; 
+    max-height: 80vh; /* Prevents it from being too tall on huge monitors */
+    overflow: hidden;
+    background-color: #1a1a1a; /* Dark background for letterboxing if needed */
+}
+
+.slider-container {
+    display: flex;
+    width: 500%; 
+    height: 100%;
+    transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.slide {
+    width: 20%;
+    height: 100%;
+    /* 'contain' ensures the WHOLE image is visible without cropping */
+    background-size: contain; 
+    background-position: center;
+    background-repeat: no-repeat;
+    position: relative;
+}
+
+/* Optional: Adding a soft blur of the same image behind it 
+   to fill the gaps on very wide screens */
+.slide::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image: inherit;
+    background-size: cover;
+    filter: blur(20px) brightness(0.5);
+    z-index: -1;
+}
+
+/* Award Badge Positioning */
+.award-overlay {
+    position: absolute;
+    /* Move it slightly higher so it doesn't cover the pool/center focus */
+    top: 45%; 
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    pointer-events: none;
+    width: 20%; /* Scale relative to screen size */
+    max-width: 250px;
+}
+
+.award-badge {
+    width: 100%;
+    height: auto;
+    /* Optional: Slight shadow to make it pop against the photo */
+    filter: drop-shadow(0px 4px 10px rgba(0,0,0,0.5));
+}
+/* Navigation Dots */
+.slider-dots {
+    position: absolute;
+    bottom: 30px; left: 50%;
+    transform: translateX(-50%);
+    display: flex; gap: 15px; z-index: 20;
+}
+.dot {
+    width: 10px; height: 10px;
+    background-color: rgba(255,255,255,0.4);
+    border-radius: 50%; cursor: pointer;
+}
+.dot.active { background-color: #fff; transform: scale(1.3); }
+
+/* Responsive Adjustments */
+@media (max-width: 1100px) {
+    .nav-links { display: none; }
+    .main-header { height: 110px; padding: 0 20px; }
+    .logo-area img { height: 90px; }
+    .btn-outline { display: none; } /* Hide vouchers on smaller screens */
+}
+/* Introduction Section */
+.introduction {
+    background-color: #fdfcf9; /* Slightly off-white for a premium feel */
+    padding: 100px 20px;
+    text-align: center;
+    color: #343a2f; /* Matching the deep green for text */
+}
+
+.intro-container {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.intro-crest {
+    margin-bottom: 30px;
+}
+
+.intro-crest img {
+    height: 100px; /* Smaller version of logo for decoration */
+    width: auto;
+    opacity: 0.8;
+}
+
+.intro-title {
+    font-family:'Courier New', Courier, monospace;
+    font-size: 38px;
+    letter-spacing: 4px;
+    font-weight: 400;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+}
+
+.intro-subtitle {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 24px;
+    color: #bfa36d; /* Golden accent */
+    margin-bottom: 40px;
+    font-weight: 400;
+}
+
+.intro-text p {
+    font-family:'Courier New', Courier, monospace;
+    font-size: 18px;
+    line-height: 1.8;
+    color: #555;
+    margin-bottom: 25px;
+    font-weight: 300;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .intro-title { font-size: 28px; }
+    .intro-subtitle { font-size: 18px; }
+    .introduction { padding: 60px 20px; }
+}
+
+.experience-section {
+    background-color: #d1ebd8; /* Light Mint Green from your reference */
+    padding: 80px 10%;
+    display: flex;
+    flex-direction: column;
+    gap: 60px;
+}
+
+.feature-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 5%;
+}
+
+/* This class flips the order for the second row */
+.feature-row.reverse {
+    flex-direction: row-reverse;
+}
+
+.feature-image {
+    flex: 1;
+}
+
+.feature-image img {
+    width: 100%;
+    height: auto;
+    border-radius: 20px; /* Rounded corners from your image */
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    display: block;
+}
+
+.feature-text {
+    flex: 1;
+    padding: 20px;
+}
+
+.feature-text h3 {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 28px;
+    color: #1a1a1a;
+    margin-bottom: 20px;
+    letter-spacing: 1px;
+}
+
+.feature-text p {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 18px;
+    line-height: 1.6;
+    color: #333;
+}
+
+/* Mobile Responsiveness: Stack them vertically on small screens */
+@media (max-width: 900px) {
+    .feature-row, .feature-row.reverse {
+        flex-direction: column;
+        text-align: center;
+    }
+    .experience-section {
+        padding: 40px 5%;
+    }
+}
+
+.newsletter-section {
+    background-color: #f5f5f5; /* Light grey background */
+    padding: 80px 10%;
+    position: relative;
+    overflow: hidden;
+}
+
+.newsletter-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 50px;
+    position: relative;
+    z-index: 2;
+}
+
+.newsletter-info {
+    flex: 1;
+}
+
+.newsletter-info h2 {
+    font-family:Georgia, 'Times New Roman', Times, serif;
+    font-size: 36px;
+    color: #343a2f;
+    margin-bottom: 20px;
+    font-weight: 400;
+}
+
+.newsletter-info p {
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    font-size: 18px;
+    color: #666;
+    line-height: 1.6;
+}
+
+.newsletter-form {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    font-size: 14px;
+    color: #333;
+}
+
+.form-group label span {
+    color: #c5a898; /* Muted rose for asterisk */
+}
+
+.form-group input {
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 2px;
+    font-size: 16px;
+}
+
+.submit-btn {
+    margin-top: 10px;
+    padding: 15px;
+    background-color: #d2b4a0; /* Muted rose/tan button */
+    color: #333;
+    border: none;
+    text-transform: uppercase;
+    font-weight: bold;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.submit-btn:hover {
+    background-color: #c5a898;
+    color: #fff;
+}
+
+/* Background Illustration Decoration (The Horse) */
+.newsletter-watermark {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 300px;
+    height: 400px;
+    background-image: url('horse-illustration.png'); /* Replace with your graphic */
+    background-size: contain;
+    background-repeat: no-repeat;
+    opacity: 0.1; /* Very subtle */
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 850px) {
+    .newsletter-container {
+        flex-direction: column;
+        text-align: center;
+    }
+    .newsletter-info h2 { font-size: 28px; }
+}
+
+.main-footer {
+    background: linear-gradient(rgba(52, 58, 47, 0.85), rgba(52, 58, 47, 0.95)), 
+                url('images/main2.webp'); /* Replace with your manor image */
+    background-size: cover;
+    background-position: center;
+    color: #d4c5a1;
+    padding: 60px 5% 40px;
+    text-align: center;
+    position: relative;
+}
+
+/* Return to Top Button */
+.scroll-top-area {
+    margin-bottom: 40px;
+}
+
+.scroll-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    background-color: #d2b4a0; /* Matching your theme's muted rose */
+    color: #343a2f;
+    border-radius: 50%;
+    text-decoration: none;
+    font-size: 24px;
+    margin-bottom: 10px;
+    transition: 0.3s;
+}
+
+.scroll-btn:hover {
+    transform: translateY(-5px);
+    background-color: #fff;
+}
+
+.scroll-top-area p {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Footer Navigation */
+.footer-nav {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    margin: 40px 0;
+    border-top: 1px solid rgba(212, 197, 161, 0.2);
+    border-bottom: 1px solid rgba(212, 197, 161, 0.2);
+    padding: 20px 0;
+}
+
+.footer-nav a {
+    color: #d2b4a0;
+    text-decoration: none;
+    font-size: 14px;
+    letter-spacing: 1px;
+}
+
+.footer-nav a:hover {
+    color: #d2b4a0#fff;
+}
+
+/* Details and Social */
+.footer-details p {
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    margin-bottom: 10px;
+    
+}
+
+.social-icons {
+    display: flex;
+    justify-content: center;
+    gap: 30px; /* More space between icons */
+    margin: 25px 0;
+}
+
+.social-icons a {
+    color: #fff; /* White icons to start */
+    font-size: 24px; /* Adjust size to match your footer logo */
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.social-icons a:hover {
+    color: #d2b4a0; /* Changes to your brand rose/tan color on hover */
+    transform: translateY(-3px); /* Slight lift effect */
+}
+
+.contact-line {
+    font-size: 13px;
+    margin-top: 20px;
+    opacity: 0.8;
+}
