@@ -10,23 +10,23 @@ export default function Login() {
       const res = await fetch('http://localhost:5000/api/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
+        body: JSON.stringify({ username, password }) // 这里输入的 username 其实就是打名字
       });
       
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || 'Server tak response!');
 
-      // 分流 Logic! 🚗
-      alert(data.message);
-      if (data.role === 'admin') {
-        window.location.href = '/admin-iam'; // 老板去管员工
-      } else if (data.role === 'staff') {
-        window.location.href = '/calendar'; // 员工去管 Booking
-      }
+      // 🌟 核心：统一打包存进 'user'！不要再用 userName 和 userRole 了！
+      localStorage.setItem('user', JSON.stringify({ 
+        name: data.role === 'admin' ? 'Boss 👑' : data.name, 
+        role: data.role 
+      }));
 
-    } catch (err) {
-      alert("Alamak: " + err.message);
-    }
+      alert(data.message);
+      if (data.role === 'admin') window.location.href = '/admin-iam';
+      else window.location.href = '/calendar';
+
+    } catch (err) { alert("Ouh: " + err.message); }
   };
 
   return (
@@ -41,7 +41,7 @@ export default function Login() {
         
         <div className="space-y-5">
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">Staff ID / Username</label>
+            <label className="block text-sm font-semibold text-gray-700 mb-1">Username</label>
             <input type="text" placeholder="Enter ID" value={username} onChange={e => setUsername(e.target.value)} className="w-full border border-gray-300 p-3 rounded-xl focus:ring-2 focus:ring-amber-500 outline-none" required />
           </div>
           <div>

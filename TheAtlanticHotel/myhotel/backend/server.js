@@ -6,7 +6,6 @@ require('dotenv').config();
 // 引入我们的 Models
 const Room = require('./models/room.js');
 const Staff = require('./models/staff.js');
-const User = require('./models/user.js');
 const Booking = require('./models/booking.js');
 const Log = require('./models/log.js');
 const Setting = require('./models/setting.js');
@@ -36,39 +35,31 @@ app.post('/api/login', async (req, res) => {
 
   // A. Check 老板 (Hardcoded Admin)
   if (username === process.env.ADMIN_USERNAME && password === process.env.ADMIN_PASSWORD) {
-    return res.status(200).json({ role: 'admin', message: 'Welcome back, Boss! 👑' });
+    return res.status(200).json({ role: 'admin', name: 'Boss', message: 'Welcome back, Boss! 👑' });
   }
 
-  // B. Check 员工 (去 Database 找新版本的 User)
+  // B. Check 员工 (去 Database 找)
   try {
-    // 🚨 重点在这里：去 User 抽屉找，找的条件是 userId 和 password 要对得上！
-    const user = await User.findOne({ userId: username, password: password, role: 'staff' });
+    // 🚨 重点在这里：以前你是找 userId: username，现在换成 name: username
+    // B. Check 员工 (去 Staff 抽屉找)
+      const user = await Staff.findOne({ name: username, password: password });
     
     if (user) {
-      // 如果找到了，并且他的 status 是 Active，就放行！
       if(user.status === 'Active') {
         return res.status(200).json({ role: 'staff', name: user.name, message: `Welcome, ${user.name}!` });
       } else {
-        return res.status(401).json({ message: 'Akaun anda telah digantung (Account Suspended) 🚫' });
+        return res.status(401).json({ message: 'Account Suspended 🚫' });
       }
     }
     
     // C. 如果 Database 里完全没有这个人
-    res.status(401).json({ message: 'Alamak, ID atau Password salah! ❌' });
+    res.status(401).json({ message: 'Ouh, Wrong Name or Password ! ❌' });
   } catch (error) {
     res.status(500).json({ message: 'Error Server', error: error.message });
   }
 });
 
-app.post('/api/staff', async (req, res) => {
-  try {
-    const newStaff = new Staff(req.body);
-    await newStaff.save();
-    res.status(201).json({ message: 'Ngam! Akaun Staff berjaya dicipta! 🎉' });
-  } catch (error) {
-    res.status(500).json({ message: 'Gagal create staff', error: error.message });
-  }
-});
+
 
 // ==========================================
 // 🏨 API ROUTES: ROOMS
@@ -106,28 +97,61 @@ app.delete('/api/rooms/:id', async (req, res) => {
 
 
 // ==========================================
-// 👑 ADMIN IAM API (拿员工名单 & 加员工)
+// 👑 ADMIN IAM API (Staff Management)
 // ==========================================
-app.get('/api/users', async (req, res) => {
+
+// 1. 获取所有员工 (Read)
+app.get('/api/staff', async (req, res) => {
   try {
-    const users = await User.find({ role: 'staff' }); // 只拿员工，不拿老板
-    res.status(200).json(users);
+    const staffList = await Staff.find();
+    res.status(200).json(staffList);
   } catch (error) {
     res.status(500).json({ message: "Error fetch staff" });
   }
 });
 
-app.post('/api/users', async (req, res) => {
+// 2. 创建新员工 (Create) - 解决你的 Error！
+app.post('/api/staff', async (req, res) => {
   try {
-    const newUser = new User(req.body);
-    await newUser.save();
-    
-    // Admin 加人的时候，顺便写进 Log 日记里！
-    await new Log({ action: "Created New Staff", performedBy: "Admin", targetId: newUser.userId }).save();
-    
-    res.status(201).json({ message: "Ngam! Staff baru berjaya ditambah! 🎉" });
+    const newStaff = await Staff.create(req.body);
+    await new Log({ action: "Created New Staff", performedBy: "Admin", targetId: newStaff.name }).save();
+    res.status(200).json({ message: "Staff created successfully! 🎉" });
   } catch (error) {
-    res.status(500).json({ message: "Error create staff", error: error.message });
+    // 🚨 11000 是 MongoDB 撞名 (Duplicate Key) 的 Error Code
+    if (error.code === 11000) {
+      return res.status(400).json({ message: "Alamak, Name already exists! Please use another name." });
+    }
+    res.status(500).json({ message: "Error create staff: " + error.message });
+  }
+});
+
+// 3. 更新员工资料 (Update)
+app.put('/api/staff/:id', async (req, res) => {
+  try {
+    // 如果老板没有填新的 Password，就不要动原本的 Password
+    if (!req.body.password) {
+      delete req.body.password; 
+    }
+    const updatedStaff = await Staff.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    await new Log({ action: "Updated Staff Info", performedBy: "Admin", targetId: updatedStaff.name }).save();
+    res.status(200).json({ message: "Staff info updated! ✅" });
+  } catch (error) {
+    res.status(500).json({ message: "Error update staff" });
+  }
+});
+
+// 4. 删除员工 (Delete)
+app.delete('/api/staff/:id', async (req, res) => {
+  try {
+    // ✨ 这里一定要换成 Staff！
+    const user = await Staff.findByIdAndDelete(req.params.id); 
+    
+    if (!user) return res.status(404).json({ message: "Staff tidak dijumpai!" });
+
+    await new Log({ action: "Deleted Staff", performedBy: "Admin", targetId: user.name }).save();
+    res.status(200).json({ message: "Staff berjaya di-delete 🗑️" });
+  } catch (error) {
+    res.status(500).json({ message: "Error delete staff", error: error.message });
   }
 });
 
@@ -200,28 +224,48 @@ app.post('/api/settings/logo', async (req, res) => {
   }
 });
 
+
 // ==========================================
-// 👑 ADMIN IAM API (Update & Delete Staff)
+// 🎁 1. Gift Card 的蓝图 & API
 // ==========================================
-app.delete('/api/users/:id', async (req, res) => {
+const giftCardSchema = new mongoose.Schema({
+  senderName: { type: String, required: true },
+  recipientName: { type: String, required: true },
+  recipientEmail: { type: String, required: true },
+  amount: { type: Number, required: true },
+  message: { type: String },
+  status: { type: String, default: 'Paid' },
+  createdAt: { type: Date, default: Date.now }
+});
+const GiftCard = mongoose.model('GiftCard', giftCardSchema);
+
+app.post('/api/giftcards', async (req, res) => {
   try {
-    const user = await User.findByIdAndDelete(req.params.id);
-    await new Log({ action: "Deleted Staff", performedBy: "Admin", targetId: user.name }).save();
-    res.status(200).json({ message: "Staff berjaya di-delete 🗑️" });
+    const newCard = await GiftCard.create(req.body);
+    await new Log({ action: "Purchased Gift Card", performedBy: "Guest", targetId: newCard._id }).save();
+    res.status(200).json({ message: "Gift Card purchased successfully! 🎉" });
   } catch (error) {
-    res.status(500).json({ message: "Error delete staff" });
+    res.status(500).json({ message: "Error saving gift card" });
   }
 });
 
-app.put('/api/users/:id', async (req, res) => {
+// ==========================================
+// ✉️ 2. Newsletter (订阅邮件) 的蓝图 & API
+// ==========================================
+const newsletterSchema = new mongoose.Schema({ email: String });
+const Newsletter = mongoose.model('Newsletter', newsletterSchema);
+
+app.post('/api/newsletter', async (req, res) => {
   try {
-    const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    await new Log({ action: "Updated Staff Info/Password", performedBy: "Admin", targetId: updatedUser.name }).save();
-    res.status(200).json({ message: "Staff info updated! ✅" });
+    await Newsletter.create({ email: req.body.email });
+    res.status(200).json({ message: "Thanks for subscribing! 💌" });
   } catch (error) {
-    res.status(500).json({ message: "Error update staff" });
+    res.status(500).json({ message: "Error subscribing" });
   }
 });
+
+
+
 
 
 // ==========================================

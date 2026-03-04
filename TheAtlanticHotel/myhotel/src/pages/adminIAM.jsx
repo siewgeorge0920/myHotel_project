@@ -3,11 +3,11 @@ import { Link } from 'react-router-dom';
 
 export default function AdminIAM() {
   const [staffList, setStaffList] = useState([]);
-  const [formData, setFormData] = useState({ _id: '', userId: '', name: '', password: '', role: 'staff' });
+  const [formData, setFormData] = useState({ _id: '', name: '', password: '', role: 'staff' });
   const [isEditMode, setIsEditMode] = useState(false);
 
   const fetchStaff = () => {
-    fetch('http://localhost:5000/api/users')
+    fetch('http://localhost:5000/api/staff')
       .then(res => res.json())
       .then(data => setStaffList(data));
   };
@@ -17,18 +17,24 @@ export default function AdminIAM() {
   // Submit Form (Create 或者 Update)
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const url = isEditMode ? `http://localhost:5000/api/users/${formData._id}` : 'http://localhost:5000/api/users';
+    const url = isEditMode ? `http://localhost:5000/api/staff/${formData._id}` : 'http://localhost:5000/api/staff';
     const method = isEditMode ? 'PUT' : 'POST';
+
+    // ✨ 加这段：如果是 Create，就把空的 _id 拿走
+    const payload = { ...formData };
+    if (!isEditMode) {
+      delete payload._id; 
+    }
 
     try {
       const res = await fetch(url, {
         method: method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(payload)
       });
       const data = await res.json();
       alert(data.message);
-      setFormData({ _id: '', userId: '', name: '', password: '', role: 'staff' });
+      setFormData({ _id: '', name: '', password: '', role: 'staff' });
       setIsEditMode(false);
       fetchStaff(); 
     } catch (err) { alert("Error: " + err.message); }
@@ -37,7 +43,7 @@ export default function AdminIAM() {
   // Delete Action
   const handleDelete = async (id) => {
     if(window.confirm("Sure mau delete staff ni?")) {
-      await fetch(`http://localhost:5000/api/users/${id}`, { method: 'DELETE' });
+      await fetch(`http://localhost:5000/api/staff/${id}`, { method: 'DELETE' });
       fetchStaff();
     }
   };
@@ -45,7 +51,7 @@ export default function AdminIAM() {
   // Edit Action (拉 data 进 form)
   const startEdit = (staff) => {
     setIsEditMode(true);
-    setFormData({ _id: staff._id, userId: staff.userId, name: staff.name, password: '', role: staff.role });
+    setFormData({ _id: staff._id, name: staff.name, password: '', role: staff.role });
   };
 
   // Logout Action
@@ -70,11 +76,10 @@ export default function AdminIAM() {
             <h2 className="text-lg font-medium mb-4">{isEditMode ? 'Update Staff Info ✏️' : 'Register Staff'}</h2>
             <form onSubmit={handleSubmit} className="space-y-4">
               <input type="text" placeholder="Full Name" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full border p-2 text-sm rounded" required />
-              <input type="text" placeholder="Login ID (eg: S-01)" value={formData.userId} onChange={e => setFormData({...formData, userId: e.target.value})} className="w-full border p-2 text-sm rounded" required disabled={isEditMode} />
               <input type="password" placeholder={isEditMode ? "New Password (Optional)" : "Password"} value={formData.password} onChange={e => setFormData({...formData, password: e.target.value})} className="w-full border p-2 text-sm rounded" required={!isEditMode} />
               <div className="flex space-x-2">
                 <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded text-sm">{isEditMode ? 'Save Changes' : 'Create'}</button>
-                {isEditMode && <button type="button" onClick={() => {setIsEditMode(false); setFormData({ _id: '', userId: '', name: '', password: '', role: 'staff' })}} className="w-full bg-gray-400 text-white py-2 rounded text-sm">Cancel</button>}
+                {isEditMode && <button type="button" onClick={() => {setIsEditMode(false); setFormData({ _id: '', name: '', password: '', role: 'staff' })}} className="w-full bg-gray-400 text-white py-2 rounded text-sm">Cancel</button>}
               </div>
             </form>
           </div>

@@ -1,111 +1,96 @@
-// src/pages/clientHome.jsx
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
 export default function ClientHome() {
   const [rooms, setRooms] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [email, setEmail] = useState('');
 
-  // 去 Backend 拿房间 data
+  // 保留你的 Backend Logic: 拿房间 Data
   useEffect(() => {
     fetch('http://localhost:5000/api/rooms')
       .then(res => res.json())
-      .then(data => {
-        setRooms(data);
-        setLoading(false);
-      })
-      .catch(err => {
-        console.error("Alamak, error:", err);
-        setLoading(false);
-      });
+      .then(data => setRooms(data))
+      .catch(err => console.error(err));
   }, []);
 
+  // Derrick 的 Newsletter 功能
+  const handleSubscribe = async (e) => {
+    e.preventDefault();
+    const res = await fetch('http://localhost:5000/api/newsletter', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email })
+    });
+    const data = await res.json();
+    alert(data.message);
+    setEmail('');
+  };
+
   return (
-    <div className="min-h-screen bg-white pb-20">
+    <div className="bg-white">
       
-      {/* 🌟 升级版 Hero Section */}
-      <div 
-        className="relative h-[85vh] bg-cover bg-center" 
-        // 🚨 这里！换成你真正的风景大图，不要放 Logo！
-        style={{backgroundImage: "url('/images/main1.webp')"}} 
-      >
-        {/* 加深一点黑色的 Filter，让白色的字更 Pop 出来 */}
-        <div className="absolute inset-0 bg-black/50"></div>
-        
-        <div className="absolute inset-0 flex flex-col items-center justify-center text-white text-center px-4">
-          <p className="text-sm uppercase tracking-widest text-amber-400 mb-3 font-semibold drop-shadow-md">
-            Welcome to
-          </p>
-          <h1 className="text-5xl md:text-7xl font-black mb-6 tracking-tight font-serif text-white drop-shadow-xl">
-            Atlantic Horizon
-          </h1>
-          <p className="text-xl md:text-2xl font-light tracking-wide max-w-3xl text-gray-200 drop-shadow-md">
-            A New Standard of Coastal Luxury and Private Manor Experience.
-          </p>
+      {/* 1. Hero Slider (Derrick Design) */}
+      <div className="relative h-screen bg-cover bg-center flex items-center justify-center" style={{backgroundImage: "url('/images/main1.webp')"}}>
+        <div className="absolute inset-0 bg-black/40"></div>
+        <div className="relative z-10 text-center text-white px-4 flex flex-col items-center">
+          <p className="tracking-[0.3em] text-sm uppercase mb-4 font-semibold text-amber-400">Welcome To</p>
+          <h1 className="text-6xl md:text-8xl font-serif mb-6 leading-tight drop-shadow-2xl">The Atlantic Horizon</h1>
+          <p className="text-lg md:text-2xl font-light max-w-2xl text-gray-200">Experience unparalleled coastal luxury and Irish hospitality.</p>
         </div>
       </div>
 
-      {/* Floating Booking Bar (前台客人用的) - mt-20 浮起来在 Hero 上面 */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 -mt-20 relative z-10 mb-24">
-        <div className="bg-white rounded-xl shadow-2xl p-8 lg:p-10 flex flex-col md:flex-row items-center justify-between gap-6 border border-gray-100">
-          <div className="flex-1 w-full">
-            <label className="block text-xs uppercase tracking-wider font-bold text-gray-600 mb-1.5">Check-in</label>
-            <input type="date" className="w-full border border-gray-300 rounded-lg p-3.5 text-gray-700 focus:ring-1 focus:ring-amber-500 focus:border-amber-500 outline-none" />
-          </div>
-          <div className="flex-1 w-full">
-            <label className="block text-xs uppercase tracking-wider font-bold text-gray-600 mb-1.5">Check-out</label>
-            <input type="date" className="w-full border border-gray-300 rounded-lg p-3.5 text-gray-700 focus:ring-1 focus:ring-amber-500 focus:border-amber-500 outline-none" />
-          </div>
-          <div className="flex-1 w-full">
-            <label className="block text-xs uppercase tracking-wider font-bold text-gray-600 mb-1.5">Guests</label>
-            <select className="w-full border border-gray-300 rounded-lg p-3.5 text-gray-700 focus:ring-1 focus:ring-amber-500 focus:border-amber-500 outline-none bg-white">
-              <option>1 Adult</option>
-              <option>2 Adults</option>
-              <option>Family (4+)</option>
-            </select>
-          </div>
-          <div className="w-full md:w-auto mt-2 md:mt-0 md:pt-6">
-            <button className="w-full md:w-auto bg-gray-900 hover:bg-black text-amber-400 font-bold py-3.5 px-10 rounded-lg shadow-lg transition-all uppercase tracking-wider text-xs">
-              Check Availability
-            </button>
-          </div>
-        </div>
+      {/* 2. Introduction Section (Derrick Design) */}
+      <div className="py-24 max-w-4xl mx-auto text-center px-6">
+        <h2 className="text-3xl md:text-4xl font-serif text-gray-900 mb-6">A Sanctuary By The Sea</h2>
+        <p className="text-gray-600 leading-relaxed mb-8">
+          Nestled along the rugged cliffs of the Wild Atlantic Way, our manor offers a perfect blend of historic charm and modern indulgence. From our Michelin-starred dining to our exclusive spa, every moment is crafted to perfection.
+        </p>
+        <img src="/images/design.jpg" alt="Hotel Interior" className="w-full h-[400px] object-cover rounded-sm shadow-xl" />
       </div>
 
-      {/* Featured Rooms - 对应截图下方 */}
-      <div id="rooms" className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-10">
-        <div className="text-center mb-16 border-b border-gray-200 pb-10">
-          <p className="text-xs uppercase tracking-widest text-amber-600 mb-1 font-semibold">Exquisite Stays</p>
-          <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-3 font-serif">Featured Suites & Villas</h2>
-          <p className="text-gray-600 max-w-xl mx-auto">Discover our curated selection of most popular suites, designed for your ultimate comfort.</p>
-        </div>
-
-        {loading ? (
-          <p className="text-center text-gray-500 font-semibold animate-pulse">Wait a minute, loading rooms... ⏳</p>
-        ) : (
+      {/* 3. Dynamic Rooms (你的 Data Tool) */}
+      <div id="rooms" className="bg-gray-50 py-24">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-serif text-gray-900 mb-3">Featured Suites</h2>
+            <div className="h-0.5 w-24 bg-amber-500 mx-auto"></div>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
             {rooms.map((room) => (
-              <div key={room._id} className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 hover:shadow-2xl transition-shadow duration-500">
-                <div className="h-64 bg-gray-200 flex items-center justify-center overflow-hidden">
-                  <img src={room.imageUrl} alt={room.name} className="w-full h-full object-cover hover:scale-110 transition-transform duration-700" />
+              <div key={room._id} className="bg-white group cursor-pointer border border-gray-100">
+                <div className="overflow-hidden h-72">
+                  <img src={room.imageUrl} alt={room.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
                 </div>
-                <div className="p-8">
-                  <div className="flex justify-between items-start mb-5">
-                    <h3 className="text-2xl font-bold text-gray-900 leading-tight">{room.name}</h3>
-                    <div className="text-right">
-                      <span className="text-xl font-bold text-amber-600">RM {room.pricePerNight}</span>
-                      <p className="text-xs text-gray-500">/night</p>
-                    </div>
-                  </div>
-                  <p className="text-gray-600 text-sm mb-8 line-clamp-2 leading-relaxed">{room.description}</p>
-                  <button className="w-full bg-white border border-gray-900 text-gray-900 font-semibold py-3 rounded-lg hover:bg-gray-900 hover:text-white transition-colors uppercase tracking-wider text-xs">
-                    Book Now
-                  </button>
+                <div className="p-8 text-center">
+                  <h3 className="text-2xl font-serif text-gray-900 mb-2">{room.name}</h3>
+                  <p className="text-amber-600 font-semibold tracking-widest text-sm mb-4">RM {room.pricePerNight} / NIGHT</p>
+                  <p className="text-gray-500 text-sm line-clamp-2">{room.description}</p>
                 </div>
               </div>
             ))}
           </div>
-        )}
+        </div>
       </div>
+
+      {/* 4. Experiences (Derrick Design) */}
+      <div className="grid grid-cols-1 md:grid-cols-2">
+        <div className="h-[500px] bg-cover bg-center" style={{backgroundImage: "url('/images/diningHall.jpg')"}}></div>
+        <div className="flex flex-col justify-center items-start p-16 md:p-24 bg-hotel-dark text-white">
+          <p className="text-amber-400 tracking-widest text-sm mb-4 uppercase">Culinary Excellence</p>
+          <h2 className="text-4xl font-serif mb-6">Michelin Quality Dining</h2>
+          <p className="text-gray-300 mb-8 leading-relaxed">Savor the finest local ingredients prepared by our world-renowned chefs. A gastronomic journey awaits you.</p>
+          <button className="border border-white px-8 py-3 hover:bg-white hover:text-black transition-colors uppercase text-xs tracking-wider">Discover More</button>
+        </div>
+      </div>
+
+      {/* 5. Newsletter (Derrick Design) */}
+      <div className="py-24 bg-amber-50 text-center px-6">
+        <h2 className="text-2xl font-serif text-gray-900 mb-4">Stay Connected</h2>
+        <p className="text-gray-600 mb-8">Subscribe to our newsletter for exclusive offers and updates.</p>
+        <form onSubmit={handleSubscribe} className="max-w-md mx-auto flex gap-2">
+          <input type="email" placeholder="Your Email Address" value={email} onChange={e => setEmail(e.target.value)} required className="flex-1 p-4 border border-gray-300 outline-none focus:border-amber-500" />
+          <button type="submit" className="bg-gray-900 text-white px-8 py-4 font-semibold hover:bg-black transition-colors uppercase tracking-wider text-xs">Subscribe</button>
+        </form>
+      </div>
+
     </div>
   );
 }

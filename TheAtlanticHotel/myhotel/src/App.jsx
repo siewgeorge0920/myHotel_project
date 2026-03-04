@@ -8,6 +8,7 @@ import Login from './pages/login';
 import AdminIAM from './pages/adminIAM';
 import CalendarPage from './pages/calendarPage';
 import AdminLogs from './pages/adminLogs';
+import GiftCard from './pages/giftCard';
 
 export default function App() {
   return (
@@ -16,10 +17,9 @@ export default function App() {
       <Routes>
         <Route path="/" element={<ClientHome />} />
         <Route path="/login" element={<Login />} />
-        
-        {/* 新的路线 */}
         <Route path="/admin-iam" element={<AdminIAM />} />
         <Route path="/admin-logs" element={<AdminLogs />} />
+        <Route path="/giftcard" element={<GiftCard />} />
         <Route path="/calendar" element={<CalendarPage />} />
         
         <Route path="*" element={<Navigate to="/" />} />
