@@ -119,6 +119,9 @@ export default function Navbar() {
               <div className="md:absolute hidden group-hover:block bg-[#faf9f6] text-[#242820] w-full md:min-w-[220px] shadow-xl border-t-4 border-amber-500 py-2">
                 <Link to="/michelin" className="block px-6 py-3 text-[10px] uppercase tracking-widest hover:bg-gray-100 hover:text-amber-600 transition-colors font-bold">Michelin Quality Food</Link>
                 <Link to="/breakfast" className="block px-6 py-3 text-[10px] uppercase tracking-widest hover:bg-gray-100 hover:text-amber-600 transition-colors font-bold border-t border-gray-100">Continental Breakfast</Link>
+                <Link to="/loc_Irish" className="block px-6 py-3 text-[10px] uppercase tracking-widest hover:bg-gray-100 hover:text-amber-600 transition-colors font-bold border-t border-gray-100">Local Irish Excursion</Link>
+                <Link to="/chauffer" className="block px-6 py-3 text-[10px] uppercase tracking-widest hover:bg-gray-100 hover:text-amber-600 transition-colors font-bold border-t border-gray-100">Private Chauffer</Link>
+                <Link to="/honeymoon" className="block px-6 py-3 text-[10px] uppercase tracking-widest hover:bg-gray-100 hover:text-amber-600 transition-colors font-bold border-t border-gray-100">Honeymoon Package</Link>
               </div>
             </div>
 
@@ -130,7 +133,9 @@ export default function Navbar() {
                 Spa & Wellness
               </button>
               <div className="md:absolute hidden group-hover:block bg-[#faf9f6] text-[#242820] w-full md:min-w-[220px] shadow-xl border-t-4 border-amber-500 py-2">
-                <Link to="/sauna" className="block px-6 py-3 text-[10px] uppercase tracking-widest hover:bg-gray-100 hover:text-amber-600 font-bold">Sauna & Facial</Link>
+                <Link to="/sauna" className="block px-6 py-3 text-[10px] uppercase tracking-widest hover:bg-gray-100 hover:text-amber-600 font-bold">Sauna</Link>
+                <Link to="/facial" className="block px-6 py-3 text-[10px] uppercase tracking-widest hover:bg-gray-100 hover:text-amber-600 font-bold">Facial</Link>
+                <Link to="/pr_Exclusive" className="block px-6 py-3 text-[10px] uppercase tracking-widest hover:bg-gray-100 hover:text-amber-600 font-bold">Private Exclusive</Link>
                 <Link to="/massage" className="block px-6 py-3 text-[10px] uppercase tracking-widest hover:bg-gray-100 hover:text-amber-600 font-bold border-t border-gray-100">Therapeutic Massage</Link>
               </div>
             </div>
@@ -140,11 +145,12 @@ export default function Navbar() {
               <button className={`w-full px-10 py-5 text-[11px] uppercase tracking-[0.2em] transition-all ${
                 isGroupActive(['/villas']) ? 'text-amber-500 bg-black/20' : 'hover:bg-black/20'
               }`}>
-                Resort & Villas
+                All Inclusive Resort
               </button>
               <div className="md:absolute hidden group-hover:block bg-[#faf9f6] text-[#242820] w-full md:min-w-[220px] shadow-xl border-t-4 border-amber-500 py-2">
                 <Link to="/lodges" className="block px-6 py-3 text-[10px] uppercase tracking-widest hover:bg-gray-100 hover:text-amber-600 font-bold">Private Lodges</Link>
                 <Link to="/villas" className="block px-6 py-3 text-[10px] uppercase tracking-widest hover:bg-gray-100 hover:text-amber-600 font-bold border-t border-gray-100">Luxury Residences</Link>
+                <Link to="/ultimate" className="block px-6 py-3 text-[10px] uppercase tracking-widest hover:bg-gray-100 hover:text-amber-600 font-bold border-t border-gray-100">Ultimate Exclusivity</Link>
               </div>
             </div>
 
