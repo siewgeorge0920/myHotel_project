@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import QuickBook from '../components/quickBook';
 
 export default function ClientHome() {
   const [rooms, setRooms] = useState([]);
@@ -34,8 +35,10 @@ export default function ClientHome() {
           <p className="tracking-[0.3em] text-sm uppercase mb-4 font-semibold text-amber-400">Welcome To</p>
           <h1 className="text-6xl md:text-8xl font-serif mb-6 leading-tight drop-shadow-2xl">The Atlantic Horizon</h1>
           <p className="text-lg md:text-2xl font-light max-w-2xl text-gray-200">Experience unparalleled coastal luxury and Irish hospitality.</p>
-        </div>
+        </div >
       </div>
+
+      <QuickBook />
 
       {/* 2. Introduction Section (Derrick Design) */}
       <div className="py-24 max-w-4xl mx-auto text-center px-6">
