@@ -14,54 +14,62 @@ import GiftCard from './pages/giftCard';
 
 
 // Facility Pages
-import MichelineQualityFood from './pages/michelinQualityFood';
-import ContinentalBreakfast from './pages/continentalBreakfast';
-import LocalIrishExcursion from './pages/localIrishExcursion';
-import PrivateChauffer from './pages/privateChauffer';
-import HoneymoonPackage from './pages/honeymoonPackage';
+import MichelineQualityFood from './pages/clientFeatures/ExperiencesAndDining/michelineQualityFood';
+import ContinentalBreakfast from './pages/clientFeatures/ExperiencesAndDining/continentalBreakfast';
+import LocalIrishExcursion from './pages/clientFeatures/ExperiencesAndDining/localIrishExcursion';
+import PrivateChauffer from './pages/clientFeatures/ExperiencesAndDining/privateChauffer';
+import HoneymoonPackage from './pages/clientFeatures/ExperiencesAndDining/honeymoonPackage';
 
-import Sauna from './pages/sauna';
-import Facial from './pages/facial';
-import PrivateExclusive from './pages/privateExclusive';
-import TherapeuticMassage from './pages/therapeuticMassage';
+import Sauna from './pages/clientFeatures/TheSpaAndWellness/sauna';
+import Facial from './pages/clientFeatures/TheSpaAndWellness/facial';
+import PrivateExclusive from './pages/clientFeatures/TheSpaAndWellness/privateExclusive';
+import TherapeuticMassage from './pages/clientFeatures/TheSpaAndWellness/massage';
 
-import AllInclusiveResort from './pages/allInclusiveResort';
-import UltimateExclusivity from './pages/ultimateExclusivity';
+import PrivateLodges from './pages/clientFeatures/AllInclusiveResort/privateLodges';
+import PrivateResidencesVillas from './pages/clientFeatures/AllInclusiveResort/privateResidencesAndVillas';
+import UltimateExclusivity from './pages/clientFeatures/AllInclusiveResort/ultimateExclusivity';
+
+
+import ScrollToTop from './components/scrollToTop';
 
 
 export default function App() {
   return (
     <Router>
-      <Navbar />
-      <Routes>
-        {/* Main Routes */}
-        <Route path="/" element={<ClientHome />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/admin-iam" element={<AdminIAM />} />
-        <Route path="/admin-logs" element={<AdminLogs />} />
-        <Route path="/giftcard" element={<GiftCard />} />
-        <Route path="/calendar" element={<CalendarPage />} />
+      <ScrollToTop />
+        <div className="min-w-[320px] overflow-x-hidden">
+          <Navbar />
+          <Routes>
+            {/* Main Routes */}
+            <Route path="/" element={<ClientHome />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/admin-iam" element={<AdminIAM />} />
+            <Route path="/admin-logs" element={<AdminLogs />} />
+            <Route path="/giftcard" element={<GiftCard />} />
+            <Route path="/calendar" element={<CalendarPage />} />
 
 
 
-        {/* Facility Routes */}
-        <Route path="/michelin" element={<MichelineQualityFood />} />
-        <Route path="/breakfast" element={<ContinentalBreakfast />} />
-        <Route path="/loc_Irish" element={<LocalIrishExcursion />} />
-        <Route path="/chauffer" element={<PrivateChauffer />} />
-        <Route path="/honeymoon" element={<HoneymoonPackage />} />
+            {/* Facility Routes */}
+            <Route path="/michelin" element={<MichelineQualityFood />} />
+            <Route path="/breakfast" element={<ContinentalBreakfast />} />
+            <Route path="/loc_Irish" element={<LocalIrishExcursion />} />
+            <Route path="/chauffer" element={<PrivateChauffer />} />
+            <Route path="/honeymoon" element={<HoneymoonPackage />} />
 
-        <Route path="/sauna" element={<Sauna />} />
-        <Route path="/facial" element={<Facial />} />
-        <Route path="/pr_Exclusive" element={<PrivateExclusive />} />
-        <Route path="/massage" element={<TherapeuticMassage />} />
+            <Route path="/sauna" element={<Sauna />} />
+            <Route path="/facial" element={<Facial />} />
+            <Route path="/pr_Exclusive" element={<PrivateExclusive />} />
+            <Route path="/massage" element={<TherapeuticMassage />} />
 
-        <Route path="/resort" element={<AllInclusiveResort />} />
-        <Route path="/ultimate" element={<UltimateExclusivity />} />
+            <Route path="/lodges" element={<PrivateLodges />} />
+            <Route path="/villas" element={<PrivateResidencesVillas />} />
+            <Route path="/ultimate" element={<UltimateExclusivity />} />
 
-        
-        <Route path="*" element={<Navigate to="/" />} />
-      </Routes>
+            
+            <Route path="*" element={<Navigate to="/" />} />
+          </Routes>
+        </div>
     </Router>
   );
 }

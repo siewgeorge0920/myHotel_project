@@ -102,6 +102,7 @@ export default function Navbar() {
           </button>
         </div>
       </header>
+      
 
       {/* 🔴 BOTTOM NAV - 100% 还原 Derrick 的 Dropdown UI 设计 */}
       <div className={`absolute w-full transition-all duration-500 ease-in-out z-20 ${showBottomNav ? 'top-full opacity-100' : '-top-96 opacity-0'}`}>
@@ -152,6 +153,26 @@ export default function Navbar() {
                 <Link to="/villas" className="block px-6 py-3 text-[10px] uppercase tracking-widest hover:bg-gray-100 hover:text-amber-600 font-bold border-t border-gray-100">Luxury Residences</Link>
                 <Link to="/ultimate" className="block px-6 py-3 text-[10px] uppercase tracking-widest hover:bg-gray-100 hover:text-amber-600 font-bold border-t border-gray-100">Ultimate Exclusivity</Link>
               </div>
+            </div>
+
+
+            {/* 📱 手机版专属：Quick Links (只在小屏幕显示) */}
+            <div className="md:hidden border-t border-[#3e4538] bg-black/30 p-6 space-y-4">
+              <p className="text-amber-500 text-[10px] uppercase tracking-[0.3em] font-bold mb-2">Member Services</p>
+              
+              <Link to="/check-booking" onClick={() => setShowBottomNav(false)} className="block text-gray-300 text-xs uppercase tracking-widest">Check Booking</Link>
+              
+              {/* 这里我帮你把 /gift-card 改成了 /giftcard 以对应你的 App.jsx */}
+              <Link to="/giftcard" onClick={() => setShowBottomNav(false)} className="block text-gray-300 text-xs uppercase tracking-widest">Gift Card</Link>
+              
+              {currentUser ? (
+                <div className="pt-2 border-t border-white/10">
+                  <p className="text-amber-400 text-xs font-bold mb-2 uppercase tracking-widest">HI, {currentUser.name}</p>
+                  <button onClick={handleLogout} className="text-red-400 text-xs font-bold uppercase tracking-widest">Logout</button>
+                </div>
+              ) : (
+                <Link to="/login" onClick={() => setShowBottomNav(false)} className="block text-amber-400 text-xs uppercase tracking-widest font-bold">Staff Login 🔒</Link>
+              )}
             </div>
 
           </div>

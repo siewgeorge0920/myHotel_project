@@ -1,0 +1,1 @@
+export default function Facial() { return <div>Facial Page</div>; }
