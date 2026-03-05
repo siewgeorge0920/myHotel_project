@@ -3,6 +3,7 @@ import DatePicker from 'react-datepicker';
 import { format, addDays } from 'date-fns';
 import "react-datepicker/dist/react-datepicker.css";
 import './datepicker-custom.css';
+import { useNavigate } from 'react-router-dom';
 
 export default function QuickBook() {
   const [dateRange, setDateRange] = useState([new Date(), addDays(new Date(), 1)]);
@@ -10,6 +11,7 @@ export default function QuickBook() {
   const [guests, setGuests] = useState('2 Adults');
   const [roomType, setRoomType] = useState('Main Manor Suite');
   const [activeDropdown, setActiveDropdown] = useState(null);
+  const navigate = useNavigate();
 
   // --- 关键修复：让整个区域变成 Trigger ---
   // 在你的 DualBoxTrigger 里面稍微改一下文字样式
@@ -41,6 +43,20 @@ const DualBoxTrigger = forwardRef(({ onClick }, ref) => (
     </div>
   </div>
 ));
+
+
+// 2. 修改这个 Function
+  const handleCheckAvailability = () => {
+    // 把数据包好，传去 /calendar 页面
+    navigate('/calendar', { 
+      state: { 
+        startDate: startDate.toISOString(), 
+        endDate: endDate ? endDate.toISOString() : null,
+        guests,
+        roomType
+      } 
+    });
+  };
 
   return (
     <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-40">
@@ -117,7 +133,7 @@ const DualBoxTrigger = forwardRef(({ onClick }, ref) => (
           </div>
 
           {/* Action Button */}
-          <button className="bg-amber-600 hover:bg-amber-700 text-white px-10 py-10 lg:py-0 uppercase text-[11px] font-black tracking-[0.4em] transition-all flex items-center justify-center group overflow-hidden relative">
+          <button onClick={handleCheckAvailability} className="bg-amber-600 hover:bg-amber-700 text-white px-10 py-10 lg:py-0 uppercase text-[11px] font-black tracking-[0.4em] transition-all flex items-center justify-center group overflow-hidden relative ">
             <span className="relative z-10">Check Availability</span>
             <div className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
           </button>

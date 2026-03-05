@@ -27,10 +27,8 @@ export default function Navbar() {
 
   // 🌟 修改：只需要删除 'user' 这个抽屉
   const handleLogout = () => {
-    if(window.confirm("Logout now?")) {
       localStorage.removeItem('user'); 
       window.location.href = '/';
-    }
   };
 
   const isGroupActive = (paths) => paths.some(path => location.pathname.includes(path));
@@ -67,9 +65,9 @@ export default function Navbar() {
         {/* 右边：你的 Tools + 预订按钮 */}
         <div className="flex justify-end items-center space-x-5 flex-1 text-[10px] md:text-xs uppercase tracking-widest font-bold">
           
-          {/* 🌟 你的工具：Check Booking */}
+          {/* 🌟 你的工具：Booking Status */}
           <Link to="/check-booking" className="hidden lg:block text-gray-300 hover:text-amber-400 transition-colors">
-            Check Booking
+            Booking Status
           </Link>
 
           <Link to="/gift-card" className="hidden xl:block text-gray-300 hover:text-amber-400 transition-colors">
@@ -90,11 +88,7 @@ export default function Navbar() {
                 Logout
               </button>
             </div>
-          ) : (
-            <Link to="/login" className="hidden sm:flex text-gray-300 hover:text-amber-400 transition-colors items-center">
-              Staff Login <span className="ml-1 text-[10px]">🔒</span>
-            </Link>
-          )}
+          ) : null}
 
           {/* Book Stay Button */}
           <button className="border border-amber-400 text-amber-400 hover:bg-amber-400 hover:text-[#343a2f] px-5 py-2.5 transition-all shadow-md">
@@ -160,7 +154,7 @@ export default function Navbar() {
             <div className="md:hidden border-t border-[#3e4538] bg-black/30 p-6 space-y-4">
               <p className="text-amber-500 text-[10px] uppercase tracking-[0.3em] font-bold mb-2">Member Services</p>
               
-              <Link to="/check-booking" onClick={() => setShowBottomNav(false)} className="block text-gray-300 text-xs uppercase tracking-widest">Check Booking</Link>
+              <Link to="/check-booking" onClick={() => setShowBottomNav(false)} className="block text-gray-300 text-xs uppercase tracking-widest">Booking Status</Link>
               
               {/* 这里我帮你把 /gift-card 改成了 /giftcard 以对应你的 App.jsx */}
               <Link to="/giftcard" onClick={() => setShowBottomNav(false)} className="block text-gray-300 text-xs uppercase tracking-widest">Gift Card</Link>
@@ -171,7 +165,7 @@ export default function Navbar() {
                   <button onClick={handleLogout} className="text-red-400 text-xs font-bold uppercase tracking-widest">Logout</button>
                 </div>
               ) : (
-                <Link to="/login" onClick={() => setShowBottomNav(false)} className="block text-amber-400 text-xs uppercase tracking-widest font-bold">Staff Login 🔒</Link>
+                <Link to="/login" onClick={() => setShowBottomNav(false)} className="block text-amber-400 text-xs uppercase tracking-widest font-bold">Login 🔒</Link>
               )}
             </div>
 

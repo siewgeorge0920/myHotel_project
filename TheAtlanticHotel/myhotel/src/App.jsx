@@ -10,6 +10,9 @@ import AdminIAM from './pages/adminIAM';
 import CalendarPage from './pages/calendarPage';
 import AdminLogs from './pages/adminLogs';
 import GiftCard from './pages/giftCard';
+import Inventory from './pages/inventory';
+import Footer from './components/footer';
+import StaffDashboard from './pages/staffDashboard';
 
 
 
@@ -34,12 +37,14 @@ import UltimateExclusivity from './pages/clientFeatures/AllInclusiveResort/ultim
 import ScrollToTop from './components/scrollToTop';
 
 
+
 export default function App() {
   return (
     <Router>
       <ScrollToTop />
-        <div className="min-w-[320px] overflow-x-hidden">
-          <Navbar />
+      <div className="min-w-[320px] overflow-x-hidden">
+        <Navbar />
+        <main className="flex-grow">
           <Routes>
             {/* Main Routes */}
             <Route path="/" element={<ClientHome />} />
@@ -48,6 +53,9 @@ export default function App() {
             <Route path="/admin-logs" element={<AdminLogs />} />
             <Route path="/giftcard" element={<GiftCard />} />
             <Route path="/calendar" element={<CalendarPage />} />
+            <Route path="/inventory" element={<Inventory />} />
+            <Route path="/footer" element={<Footer />} />
+            <Route path="/staff-dashboard" element={<StaffDashboard />} />
 
 
 
@@ -67,10 +75,14 @@ export default function App() {
             <Route path="/villas" element={<PrivateResidencesVillas />} />
             <Route path="/ultimate" element={<UltimateExclusivity />} />
 
-            
+
+
+
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
-        </div>
+        </main>
+      <Footer />
+      </div>
     </Router>
   );
 }
