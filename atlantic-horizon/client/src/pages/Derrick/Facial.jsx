@@ -6,7 +6,7 @@ const Facial = () => {
   return (
     <div className="font-mono text-[#2c372b]">
       
-      {/* --- Main Content Section (Soft Green Background) --- */}
+      {/* --- Main Content Section (Soft Green Background) ---    */}
       <div className="bg-[#e2eadc] py-16 px-6 sm:px-12 lg:px-24">
         <div className="max-w-7xl mx-auto">
           
