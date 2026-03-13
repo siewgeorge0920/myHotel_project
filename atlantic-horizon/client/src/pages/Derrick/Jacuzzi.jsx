@@ -1,8 +1,8 @@
 import React from 'react';
-import sauna1 from '../../assets/images/Derrick/sauna1.jpg';
-import sauna2 from '../../assets/images/Derrick/sauna2.jpg';
+import jacuzzi1 from '../../assets/images/Derrick/jacuzzi1.jpg';
+import jacuzzi2 from '../../assets/images/Derrick/jacuzzi2.png';
 
-const Sauna = () => {
+const Jacuzzi = () => {
   return (
     <div className="font-mono text-[#2c372b]">
       
@@ -14,18 +14,18 @@ const Sauna = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20 items-center mb-24">
             {/* Image 1 */}
             <img 
-              src={sauna1} 
-              alt="The Sauna Experience" 
+              src={jacuzzi1} 
+              alt="The Hydrotherapy Jacuzzi" 
               className="w-full h-72 md:h-[400px] object-cover rounded-sm shadow-md"
             />
             
             {/* Text 1 */}
             <div>
               <h2 className="text-2xl md:text-3xl mb-6 tracking-wide font-serif">
-                The Sauna Experience
+                The Hydrotherapy Jacuzzi
               </h2>
               <p className="text-base md:text-lg leading-relaxed text-gray-700 font-sans font-light">
-                Step into a sanctuary of warmth and tranquility. Our traditional wood-fired saunas are designed to purify the body, relax the mind, and melt away the stresses of the outside world. Experience the ultimate detoxification at The Atlantic Horizon Manor.
+                Immerse yourself in pure relaxation with our state-of-the-art hydrotherapy jacuzzis. The warm, bubbling waters provide a perfect sanctuary to unwind and rejuvenate your body and mind after a long day exploring the beautiful Irish coast at The Atlantic Horizon Manor.
               </p>
             </div>
           </div>
@@ -35,20 +35,20 @@ const Sauna = () => {
             {/* Text 2 */}
             <div className="order-2 md:order-1">
               <h2 className="text-2xl md:text-3xl mb-6 tracking-wide font-serif">
-                Holistic Benefits
+                Restorative Benefits
               </h2>
               <p className="text-base md:text-lg leading-relaxed text-gray-700 mb-4 font-sans font-light">
-                Improve cardiovascular circulation, relieve deep muscle tension, and promote restorative sleep. A 45 to 60-minute session cleanses and rejuvenates the skin naturally.
+                Let the targeted massage jets work away tension and soothe tired muscles. Regular hydrotherapy is known to improve circulation, accelerate physical recovery, and promote a profound sense of well-being.
               </p>
               <p className="text-base md:text-lg leading-relaxed text-gray-700 font-sans font-light">
-                Complimentary plush spa robes, infused water, and warm towels are provided upon entry to ensure your absolute comfort.
+                Enjoy complimentary infused waters and plush towels as you soak away the stresses of the day in our tranquil indoor oasis.
               </p>
             </div>
 
             {/* Image 2 */}
             <img 
-              src={sauna2} 
-              alt="Sauna Holistic Benefits" 
+              src={jacuzzi2} 
+              alt="Jacuzzi Jets and Relaxation" 
               className="order-1 md:order-2 w-full h-72 md:h-[400px] object-cover rounded-sm shadow-md"
             />
           </div>
@@ -61,7 +61,7 @@ const Sauna = () => {
         <div className="max-w-3xl mx-auto bg-white p-10 md:p-16 shadow-sm border border-[#f0ebe1]">
           
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-serif text-[#2c372b] mb-3">Book Your Sauna Session</h2>
+            <h2 className="text-3xl md:text-4xl font-serif text-[#2c372b] mb-3">Book Your Jacuzzi Session</h2>
             <div className="w-16 h-[1px] bg-[#d2a795] mx-auto"></div>
           </div>
 
@@ -89,16 +89,17 @@ const Sauna = () => {
               </div>
             </div>
 
-            {/* Sauna Type Dropdown */}
+            {/* Session Type Dropdown */}
             <div className="flex flex-col">
-              <label htmlFor="sauna-type" className="mb-2 font-serif text-sm text-gray-600">Select Sauna Type *</label>
+              <label htmlFor="session-type" className="mb-2 font-serif text-sm text-gray-600">Number of Guests *</label>
               <select 
-                id="sauna-type" 
+                id="session-type" 
                 className="px-4 py-3 border border-gray-300 bg-white focus:outline-none focus:border-[#d2a795] focus:ring-1 focus:ring-[#d2a795] transition-all rounded-none text-gray-700"
               >
-                <option value="traditional">Traditional Wood-Fired Sauna</option>
-                <option value="infrared">Infrared Detox Sauna</option>
-                <option value="steam">Aromatherapy Steam Room</option>
+                <option value="1">1 Person (Private Session)</option>
+                <option value="2">2 People (Couples Session)</option>
+                <option value="3">3 People</option>
+                <option value="4">4 People</option>
               </select>
             </div>
 
@@ -124,7 +125,7 @@ const Sauna = () => {
             </div>
 
             <p className="text-sm text-gray-400 font-serif italic text-center mt-8 mb-8">
-              * Please book at least 2 hours in advance so we can prepare your sauna to the optimal temperature.
+              * Please book at least 2 hours in advance to ensure availability.
             </p>
 
             {/* Submit Button */}
@@ -144,4 +145,4 @@ const Sauna = () => {
   );
 };
 
-export default Sauna;
+export default Jacuzzi;

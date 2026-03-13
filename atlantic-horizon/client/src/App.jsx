@@ -22,10 +22,10 @@ import LocationModal from './components/LocationModal';
 
 // Import Derrick's new pages
 import Sauna from './pages/Derrick/Sauna';
-
-
-
-
+import Facial from './pages/Derrick/Facial';
+import Jacuzzi from './pages/Derrick/Jacuzzi';
+import Hottub from './pages/Derrick/Hottub'
+import Massage from './pages/Derrick/Massage';
 //Import George's new pages
 
 
@@ -107,6 +107,10 @@ export default function App() {
 
             {/*Derrick:*/}
               <Route path="/spa/sauna" element={<Sauna />} />
+              <Route path="/spa/facial" element={<Facial />} />
+              <Route path="/spa/jacuzzi" element={<Jacuzzi />} />
+              <Route path="/spa/hottub" element={<Hottub />} />
+              <Route path="/spa/massage" element={<Massage />} />
 
             {/*George:*/}
 

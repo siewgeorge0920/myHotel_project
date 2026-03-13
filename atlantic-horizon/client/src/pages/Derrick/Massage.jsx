@@ -1,8 +1,8 @@
 import React from 'react';
-import sauna1 from '../../assets/images/Derrick/sauna1.jpg';
-import sauna2 from '../../assets/images/Derrick/sauna2.jpg';
+import massage1 from '../../assets/images/Derrick/massage1.jpg';
+import massage2 from '../../assets/images/Derrick/massage2.webp';
 
-const Sauna = () => {
+const Massage = () => {
   return (
     <div className="font-mono text-[#2c372b]">
       
@@ -14,18 +14,18 @@ const Sauna = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20 items-center mb-24">
             {/* Image 1 */}
             <img 
-              src={sauna1} 
-              alt="The Sauna Experience" 
+              src={massage1} 
+              alt="Signature Massage Therapy" 
               className="w-full h-72 md:h-[400px] object-cover rounded-sm shadow-md"
             />
             
             {/* Text 1 */}
             <div>
               <h2 className="text-2xl md:text-3xl mb-6 tracking-wide font-serif">
-                The Sauna Experience
+                Signature Massage Therapies
               </h2>
               <p className="text-base md:text-lg leading-relaxed text-gray-700 font-sans font-light">
-                Step into a sanctuary of warmth and tranquility. Our traditional wood-fired saunas are designed to purify the body, relax the mind, and melt away the stresses of the outside world. Experience the ultimate detoxification at The Atlantic Horizon Manor.
+                Surrender to absolute tranquility with our bespoke massage therapies. Performed by our master therapists, each treatment is designed to harmonize body and mind, releasing deep-seated tension and restoring your natural balance in the serene setting of The Atlantic Horizon Manor.
               </p>
             </div>
           </div>
@@ -35,20 +35,20 @@ const Sauna = () => {
             {/* Text 2 */}
             <div className="order-2 md:order-1">
               <h2 className="text-2xl md:text-3xl mb-6 tracking-wide font-serif">
-                Holistic Benefits
+                Tailored to Your Needs
               </h2>
               <p className="text-base md:text-lg leading-relaxed text-gray-700 mb-4 font-sans font-light">
-                Improve cardiovascular circulation, relieve deep muscle tension, and promote restorative sleep. A 45 to 60-minute session cleanses and rejuvenates the skin naturally.
+                Whether you require the targeted relief of a deep tissue massage, the soothing warmth of hot stones, or the gentle flow of Swedish techniques, your therapist will customize every aspect of your 60 or 90-minute session.
               </p>
               <p className="text-base md:text-lg leading-relaxed text-gray-700 font-sans font-light">
-                Complimentary plush spa robes, infused water, and warm towels are provided upon entry to ensure your absolute comfort.
+                We exclusively use cold-pressed organic botanical oils, leaving your skin deeply nourished and your spirit completely renewed.
               </p>
             </div>
 
             {/* Image 2 */}
             <img 
-              src={sauna2} 
-              alt="Sauna Holistic Benefits" 
+              src={massage2} 
+              alt="Relaxing Spa Environment and Oils" 
               className="order-1 md:order-2 w-full h-72 md:h-[400px] object-cover rounded-sm shadow-md"
             />
           </div>
@@ -61,7 +61,7 @@ const Sauna = () => {
         <div className="max-w-3xl mx-auto bg-white p-10 md:p-16 shadow-sm border border-[#f0ebe1]">
           
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-serif text-[#2c372b] mb-3">Book Your Sauna Session</h2>
+            <h2 className="text-3xl md:text-4xl font-serif text-[#2c372b] mb-3">Book Your Massage</h2>
             <div className="w-16 h-[1px] bg-[#d2a795] mx-auto"></div>
           </div>
 
@@ -89,16 +89,18 @@ const Sauna = () => {
               </div>
             </div>
 
-            {/* Sauna Type Dropdown */}
+            {/* Massage Type Dropdown */}
             <div className="flex flex-col">
-              <label htmlFor="sauna-type" className="mb-2 font-serif text-sm text-gray-600">Select Sauna Type *</label>
+              <label htmlFor="massage-type" className="mb-2 font-serif text-sm text-gray-600">Select Treatment *</label>
               <select 
-                id="sauna-type" 
+                id="massage-type" 
                 className="px-4 py-3 border border-gray-300 bg-white focus:outline-none focus:border-[#d2a795] focus:ring-1 focus:ring-[#d2a795] transition-all rounded-none text-gray-700"
               >
-                <option value="traditional">Traditional Wood-Fired Sauna</option>
-                <option value="infrared">Infrared Detox Sauna</option>
-                <option value="steam">Aromatherapy Steam Room</option>
+                <option value="swedish">Swedish Relaxation Massage (60 Min)</option>
+                <option value="deep-tissue">Deep Tissue Muscle Recovery (60 Min)</option>
+                <option value="hot-stone">Warming Hot Stone Therapy (90 Min)</option>
+                <option value="aromatherapy">Botanical Aromatherapy Journey (90 Min)</option>
+                <option value="couples">Couples Retreat Massage (60 Min)</option>
               </select>
             </div>
 
@@ -124,7 +126,7 @@ const Sauna = () => {
             </div>
 
             <p className="text-sm text-gray-400 font-serif italic text-center mt-8 mb-8">
-              * Please book at least 2 hours in advance so we can prepare your sauna to the optimal temperature.
+              * Please arrive 15 minutes before your scheduled appointment.
             </p>
 
             {/* Submit Button */}
@@ -144,4 +146,4 @@ const Sauna = () => {
   );
 };
 
-export default Sauna;
+export default Massage;

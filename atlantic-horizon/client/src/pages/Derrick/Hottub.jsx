@@ -1,8 +1,8 @@
 import React from 'react';
-import sauna1 from '../../assets/images/Derrick/sauna1.jpg';
-import sauna2 from '../../assets/images/Derrick/sauna2.jpg';
+import hottub1 from '../../assets/images/Derrick/hottub1.webp';
+import hottub2 from '../../assets/images/Derrick/hottub2.jpg';
 
-const Sauna = () => {
+const HotTub = () => {
   return (
     <div className="font-mono text-[#2c372b]">
       
@@ -10,47 +10,47 @@ const Sauna = () => {
       <div className="bg-[#e2eadc] py-16 px-6 sm:px-12 lg:px-24">
         <div className="max-w-7xl mx-auto">
           
-          {/* Row 1: Image Left, Text Right */}
+          {/* Row 1: Text Left, Image Right */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20 items-center mb-24">
-            {/* Image 1 */}
-            <img 
-              src={sauna1} 
-              alt="The Sauna Experience" 
-              className="w-full h-72 md:h-[400px] object-cover rounded-sm shadow-md"
-            />
-            
             {/* Text 1 */}
-            <div>
-              <h2 className="text-2xl md:text-3xl mb-6 tracking-wide font-serif">
-                The Sauna Experience
-              </h2>
-              <p className="text-base md:text-lg leading-relaxed text-gray-700 font-sans font-light">
-                Step into a sanctuary of warmth and tranquility. Our traditional wood-fired saunas are designed to purify the body, relax the mind, and melt away the stresses of the outside world. Experience the ultimate detoxification at The Atlantic Horizon Manor.
-              </p>
-            </div>
-          </div>
-
-          {/* Row 2: Text Left, Image Right */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20 items-center">
-            {/* Text 2 */}
             <div className="order-2 md:order-1">
               <h2 className="text-2xl md:text-3xl mb-6 tracking-wide font-serif">
-                Holistic Benefits
+                Family Hot Tub Retreat
               </h2>
-              <p className="text-base md:text-lg leading-relaxed text-gray-700 mb-4 font-sans font-light">
-                Improve cardiovascular circulation, relieve deep muscle tension, and promote restorative sleep. A 45 to 60-minute session cleanses and rejuvenates the skin naturally.
-              </p>
               <p className="text-base md:text-lg leading-relaxed text-gray-700 font-sans font-light">
-                Complimentary plush spa robes, infused water, and warm towels are provided upon entry to ensure your absolute comfort.
+                Create unforgettable memories with your loved ones in our spacious, luxury family hot tubs. Designed with both safety and comfort in mind, our temperature-controlled outdoor tubs offer a relaxing, joyous aquatic escape for guests of all ages at The Atlantic Horizon Manor.
               </p>
             </div>
 
-            {/* Image 2 */}
+            {/* Image 1 */}
             <img 
-              src={sauna2} 
-              alt="Sauna Holistic Benefits" 
+              src={hottub1} 
+              alt="Family Hot Tub Experience" 
               className="order-1 md:order-2 w-full h-72 md:h-[400px] object-cover rounded-sm shadow-md"
             />
+          </div>
+
+          {/* Row 2: Image Left, Text Right */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20 items-center">
+            {/* Image 2 */}
+            <img 
+              src={hottub2} 
+              alt="Hot Tub Relaxation and Views" 
+              className="w-full h-72 md:h-[400px] object-cover rounded-sm shadow-md"
+            />
+
+            {/* Text 2 */}
+            <div>
+              <h2 className="text-2xl md:text-3xl mb-6 tracking-wide font-serif">
+                Bonding & Relaxation
+              </h2>
+              <p className="text-base md:text-lg leading-relaxed text-gray-700 mb-4 font-sans font-light">
+                Enjoy the gentle, soothing jets while taking in the stunning coastal views together. Our family hot tub areas provide a private, serene environment perfect for reconnecting after a day of exploring the Irish countryside.
+              </p>
+              <p className="text-base md:text-lg leading-relaxed text-gray-700 font-sans font-light">
+                Complimentary fresh towels, family-friendly refreshments, and cozy robes in all sizes are provided to ensure a seamless and delightful experience for the whole family.
+              </p>
+            </div>
           </div>
 
         </div>
@@ -61,7 +61,7 @@ const Sauna = () => {
         <div className="max-w-3xl mx-auto bg-white p-10 md:p-16 shadow-sm border border-[#f0ebe1]">
           
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-serif text-[#2c372b] mb-3">Book Your Sauna Session</h2>
+            <h2 className="text-3xl md:text-4xl font-serif text-[#2c372b] mb-3">Book Your Family Hot Tub</h2>
             <div className="w-16 h-[1px] bg-[#d2a795] mx-auto"></div>
           </div>
 
@@ -89,16 +89,17 @@ const Sauna = () => {
               </div>
             </div>
 
-            {/* Sauna Type Dropdown */}
+            {/* Number of Guests Dropdown */}
             <div className="flex flex-col">
-              <label htmlFor="sauna-type" className="mb-2 font-serif text-sm text-gray-600">Select Sauna Type *</label>
+              <label htmlFor="guests" className="mb-2 font-serif text-sm text-gray-600">Number of Guests *</label>
               <select 
-                id="sauna-type" 
+                id="guests" 
                 className="px-4 py-3 border border-gray-300 bg-white focus:outline-none focus:border-[#d2a795] focus:ring-1 focus:ring-[#d2a795] transition-all rounded-none text-gray-700"
               >
-                <option value="traditional">Traditional Wood-Fired Sauna</option>
-                <option value="infrared">Infrared Detox Sauna</option>
-                <option value="steam">Aromatherapy Steam Room</option>
+                <option value="2">2 Guests</option>
+                <option value="3">3 Guests (Family)</option>
+                <option value="4">4 Guests (Family)</option>
+                <option value="5">5+ Guests (Large Family Group)</option>
               </select>
             </div>
 
@@ -124,7 +125,7 @@ const Sauna = () => {
             </div>
 
             <p className="text-sm text-gray-400 font-serif italic text-center mt-8 mb-8">
-              * Please book at least 2 hours in advance so we can prepare your sauna to the optimal temperature.
+              * Please let us know at the front desk if you require child-sized robes or specific temperatures.
             </p>
 
             {/* Submit Button */}
@@ -144,4 +145,4 @@ const Sauna = () => {
   );
 };
 
-export default Sauna;
+export default HotTub;
