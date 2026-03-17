@@ -11,6 +11,48 @@
       href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@300;400&display=swap"
       rel="stylesheet"
     />
+    
+    <!-- Animated Logo Favicon -->
+    <link id="dynamic-favicon" rel="icon" type="image/png" href="/src/assets/images/Logo.png" />
+    <script>
+      (function() {
+        // Quick loading animation trick for the favicon
+        // Basically rescales a canvas version of it every 100ms
+        let step = 0;
+        let img = new Image();
+        img.src = '/src/assets/images/Logo.png';
+        
+        let canvas = document.createElement('canvas');
+        canvas.width = 32;
+        canvas.height = 32;
+        let ctx = canvas.getContext('2d');
+        
+        // Stop animation after 2.5 seconds (gives React enough time to load)
+        let interval = setInterval(() => {
+          step++;
+          ctx.clearRect(0, 0, 32, 32);
+          
+          // Pulsing scale effect for the favicon
+          let scale = 1 + Math.sin(step * 0.5) * 0.2; 
+          let size = 32 * scale;
+          let offset = (32 - size) / 2;
+          
+          ctx.drawImage(img, offset, offset, size, size);
+          
+          let link = document.getElementById('dynamic-favicon');
+          if(link) {
+            link.href = canvas.toDataURL('image/png');
+          }
+          
+          if (step > 25) {
+            clearInterval(interval);
+            // Reset to original full quality static logo
+            if(link) link.href = '/src/assets/images/Logo.png';
+          }
+        }, 100);
+      })();
+    </script>
+    
     <!-- Font Awesome icons (used for UI icons like stars, menu, etc.) -->
     <link
       rel="stylesheet"
