@@ -3,172 +3,188 @@ import { Link } from 'react-router-dom';
 import GiftCard from './GiftCard'; 
 import logo from '../assets/images/Logo.png'; 
 
+const NAV_ITEMS = [
+  {
+    label: 'Experience',
+    links: [
+      { name: 'Michelin Quality Food', path: '/michelineQualityFood' },
+      { name: 'Continental Breakfast', path: '/continentalBreakfast' },
+      { name: 'Local Irish Excursion', path: '/localIrishExcursion' },
+      { name: 'Private Chauffeur', path: '/privateChauffer' },
+      { name: 'Honeymoon Package', path: '/honeymoonPackage' },
+    ],
+  },
+  {
+    label: 'Spa & Wellness',
+    links: [
+      { name: 'Sauna', path: '/sauna' },
+      { name: 'Facial', path: '/facial' },
+      { name: 'Hottub', path: '/hottub' },
+      { name: 'Jacuzzi', path: '/jacuzzi' },
+      { name: 'Massage', path: '/massage' },
+    ],
+  },
+  {
+    label: 'Inclusive Resort',
+    links: [
+      { name: 'Private Lodges', path: '/lodges' },
+      { name: 'Private Residences & Villas', path: '/villas' },
+      { name: 'Ultimate Exclusivity', path: '/exclusivity' },
+    ],
+  },
+];
+
 export default function Header() {
-  // 1. Define the state to control the Gift Card modal
   const [isGiftCardOpen, setIsGiftCardOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [openDropdown, setOpenDropdown] = useState(null); // for mobile accordion
 
   return (
-    // Sticky top navigation bar with luxury theme styling
-    <header className="bg-manorGreen text-manorGold flex items-center justify-between px-10 h-36 sticky top-0 z-50">
-      
-      {/* ================= LEFT SECTION ================= */}
-      {/* Contains desktop navigation menu */}
-      <div className="flex items-center gap-10 flex-1">
+    <>
+      <header className="bg-manorGreen text-manorGold flex items-center justify-between px-6 lg:px-10 h-24 lg:h-36 sticky top-0 z-50 relative">
+        
+        {/* ===== LEFT: Hamburger (mobile) + Desktop Nav ===== */}
+        <div className="flex items-center gap-10 flex-1">
+          {/* Hamburger — only on mobile */}
+          <button
+            className="lg:hidden flex flex-col gap-1.5 p-2"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            aria-label="Toggle menu"
+          >
+            <span className={`block w-6 h-0.5 bg-manorGold transition-transform duration-300 ${isMobileMenuOpen ? 'rotate-45 translate-y-2' : ''}`} />
+            <span className={`block w-6 h-0.5 bg-manorGold transition-opacity duration-300 ${isMobileMenuOpen ? 'opacity-0' : ''}`} />
+            <span className={`block w-6 h-0.5 bg-manorGold transition-transform duration-300 ${isMobileMenuOpen ? '-rotate-45 -translate-y-2' : ''}`} />
+          </button>
 
-        {/* Desktop navigation (hidden on small screens) */}
-        <nav className="hidden lg:flex gap-10 relative">
-  
-          {/* -------- EXPERIENCE DROPDOWN -------- */}
-          {/* -------- Lincoln -------- */}
-          <div className="relative group">
-            
-            {/* Main nav button */}
-            <button className="pb-2 text-manorGold uppercase tracking-[2px] font-cinzel text-sm">
-              Experience
-            </button>
+          {/* Desktop Nav */}
+          <nav className="hidden lg:flex gap-10 relative">
+            {NAV_ITEMS.map((cat) => (
+              <div key={cat.label} className="relative group">
+                <button className="pb-2 text-manorGold uppercase tracking-[2px] font-cinzel text-sm whitespace-nowrap">
+                  {cat.label}
+                </button>
+                <div className="absolute left-0 top-full mt-4 w-56 bg-[#2f3a33] text-white rounded-md shadow-xl
+                                opacity-0 invisible translate-y-3 z-50
+                                group-hover:opacity-100 group-hover:visible group-hover:translate-y-0
+                                transition-all duration-300">
+                  <div className="flex flex-col py-3 text-sm">
+                    {cat.links.map((item) => (
+                      <Link
+                        key={item.name}
+                        to={item.path}
+                        className="mx-3 my-1 px-4 py-2 text-sm font-light
+                                   border border-transparent rounded-full
+                                   hover:border-manorGold hover:text-manorGold
+                                   transition-all duration-300"
+                      >
+                        {item.name}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </nav>
+        </div>
 
-            {/* Dropdown panel (appears on hover) */}
-            <div className="absolute left-0 top-full mt-4 w-56 bg-[#2f3a33] text-white rounded-md shadow-xl
-                            opacity-0 invisible translate-y-3
-                            group-hover:opacity-100 group-hover:visible group-hover:translate-y-0
-                            transition-all duration-300">
+        {/* ===== CENTER: Logo (Absolute Center!) ===== */}
+        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
+          <Link to="/">
+            <img
+              src={logo}
+              alt="The Atlantic Horizon Manor Logo"
+              className="h-20 lg:h-32 w-auto transition-transform duration-300 hover:scale-105"
+            />
+          </Link>
+        </div>
 
-              {/* Dropdown links list */}
-              <div className="flex flex-col py-3 text-sm">
-                {[
-                  "Michelin Quality Food",
-                  "Continental Breakfast",
-                  "Local Irish Excursion",
-                  "Private Chauffeur",
-                  "Honeymoon Package",
-                ].map((item) => (
-                  <Link
-                    key={item}
-                    to="#" // Change this to your actual route later (e.g., "/michelin-food")
-                    className="mx-3 my-1 px-4 py-2 text-sm font-light
-                               border border-transparent rounded-full
-                               hover:border-manorGold hover:text-manorGold
-                               transition-all duration-300"
-                  >
-                    {item}
-                  </Link>
-                ))}
+        {/* ===== RIGHT: Action Buttons ===== */}
+        <div className="flex gap-4 lg:gap-6 flex-1 justify-end items-center">
+          
+          <Link 
+            to="/check-in"
+            className="flex items-center"
+            title="Self Check-In"
+          >
+            {/* Desktop: Button Style */}
+            <span className="hidden lg:inline-block border border-manorGold text-manorGold px-4 py-2 text-[10px] uppercase tracking-wider transition-all duration-300 hover:bg-manorGold hover:text-manorGreen hover:-translate-y-0.5 hover:shadow-lg">
+              Self Check-In
+            </span>
+
+            {/* Mobile: Custom Icon Design */}
+            <div className="lg:hidden w-8 h-8 border-2 border-manorGold rounded-md relative flex flex-col items-center justify-center overflow-hidden active:scale-95 transition-all text-manorGold">
+              <div className="absolute top-0 left-0 right-0 h-1.5 bg-manorGold/20 flex justify-around items-center px-1">
+                {[1, 2, 3].map(i => <div key={i} className="w-1 h-1 bg-manorGold rounded-full" />)}
+              </div>
+              <div className="flex flex-col items-center mt-1.5">
+                <span className="text-[5px] leading-tight font-black tracking-tighter">CHECK</span>
+                <div className="flex items-center gap-0.5">
+                  <span className="text-[5px] leading-tight font-black tracking-tighter">IN</span>
+                  <span className="text-[6px] leading-none">←</span>
+                </div>
               </div>
             </div>
-          </div>
+          </Link>
 
-        {/* -------- SPA & WELLNESS DROPDOWN -------- */}
-        {/* -------- Derrick -------- */}
-          <div className="relative group">
-            <button className="pb-2 text-manorGold uppercase tracking-[2px] font-cinzel text-sm">
-              Spa & Wellness
-            </button>
+          <button 
+            onClick={() => setIsGiftCardOpen(true)}
+            className="border border-manorGold text-manorGold px-3 py-2 text-[10px] lg:px-4 uppercase tracking-wider transition-all duration-300 hover:bg-manorGold hover:text-manorGreen hover:-translate-y-0.5 hover:shadow-lg"
+          >
+            Gift Card
+          </button>
+        </div>
 
-            {/* Note: I added z-50 here to ensure the dropdown doesn't hide behind page content! */}
-            <div className="absolute left-0 top-full mt-4 w-56 bg-[#2f3a33] text-white rounded-md shadow-xl
-                            opacity-0 invisible translate-y-3 z-50
-                            group-hover:opacity-100 group-hover:visible group-hover:translate-y-0
-                            transition-all duration-300">
+        {isGiftCardOpen && <GiftCard onClose={() => setIsGiftCardOpen(false)} />}
+      </header>
 
-              <div className="flex flex-col py-3 text-sm">
-                {[
-                  { name: "Sauna", path: "/spa/sauna" },
-                  { name: "Facial", path: "/spa/facial" },
-                  { name: "Private Exclusive Jacuzzi", path: "/spa/jacuzzi" },
-                  { name: "Hot Tub", path: "/spa/hottub" },
-                  { name: "Massage", path: "/spa/massage" },
-                ].map((item) => (
-                  <Link
-                    key={item.name}
-                    to={item.path}
-                    className="mx-3 my-1 px-4 py-2 text-sm font-light
-                               border border-transparent rounded-full
-                               hover:border-manorGold hover:text-manorGold
-                               transition-all duration-300"
+      {/* ===== MOBILE DROP-DOWN MENU (slides from below header) ===== */}
+      {isMobileMenuOpen && (
+        <div className="lg:hidden fixed top-24 left-0 right-0 bottom-0 z-[45] flex flex-col">
+          {/* Backdrop */}
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setIsMobileMenuOpen(false)} />
+          
+          {/* Dropdown Panel — slides from top */}
+          <div className="relative bg-[#1e2219] w-full shadow-2xl border-b border-white/10 animate-slideDown overflow-y-auto max-h-full" style={{borderTop: '2px solid rgba(212,197,161,0.3)'}}>
+
+            <nav className="px-4 pt-2 pb-4">
+              {NAV_ITEMS.map((cat) => (
+                <div key={cat.label} className="border-b border-white/5">
+                  <button
+                    onClick={() => setOpenDropdown(openDropdown === cat.label ? null : cat.label)}
+                    className="flex justify-between items-center w-full py-4 text-manorGold uppercase tracking-[2px] font-cinzel text-xs text-left"
                   >
-                    {item.name}
-                  </Link>
-                ))}
+                    {cat.label}
+                    <span className={`transition-transform ${openDropdown === cat.label ? 'rotate-180' : ''}`}>▾</span>
+                  </button>
+                  {openDropdown === cat.label && (
+                    <div className="pb-3 pl-3 space-y-1">
+                      {cat.links.map((item) => (
+                        <Link
+                          key={item.name}
+                          to={item.path}
+                          onClick={() => setIsMobileMenuOpen(false)}
+                          className="block py-2 px-4 text-xs text-white/70 hover:text-manorGold border-l border-white/10 hover:border-manorGold transition-all"
+                        >
+                          {item.name}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))}
+
+              <div className="pt-6 pb-4 space-y-3">
+                <button 
+                  onClick={() => { setIsGiftCardOpen(true); setIsMobileMenuOpen(false); }}
+                  className="w-full border border-manorGold text-manorGold py-3 text-[10px] uppercase tracking-wider hover:bg-manorGold hover:text-manorGreen transition-all"
+                >
+                  Gift Card
+                </button>
               </div>
-            </div>
+            </nav>
           </div>
-
-          {/* -------- INCLUSIVE RESORT DROPDOWN -------- */}
-          {/* -------- George -------- */}
-          <div className="relative group">
-            <button className="pb-2 text-manorGold uppercase tracking-[2px] font-cinzel text-sm">
-              Inclusive Resort
-            </button>
-
-            <div className="absolute right-0 top-full mt-4 w-56 bg-[#2f3a33] text-white rounded-md shadow-xl
-                            opacity-0 invisible translate-y-3
-                            group-hover:opacity-100 group-hover:visible group-hover:translate-y-0
-                            transition-all duration-300">
-
-              <div className="flex flex-col py-3 text-sm">
-                {[
-                  "Private Lodges",
-                  "Private Residences & Villas",
-                  "Ultimate Exclusivity",
-                ].map((item) => (
-                  <Link
-                    key={item}
-                    to="#"
-                    className="mx-3 my-1 px-4 py-2 text-sm font-light
-                               border border-transparent rounded-full
-                               hover:border-manorGold hover:text-manorGold
-                               transition-all duration-300"
-                  >
-                    {item}
-                  </Link>
-                ))}
-              </div>
-            </div>
-          </div>
-
-        </nav>
-      </div>
-
-      {/* ================= CENTER SECTION ================= */}
-      {/* Hotel logo */}
-      <div className="flex-1 flex justify-center">
-        <Link to="/">
-          <img
-            src={logo}
-            alt="The Atlantic Horizon Manor Logo"
-            className="h-32 w-auto transition-transform duration-300 hover:scale-105"
-          />
-        </Link>
-      </div>
-
-      {/* ================= RIGHT SECTION ================= */}
-      {/* Action buttons (booking + gift card) */}
-      <div className="flex gap-3 flex-1 justify-end">
-
-        {/* Gift Card navigation link */}
-        <button 
-          onClick={() => setIsGiftCardOpen(true)}
-          className="border border-manorGold text-manorGold px-4 py-2 text-xs uppercase tracking-wider hidden lg:inline-block transition-all duration-300 hover:bg-manorGold hover:text-manorGreen hover:-translate-y-0.5 hover:shadow-lg"
-        >
-          Gift Card
-        </button>
-
-        {/* Book To Dine button */}
-        <button className="border border-manorGold text-manorGold px-4 py-2 text-xs uppercase tracking-wider hidden lg:inline-block transition-all duration-300 hover:bg-manorGold hover:text-manorGreen hover:-translate-y-0.5 hover:shadow-lg">
-          My Booking Status
-        </button>
-
-        {/* Book To Stay button */}
-        <button className="bg-[#c5a898] text-white px-4 py-2 text-xs uppercase tracking-wider transition-all duration-300 hover:brightness-110 hover:-translate-y-0.5 hover:shadow-lg">
-          Inquiry
-        </button>
-
-        {/* 4. Render the modal if isGiftCardOpen is true */}
-        {isGiftCardOpen && (
-          <GiftCard onClose={() => setIsGiftCardOpen(false)} />
-        )}
-
-      </div>
-    </header>
+        </div>
+      )}
+    </>
   );
 }

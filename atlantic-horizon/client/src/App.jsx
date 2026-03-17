@@ -1,139 +1,148 @@
-import React, { useState } from 'react'; // Import React and the useState hook to manage application state
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'; // Import routing components
+import React, { useEffect } from 'react'; // 🌟 核心修正 1：记得 Import useEffect
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 
-// Import global layout components that appear on every page
+// Layout Components
 import Header from './components/Header';
 import Footer from './components/Footer';
-import CookieWindow from './components/CookieWindow';
-import PrivacyPolicyModal from './components/PrivacyPolicyModal'; 
-import CareersModal from './components/CareersModal'; 
-import ContactUsModal from './components/ContactUsModal'; 
-// 1. Import the new FAQs and Blog components
-import FaqsModal from './components/FaqsModal';
-import BlogModal from './components/BlogModal';
-import ParkingModal from './components/ParkingModal';
-import LocationModal from './components/LocationModal';
 
-//Import Lincoln's new pages
-
-
-
-
-
-// Import Derrick's new pages
-import Sauna from './pages/Derrick/Sauna';
-import Facial from './pages/Derrick/Facial';
-import Jacuzzi from './pages/Derrick/Jacuzzi';
-import Hottub from './pages/Derrick/Hottub'
-import Massage from './pages/Derrick/Massage';
-//Import George's new pages
-
-
-// Import individual page components
+// Guest Pages
 import Home from './pages/Home';
+import CalendarPage from './pages/calendarPage';
+import Login from './pages/login';
 
-export default function App() {
-  // State to manage the visibility of the modals
-  const [isCookieOpen, setIsCookieOpen] = useState(true); // Opens automatically on load
-  const [isPrivacyOpen, setIsPrivacyOpen] = useState(false);
-  const [isCareersOpen, setIsCareersOpen] = useState(false); 
-  const [isContactOpen, setIsContactOpen] = useState(false); 
-  // 2. Add state for the new modals
-  const [isFaqsOpen, setIsFaqsOpen] = useState(false);
-  const [isBlogOpen, setIsBlogOpen] = useState(false);
-  const [isParkingOpen, setIsParkingOpen] = useState(false);
-  const [isLocationOpen, setIsLocationOpen] = useState(false);
+// 🌟 Lincoln's Pages (Experience)
+import ContinentalBreakfast from './pages/Lincoln/continentalBreakfast';
+import HoneymoonPackage from './pages/Lincoln/honeymoonPackage';
+import LocalIrishExcursion from './pages/Lincoln/localIrishExcursion';
+import MichelineQualityFood from './pages/Lincoln/michelineQualityFood';
+import PrivateChauffer from './pages/Lincoln/privateChauffer';
+
+// 🌟 George's Pages (Resort)
+import PrivateLodges from './pages/George/privateLodges';
+import PrivateResidences from './pages/George/privateResidencesAndVillas';
+import UltimateExclusivity from './pages/George/ultimateExclusivity';
+
+// 🌟 Derrick's Pages (Wellness)
+import Sauna from './pages/Derrick/sauna';
+import Facial from './pages/Derrick/facial';
+import Masaage from './pages/Derrick/massage';
+import Hottub from './pages/Derrick/hottub';
+import Jacuzzi from './pages/Derrick/jacuzzi';
+
+
+// Staff/Admin Portal
+import StaffDashboard from './pages/staffDashboard';
+import Inventory from './pages/inventory';
+import AdminIAM from './pages/adminIAM';
+import AdminLogs from './pages/adminLogs';
+import RoomManagement from './pages/roomManagement';
+import BookingManagement from './pages/bookingManagement';
+import Transactions from './pages/transactions';
+import AdminCalendar from './pages/adminCalendar';
+import RoomCapacity from './pages/roomCapacity';
+import RoomService from './pages/roomService';
+
+import PaymentPage from './pages/PaymentPage';
+
+import ProtectedRoute from './components/ProtectedRoute';
+
+import SelfCheckIn from './pages/SelfCheckIn';
+import LuxuryLoader from './components/luxuryLoader';
+
+// 🌟 核心修正 2：自动回顶组件 (首字母一定要大写)
+const ScrollToTop = () => {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo(0, 0); // 每次换 URL，立刻回到最顶！
+  }, [pathname]);
+  return null;
+};
+
+// Layout Wrapper (包含转场特效)
+const LayoutWrapper = ({ children }) => {
+  const location = useLocation();
+  const [isTransitioning, setIsTransitioning] = React.useState(false);
+
+  React.useEffect(() => {
+    setIsTransitioning(true);
+    const timer = setTimeout(() => setIsTransitioning(false), 800);
+    return () => clearTimeout(timer);
+  }, [location.pathname]);
+
+  const isManagement = [
+    '/staffDashboard', '/adminIam', '/inventory', '/adminLogs', 
+    '/roomManagement', '/bookings', '/transactions', 
+    '/adminCalendar', '/roomCapacity', '/roomService'
+  ].some(p => location.pathname.startsWith(p));
+
+  if (isManagement) {
+    return (
+      <main className="min-h-screen bg-[#1a1d17]">
+        {isTransitioning && <LuxuryLoader message="Sanctifying Environment..." />}
+        {children}
+      </main>
+    );
+  }
 
   return (
-    // Router wraps the entire app to enable seamless navigation without reloading the browser
+    <div className="flex flex-col min-h-screen">
+      <Header /> 
+      <main className="flex-grow" key={location.pathname}>
+        {isTransitioning && <LuxuryLoader message="Loading Manor..." />}
+        {children}
+      </main>
+      <Footer />
+    </div>
+  );
+};
+
+export default function App() {
+  return (
     <Router>
-      
-      {/* Main application wrapper establishing a flexbox layout. */}
-      <div className="app-wrapper flex flex-col min-h-screen bg-manorDark">
-        
-        {/* Render the modal overlays */}
-        <CookieWindow 
-          isOpen={isCookieOpen} 
-          onClose={() => setIsCookieOpen(false)} 
-        />
+      {/* 🌟 核心修正 3：必须把 ScrollToTop 放在 Router 里面跑 */}
+      <ScrollToTop /> 
 
-        <PrivacyPolicyModal 
-          isOpen={isPrivacyOpen} 
-          onClose={() => setIsPrivacyOpen(false)} 
-        />
-
-        <CareersModal 
-          isOpen={isCareersOpen} 
-          onClose={() => setIsCareersOpen(false)} 
-        />
-
-        <ContactUsModal 
-          isOpen={isContactOpen} 
-          onClose={() => setIsContactOpen(false)} 
-        />
-
-        {/* 3. Render the new FAQs and Blog overlays */}
-        <FaqsModal 
-          isOpen={isFaqsOpen} 
-          onClose={() => setIsFaqsOpen(false)} 
-        />
-
-        <BlogModal 
-          isOpen={isBlogOpen} 
-          onClose={() => setIsBlogOpen(false)} 
-        />
-
-        <ParkingModal 
-          isOpen={isParkingOpen} 
-          onClose={() => setIsParkingOpen(false)} 
-        />
-        <LocationModal 
-          isOpen={isLocationOpen} 
-          onClose={() => setIsLocationOpen(false)} 
-        />
-        
-        {/* Global navigation header (Sticky top) */}
-        <Header />
-
-        {/* Middle section flex-grow to push footer down */}
-        <div className="flex-grow">
+      <LayoutWrapper>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/calendar" element={<CalendarPage />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/secure-payment" element={<PaymentPage />} />
+          <Route path="/check-in" element={<SelfCheckIn />} />
           
-          <Routes>
-            <Route path="/" element={<Home />} />
-            
-            {/* Future routes (pages) will be added here! */}
-            
-            {/*Lincoln:*/}
+          {/* Lincoln's Routes */}
+          <Route path="/continentalBreakfast" element={<ContinentalBreakfast />} />
+          <Route path="/honeymoonPackage" element={<HoneymoonPackage />} />
+          <Route path="/localIrishExcursion" element={<LocalIrishExcursion />} />
+          <Route path="/michelineQualityFood" element={<MichelineQualityFood />} />
+          <Route path="/privateChauffer" element={<PrivateChauffer />} />
 
-            {/*Derrick:*/}
-              <Route path="/spa/sauna" element={<Sauna />} />
-              <Route path="/spa/facial" element={<Facial />} />
-              <Route path="/spa/jacuzzi" element={<Jacuzzi />} />
-              <Route path="/spa/hottub" element={<Hottub />} />
-              <Route path="/spa/massage" element={<Massage />} />
+          {/* George's Routes */}
+          <Route path="/lodges" element={<PrivateLodges />} />
+          <Route path="/villas" element={<PrivateResidences />} />
+          <Route path="/exclusivity" element={<UltimateExclusivity />} />
 
-            {/*George:*/}
+          {/* Derrick's Routes */}
+          <Route path="/sauna" element={<Sauna />} />
+          <Route path="/facial" element={<Facial />} />
+          <Route path="/massage" element={<Masaage />} />
+          <Route path="/jacuzzi" element={<Jacuzzi />} />
+          <Route path="/hottub" element={<Hottub />} />
 
-          </Routes>
-          
-        </div>
+          {/* Management Portal */}
+          <Route path="/staffDashboard" element={<ProtectedRoute><StaffDashboard /></ProtectedRoute>} />
+          <Route path="/inventory" element={<ProtectedRoute><Inventory /></ProtectedRoute>} />
+          <Route path="/adminIam" element={<ProtectedRoute><AdminIAM /></ProtectedRoute>} />
+          <Route path="/adminLogs" element={<ProtectedRoute><AdminLogs /></ProtectedRoute>} />
+          <Route path="/roomManagement" element={<ProtectedRoute><RoomManagement /></ProtectedRoute>} />
+          <Route path="/bookings" element={<ProtectedRoute><BookingManagement /></ProtectedRoute>} />
+          <Route path="/transactions" element={<ProtectedRoute><Transactions /></ProtectedRoute>} />
+          <Route path="/adminCalendar" element={<ProtectedRoute><AdminCalendar /></ProtectedRoute>} />
+          <Route path="/roomCapacity" element={<ProtectedRoute><RoomCapacity /></ProtectedRoute>} />
+          <Route path="/roomService" element={<ProtectedRoute><RoomService /></ProtectedRoute>} />
 
-        {/* Global footer (Bottom).
-            We pass down all the 'onOpen' functions to trigger the modals from the footer links. */}
-        <Footer 
-          onOpenCookies={() => setIsCookieOpen(true)} 
-          onOpenPrivacy={() => setIsPrivacyOpen(true)} 
-          onOpenCareers={() => setIsCareersOpen(true)} 
-          onOpenContact={() => setIsContactOpen(true)} 
-          onOpenFaqs={() => setIsFaqsOpen(true)} 
-          onOpenBlog={() => setIsBlogOpen(true)} 
-          onOpenParking={() => setIsParkingOpen(true)}
-          onOpenLocation={() => setIsLocationOpen(true)}
-        />
-        
-      </div>
-
-      
+        </Routes>
+      </LayoutWrapper>
     </Router>
   );
 }
