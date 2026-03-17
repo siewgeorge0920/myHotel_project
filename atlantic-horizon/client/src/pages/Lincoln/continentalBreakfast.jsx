@@ -18,8 +18,8 @@ export default function ContinentalBreakfast() {
             <div className="h-[1px] w-12 md:w-24 bg-amber-800/40"></div>
           </div>
 
-          <h1 className="font-cinzel text-6xl md:text-8xl lg:text-[110px] tracking-tighter uppercase leading-[0.9] text-[#242820] mb-8 drop-shadow-sm">
-            Morning<br /><span className="italic font-georgia text-[#343a2f] pr-12">Awakening</span>
+          <h1 className="font-cinzel text-5xl md:text-8xl lg:text-[110px] tracking-tighter uppercase leading-[1.1] md:leading-[0.9] text-[#242820] mb-8 drop-shadow-sm">
+            Morning<br /><span className="italic font-georgia text-[#343a2f] md:pr-12">Awakening</span>
           </h1>
 
           <p className="text-base md:text-lg text-[#5a6254] max-w-2xl leading-loose font-light border-l border-amber-800/20 pl-6 text-left mx-auto">
@@ -39,7 +39,7 @@ export default function ContinentalBreakfast() {
             <p className="text-sm font-light uppercase tracking-[0.3em] text-[#5a6254] mt-8 md:mt-0">Complimentary for All Manor Guests</p>
           </div>
 
-          <div className="space-y-48">
+          <div className="space-y-32 md:space-y-48">
 
             {/* Item 1: Eggs Benedict */}
             <div className="flex flex-col lg:flex-row gap-16 lg:gap-32 items-center group">
@@ -49,14 +49,14 @@ export default function ContinentalBreakfast() {
                     <span>No. 01</span>
                     <div className="h-[1px] w-12 bg-amber-800/30"></div>
                   </div>
-                  <h3 className="font-cinzel text-5xl text-[#242820]">Truffle Eggs<br />Benedict</h3>
+                  <h3 className="font-cinzel text-4xl md:text-5xl text-[#242820]">Truffle Eggs<br />Benedict</h3>
                   <p className="text-base font-light leading-[2.2] text-[#5a6254]">
                     Two perfectly poached estate eggs resting on lightly toasted artisanal English muffins, generously draped in our signature rich Hollandaise sauce and delicately finished with shaved black summer truffles.
                   </p>
                 </div>
               </div>
               <div className="lg:w-1/2 order-1 lg:order-2">
-                <div className="relative overflow-hidden h-[500px] lg:h-[700px] w-full bg-[#f4f2eb] drop-shadow-2xl">
+                <div className="relative overflow-hidden h-80 md:h-[500px] lg:h-[700px] w-full bg-[#f4f2eb] drop-shadow-2xl">
                   <img src="/src/assets/images/Lincoln/Breakfast/eggs_benedict.jpg" alt="Eggs Benedict" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-[3000ms] ease-out brightness-[0.95]" />
                   <div className="absolute inset-x-8 bottom-8 h-[1px] bg-white/50"></div>
                   <div className="absolute inset-y-8 left-8 w-[1px] bg-white/50"></div>
@@ -67,7 +67,7 @@ export default function ContinentalBreakfast() {
             {/* Item 2: Charcuterie */}
             <div className="flex flex-col lg:flex-row gap-16 lg:gap-32 items-center group">
               <div className="lg:w-1/2">
-                <div className="relative overflow-hidden h-[500px] lg:h-[700px] w-full bg-[#f4f2eb] drop-shadow-2xl">
+                <div className="relative overflow-hidden h-80 md:h-[500px] lg:h-[700px] w-full bg-[#f4f2eb] drop-shadow-2xl">
                   <img src="/src/assets/images/Lincoln/Breakfast/Charcuterie.jpg" alt="Charcuterie Board" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-[3000ms] ease-out brightness-[0.95]" />
                   <div className="absolute inset-x-8 bottom-8 h-[1px] bg-white/50"></div>
                   <div className="absolute inset-y-8 right-8 w-[1px] bg-white/50"></div>
@@ -79,7 +79,7 @@ export default function ContinentalBreakfast() {
                     <span>No. 02</span>
                     <div className="h-[1px] w-12 bg-amber-800/30"></div>
                   </div>
-                  <h3 className="font-cinzel text-5xl text-[#242820]">Continental<br />Charcuterie</h3>
+                  <h3 className="font-cinzel text-4xl md:text-5xl text-[#242820]">Continental<br />Charcuterie</h3>
                   <p className="text-base font-light leading-[2.2] text-[#5a6254]">
                     An exquisite curation of rare European cured meats, imported triple-crème cheeses, fresh seasonal figs, and crystallized organic honey perfectly arranged for a decadent morning grazing experience.
                   </p>
@@ -95,14 +95,14 @@ export default function ContinentalBreakfast() {
                     <span>No. 03</span>
                     <div className="h-[1px] w-12 bg-amber-800/30"></div>
                   </div>
-                  <h3 className="font-cinzel text-5xl text-[#242820]">Barista<br />Signatures</h3>
+                  <h3 className="font-cinzel text-4xl md:text-5xl text-[#242820]">Barista<br />Signatures</h3>
                   <p className="text-base font-light leading-[2.2] text-[#5a6254]">
                     Wake up to perfection with our single-origin Ethiopian and Colombian roasts. Crafted by our master barista using artisanal blooming techniques and adorned with intricate latte art.
                   </p>
                 </div>
               </div>
               <div className="lg:w-1/2 order-1 lg:order-2">
-                <div className="relative overflow-hidden h-[500px] lg:h-[700px] w-full bg-[#f4f2eb] drop-shadow-2xl">
+                <div className="relative overflow-hidden h-80 md:h-[500px] lg:h-[700px] w-full bg-[#f4f2eb] drop-shadow-2xl">
                   <img src="/src/assets/images/Lincoln/Breakfast/barista_coffee.png" alt="Barista Coffee" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-[3000ms] ease-out brightness-[0.95]" />
                   <div className="absolute inset-x-8 top-8 h-[1px] bg-white/50"></div>
                   <div className="absolute inset-y-8 left-8 w-[1px] bg-white/50"></div>
@@ -113,7 +113,7 @@ export default function ContinentalBreakfast() {
             {/* Item 4: Wood Board */}
             <div className="flex flex-col lg:flex-row gap-16 lg:gap-32 items-center group">
               <div className="lg:w-1/2">
-                <div className="relative overflow-hidden h-[500px] lg:h-[700px] w-full bg-[#f4f2eb] drop-shadow-2xl">
+                <div className="relative overflow-hidden h-80 md:h-[500px] lg:h-[700px] w-full bg-[#f4f2eb] drop-shadow-2xl">
                   <img src="/src/assets/images/Lincoln/Breakfast/20210716-americaniconswoodbackgroundsquare1WEBSIZE_580x_1.jpg" alt="American Icons" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-[3000ms] ease-out brightness-[0.95]" />
                   <div className="absolute inset-x-8 top-8 h-[1px] bg-white/50"></div>
                   <div className="absolute inset-y-8 right-8 w-[1px] bg-white/50"></div>
@@ -125,7 +125,7 @@ export default function ContinentalBreakfast() {
                     <span>No. 04</span>
                     <div className="h-[1px] w-12 bg-amber-800/30"></div>
                   </div>
-                  <h3 className="font-cinzel text-5xl text-[#242820]">The Manor's<br />Harvest</h3>
+                  <h3 className="font-cinzel text-4xl md:text-5xl text-[#242820]">The Manor's<br />Harvest</h3>
                   <p className="text-base font-light leading-[2.2] text-[#5a6254]">
                     A robust offering showcasing the absolute best of local produce. Featuring thick-cut bacon, roasted heirloom tomatoes, and freshly baked rustic breads presented beautifully on charred oak boards.
                   </p>

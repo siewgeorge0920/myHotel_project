@@ -15,12 +15,12 @@ export default function MichelineQualityFood() {
             <div className="h-[1px] w-12 bg-amber-500"></div>
             <span className="text-amber-500 uppercase tracking-[0.5em] text-xs font-black">The Gastronomy Collection</span>
           </div>
-          <h1 className="font-cinzel text-7xl md:text-9xl tracking-tighter uppercase leading-[0.9] text-transparent bg-clip-text bg-gradient-to-br from-white via-white/80 to-amber-500/50 drop-shadow-2xl">Michelin<br />Excellence</h1>
+          <h1 className="font-cinzel text-5xl md:text-7xl lg:text-9xl tracking-tighter uppercase leading-[1.1] md:leading-[0.9] text-transparent bg-clip-text bg-gradient-to-br from-white via-white/80 to-amber-500/50 drop-shadow-2xl">Michelin<br />Excellence</h1>
         </div>
       </section>
 
       {/* SECTION 2: THE CELESTIAL TABLE */}
-      <div className="max-w-7xl mx-auto px-6 py-40">
+      <div className="max-w-7xl mx-auto px-6 py-24 md:py-40">
         {/* SECTION 2: THE CELESTIAL TABLE (Editorial Layout) */}
         <div className="flex flex-col lg:flex-row gap-20 relative mb-48">
           <div className="absolute top-1/2 left-0 w-96 h-96 bg-amber-900/10 rounded-full blur-[150px] pointer-events-none mix-blend-screen"></div>
@@ -32,7 +32,7 @@ export default function MichelineQualityFood() {
               <div className="h-[1px] w-24 bg-amber-500/30"></div>
             </div>
 
-            <h2 className="font-cinzel text-5xl md:text-7xl text-white/95 leading-[1.1] tracking-wide">The<br /><span className="text-amber-500 italic font-georgia text-4xl md:text-6xl pl-12 -mt-4 block drop-shadow-xl">Celestial Table</span></h2>
+            <h2 className="font-cinzel text-4xl md:text-5xl lg:text-7xl text-white/95 leading-[1.1] tracking-wide">The<br /><span className="text-amber-500 italic font-georgia text-3xl md:text-4xl lg:text-6xl pl-12 -mt-4 block drop-shadow-xl">Celestial Table</span></h2>
 
             <p className="font-georgia italic text-xl text-white/70 leading-[2] pl-6 border-l pointer-events-none border-amber-500/30">
               "A symphony of Atlantic flavors, where every dish tells the story of the turbulent yet bountiful Irish coastline."
@@ -54,7 +54,7 @@ export default function MichelineQualityFood() {
           <div className="lg:w-7/12 relative group p-1">
             <div className="absolute inset-0 bg-amber-500/5 blur-2xl group-hover:bg-amber-500/15 transition-all duration-1000"></div>
             <div className="relative overflow-hidden group border border-white/5">
-              <img src="/src/assets/images/diningHall.jpg" className="w-full h-[750px] object-cover filter brightness-[0.85] contrast-[1.1] group-hover:brightness-100 group-hover:scale-105 transition-all duration-[2000ms] ease-out" alt="Dining Experience" />
+              <img src="/src/assets/images/diningHall.jpg" className="w-full h-80 md:h-[750px] object-cover filter brightness-[0.85] contrast-[1.1] group-hover:brightness-100 group-hover:scale-105 transition-all duration-[2000ms] ease-out" alt="Dining Experience" />
               <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-all duration-1000"></div>
             </div>
             {/* Decorative floating elements */}
@@ -64,8 +64,8 @@ export default function MichelineQualityFood() {
         </div>
 
         {/* SECTION 3: CONTINENTAL BREAKFAST (Menu Layout) */}
-        <div className="mt-64 flex justify-center w-full mb-32">
-          <div className="relative w-full max-w-5xl bg-[#1e221a] p-16 md:p-24 shadow-2xl overflow-hidden group">
+        <div className="mt-32 md:mt-64 flex justify-center w-full mb-32">
+          <div className="relative w-full max-w-5xl bg-[#1e221a] p-8 md:p-16 lg:p-24 shadow-2xl overflow-hidden group">
             {/* Elegant borders */}
             <div className="absolute inset-4 border border-x-[0.5px] border-y-[0.5px] border-amber-500/20 pointer-events-none transition-all duration-1000 group-hover:border-amber-500/40"></div>
             <div className="absolute inset-6 border-[0.5px] border-amber-500/10 pointer-events-none"></div>
@@ -75,7 +75,7 @@ export default function MichelineQualityFood() {
             <div className="relative z-10 flex flex-col items-center text-center">
               <img src="/src/assets/images/food.jpg" alt="Breakfast" className="w-24 h-24 rounded-full object-cover mb-12 border border-amber-500/30 grayscale hover:grayscale-0 transition-all duration-1000 shadow-[0_0_30px_rgba(217,119,6,0.1)]" />
 
-              <h3 className="font-cinzel text-5xl md:text-6xl mb-6 text-white/95 leading-tight tracking-wider">Mornings at<br /><span className="italic text-amber-500 font-georgia text-4xl block mt-2">The Manor</span></h3>
+              <h3 className="font-cinzel text-4xl md:text-5xl lg:text-6xl mb-6 text-white/95 leading-tight tracking-wider">Mornings at<br /><span className="italic text-amber-500 font-georgia text-3xl md:text-4xl block mt-2">The Manor</span></h3>
 
               <div className="flex items-center gap-4 mb-10 w-full justify-center opacity-70">
                 <div className="h-[1px] w-12 bg-amber-500 flex-shrink-0"></div>
@@ -113,7 +113,7 @@ export default function MichelineQualityFood() {
         </div>
 
         {/* SECTION 4: GALLERY (Cinematic Asymmetry) */}
-        <div className="mt-48 relative pb-32">
+        <div className="mt-32 md:mt-48 relative pb-32">
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-[600px] bg-amber-900/10 rounded-full blur-[200px] pointer-events-none mix-blend-screen opacity-70"></div>
 
           <div className="flex flex-col md:flex-row justify-between items-end mb-24 relative z-10">
@@ -122,7 +122,7 @@ export default function MichelineQualityFood() {
                 <span className="text-amber-500 uppercase tracking-[0.4em] text-[10px] font-bold">The Visual Palate</span>
                 <div className="h-[1px] w-24 bg-amber-500/30"></div>
               </div>
-              <h2 className="font-cinzel text-5xl md:text-7xl text-white/95 leading-[1.1] tracking-wide">Culinary<br /><span className="text-amber-500 italic font-georgia whitespace-nowrap md:text-6xl pl-12 -mt-2 block drop-shadow-lg">Masterpieces</span></h2>
+              <h2 className="font-cinzel text-4xl md:text-5xl lg:text-7xl text-white/95 leading-[1.1] tracking-wide">Culinary<br /><span className="text-amber-500 italic font-georgia whitespace-normal md:whitespace-nowrap md:text-6xl lg:pl-12 -mt-2 block drop-shadow-lg">Masterpieces</span></h2>
             </div>
             <p className="text-sm opacity-60 font-light max-w-sm leading-[2.2] md:text-right hidden md:block mt-8 md:mt-0 md:-translate-x-[200px]">
               A curated visual journey through our gastronomy, where Michelin-grade precision meets high art on every plate.
@@ -132,8 +132,7 @@ export default function MichelineQualityFood() {
           {/* Asymmetrical Masonry Grid */}
           <div className="grid grid-cols-1 md:grid-cols-12 gap-6 relative z-10 w-full mx-auto">
 
-            {/* Large Feature Image (Spans 8 cols) */}
-            <div className="md:col-span-8 relative group overflow-hidden h-[500px] md:h-[650px] bg-[#1a1d17] cursor-pointer">
+            <div className="md:col-span-8 relative group overflow-hidden h-80 md:h-[650px] bg-[#1a1d17] cursor-pointer">
               <img src="/src/assets/images/Lincoln/Michelin/Salmon.jpg" alt="Atlantic Harvest" className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-[3000ms] brightness-[0.85] group-hover:brightness-100 ease-out" />
               <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-700"></div>
               <div className="absolute bottom-0 left-0 p-8 md:p-12 translate-y-8 group-hover:translate-y-0 transition-transform duration-700 ease-out">
@@ -143,8 +142,7 @@ export default function MichelineQualityFood() {
               <div className="absolute inset-x-8 md:inset-x-12 bottom-0 h-[1px] bg-gradient-to-r from-amber-500/50 to-transparent scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-[1000ms] delay-300"></div>
             </div>
 
-            {/* Tall Portrait Image (Spans 4 cols) */}
-            <div className="md:col-span-4 relative group overflow-hidden h-[500px] md:h-[650px] bg-[#1a1d17] cursor-pointer">
+            <div className="md:col-span-4 relative group overflow-hidden h-80 md:h-[650px] bg-[#1a1d17] cursor-pointer">
               <img src="/src/assets/images/Lincoln/Michelin/Steak.webp" alt="Estate Garden" className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-[3000ms] brightness-[0.85] group-hover:brightness-100 ease-out" />
               <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-700"></div>
               <div className="absolute bottom-0 left-0 p-8 md:p-12 translate-y-8 group-hover:translate-y-0 transition-transform duration-700 ease-out">
@@ -154,8 +152,7 @@ export default function MichelineQualityFood() {
               <div className="absolute inset-x-8 md:inset-x-12 bottom-0 h-[1px] bg-gradient-to-r from-amber-500/50 to-transparent scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-[1000ms] delay-300"></div>
             </div>
 
-            {/* Square Image (Spans 4 cols) */}
-            <div className="md:col-span-4 relative group overflow-hidden h-[500px] bg-[#1a1d17] cursor-pointer md:mt-8 z-20 shadow-2xl">
+            <div className="md:col-span-4 relative group overflow-hidden h-80 md:h-[500px] bg-[#1a1d17] cursor-pointer md:mt-8 z-20 shadow-2xl">
               <img src="/src/assets/images/Lincoln/Michelin/Wagyu.webp" alt="Signature wagyu" className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-[3000ms] brightness-[0.85] group-hover:brightness-100 ease-out" />
               <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-700"></div>
               <div className="absolute bottom-0 left-0 p-8 md:p-10 translate-y-8 group-hover:translate-y-0 transition-transform duration-700 ease-out">
@@ -165,8 +162,7 @@ export default function MichelineQualityFood() {
               <div className="absolute inset-x-8 md:inset-x-10 bottom-0 h-[1px] bg-gradient-to-r from-amber-500/50 to-transparent scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-[1000ms] delay-300"></div>
             </div>
 
-            {/* Wide Landscape Image (Spans 8 cols) */}
-            <div className="md:col-span-8 relative group overflow-hidden h-[500px] bg-[#1a1d17] cursor-pointer md:mt-8">
+            <div className="md:col-span-8 relative group overflow-hidden h-64 md:h-[500px] bg-[#1a1d17] cursor-pointer md:mt-8">
               <img src="/src/assets/images/Lincoln/Michelin/Dessert.webp" alt="Sweet Finale" className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-[3000ms] brightness-[0.85] group-hover:brightness-100 ease-out" />
               <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-700"></div>
               <div className="absolute bottom-0 left-0 p-8 md:p-12 translate-y-8 group-hover:translate-y-0 transition-transform duration-700 ease-out">

@@ -19,7 +19,7 @@ export default function HoneymoonPackage() {
              <div className="h-[1px] w-12 bg-amber-500/50"></div>
            </div>
            
-           <h1 className="font-cinzel text-5xl md:text-7xl lg:text-8xl tracking-widest uppercase leading-[1.1] text-white/95 mb-6 drop-shadow-xl">
+           <h1 className="font-cinzel text-4xl md:text-5xl lg:text-8xl tracking-widest uppercase leading-[1.1] text-white/95 mb-6 drop-shadow-xl">
              Eternal<br/><span className="text-amber-500 italic font-georgia drop-shadow-2xl">Romance</span>
            </h1>
            
@@ -36,10 +36,10 @@ export default function HoneymoonPackage() {
       </section>
 
       {/* ✨ THE INCLUSIONS - EDITORIAL GRID */}
-      <section className="py-32 px-6 md:px-16 lg:px-24 max-w-[1400px] mx-auto relative bg-[#111310] border-t border-white/5">
+      <section className="py-24 md:py-32 px-6 md:px-16 lg:px-24 max-w-[1400px] mx-auto relative bg-[#111310] border-t border-white/5">
          
          <div className="text-center mb-20 max-w-2xl mx-auto">
-            <h2 className="font-cinzel text-4xl md:text-5xl text-white/90 mb-6 tracking-widest uppercase">The Inclusion List</h2>
+            <h2 className="font-cinzel text-3xl md:text-4xl lg:text-5xl text-white/90 mb-6 tracking-widest uppercase">The Inclusion List</h2>
             <p className="text-sm text-white/50 leading-loose font-light">
                Our dedicated Estate Romance Concierge ensures every moment of your stay is choreographed to perfection. Below are the signature experiences included in our comprehensive Honeymoon Package.
             </p>
@@ -64,7 +64,7 @@ export default function HoneymoonPackage() {
             </div>
 
             {/* ITEM 2: Private Yacht Sunset */}
-            <div className="col-span-1 lg:col-span-5 group lg:mt-32">
+            <div className="col-span-1 lg:col-span-5 group mt-8 lg:mt-32">
                <div className="relative aspect-[3/4] overflow-hidden shadow-2xl mb-6 border border-white/5">
                   <div className="absolute inset-0 bg-black/40 group-hover:bg-transparent transition-all duration-700 z-10"></div>
                   <img src="/src/assets/images/Lincoln/Honeymoon/sunset_yatch.png" className="w-full h-full object-cover transition-transform duration-[3000ms] ease-out group-hover:scale-105" alt="Sunset Yacht Charter" />
@@ -79,7 +79,7 @@ export default function HoneymoonPackage() {
             </div>
 
             {/* ITEM 3: Couple's Spa Session by Derrick's Team */}
-            <div className="col-span-1 lg:col-span-6 group">
+            <div className="col-span-1 lg:col-span-6 group mt-8 lg:mt-0">
                <div className="relative aspect-video overflow-hidden shadow-2xl mb-6 border border-white/5">
                   <div className="absolute inset-0 bg-black/40 group-hover:bg-transparent transition-all duration-700 z-10"></div>
                   <img src="/src/assets/images/Lincoln/Honeymoon/massage.jpg" className="w-full h-full object-cover transition-transform duration-[3000ms] ease-out group-hover:scale-105" alt="Couples Massage" />
@@ -94,7 +94,7 @@ export default function HoneymoonPackage() {
             </div>
 
             {/* ITEM 4: Spa Robes & Turndown */}
-            <div className="col-span-1 lg:col-span-6 group lg:mt-24">
+            <div className="col-span-1 lg:col-span-6 group mt-8 lg:mt-24">
                <div className="relative aspect-video overflow-hidden shadow-2xl mb-6 border border-white/5">
                   <div className="absolute inset-0 bg-black/40 group-hover:bg-transparent transition-all duration-700 z-10"></div>
                   <img src="/src/assets/images/Lincoln/Honeymoon/spa_robe.jpg" className="w-full h-full object-cover transition-transform duration-[3000ms] ease-out group-hover:scale-105" alt="Spa Robes" />
@@ -118,7 +118,7 @@ export default function HoneymoonPackage() {
             {/* Texture Overlay */}
             <div className="absolute inset-0 opacity-10 mix-blend-overlay pointer-events-none" style={{ backgroundImage: 'url("https://www.transparenttextures.com/patterns/stardust.png")' }}></div>
 
-            <div className="relative h-[400px] lg:h-full w-full">
+            <div className="relative aspect-video lg:aspect-auto lg:h-full w-full">
                <img src="/src/assets/images/Lincoln/Honeymoon/movie.png" className="absolute inset-0 w-full h-full object-cover opacity-80" alt="Private Cinema Screening" />
                <div className="absolute inset-0 bg-gradient-to-r from-transparent to-[#0a0c09] hidden lg:block"></div>
                <div className="absolute inset-0 bg-gradient-to-t from-[#0a0c09] to-transparent lg:hidden"></div>
@@ -130,7 +130,7 @@ export default function HoneymoonPackage() {
                   <div className="h-[1px] w-12 bg-amber-500/30"></div>
                </div>
                
-               <h3 className="font-cinzel text-3xl mb-4 text-white/90">Twilight Cinema <span className="italic font-georgia text-amber-500">Screening</span></h3>
+               <h3 className="font-cinzel text-2xl md:text-3xl mb-4 text-white/90">Twilight Cinema <span className="italic font-georgia text-amber-500 block md:inline mt-2 md:mt-0">Screening</span></h3>
                
                <p className="text-white/50 text-sm leading-loose font-light mb-8">
                   Conclude an unforgettable evening with a private cinematic experience. Whether in our velvet-lined screening room or beneath the stars in the walled garden, enjoy your favorite romantic classic accompanied by vintage popcorn and tailored cocktails.

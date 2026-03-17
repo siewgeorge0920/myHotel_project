@@ -13,14 +13,14 @@ export default function LocalIrishExcursion() {
          <div className="max-w-7xl mx-auto">
             <div className="text-center mb-24">
                <span style={{ color: COLORS.amber }} className="uppercase tracking-[0.6em] text-[11px] font-black block mb-4">Lincoln's Curated Travels</span>
-               <h1 className="font-cinzel text-5xl md:text-7xl text-manorGreen uppercase tracking-widest">Bespoke Expeditions</h1>
+               <h1 className="font-cinzel text-4xl md:text-5xl lg:text-7xl text-manorGreen uppercase tracking-widest leading-tight">Bespoke Expeditions</h1>
             </div>
 
             {/* EXCURSION GRID */}
             <div className="grid md:grid-cols-3 gap-12 mb-40">
                {journeys.map((j, i) => (
                   <div key={i} className="group cursor-pointer">
-                     <div className="h-[500px] overflow-hidden mb-8 relative drop-shadow-2xl">
+                     <div className="h-[400px] md:h-[500px] overflow-hidden mb-8 relative drop-shadow-2xl">
                         <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-all duration-700 z-10"></div>
                         <img
                            src={`/src/assets/images/Lincoln/Local/${j.img}`}
@@ -40,13 +40,13 @@ export default function LocalIrishExcursion() {
                <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-amber-900/10 rounded-full blur-[100px] pointer-events-none"></div>
 
                <div className="grid lg:grid-cols-2">
-                  <div className="p-16 md:p-24 flex flex-col justify-center relative z-10">
+                  <div className="p-10 md:p-16 lg:p-24 flex flex-col justify-center relative z-10">
                      <div className="flex items-center gap-4 text-amber-500 font-bold tracking-[0.3em] text-[10px] uppercase mb-8">
                         <span>The Estate Wardrobe</span>
                         <div className="h-[1px] w-12 bg-amber-500/30"></div>
                      </div>
 
-                     <h3 className="font-cinzel text-4xl md:text-5xl leading-tight mb-8">
+                     <h3 className="font-cinzel text-3xl md:text-4xl lg:text-5xl leading-tight mb-8">
                         Prepared for the <span className="italic font-georgia text-amber-500 px-2 block mt-2">Elements</span>
                      </h3>
 

@@ -20,7 +20,7 @@ export default function PrivateChauffer() {
               <span className="text-amber-500 uppercase tracking-[0.5em] text-[10px] md:text-xs font-black drop-shadow-lg">The Estate Motorcade</span>
             </div>
 
-            <h1 className="font-cinzel text-5xl md:text-7xl lg:text-8xl tracking-widest uppercase leading-[1.1] text-white/95 mb-8">
+            <h1 className="font-cinzel text-4xl md:text-5xl lg:text-7xl tracking-widest uppercase leading-[1.1] md:leading-[1.1] text-white/95 mb-8">
               Private<br /><span className="text-amber-500 italic font-georgia block mt-2 ml-12 drop-shadow-2xl">Chauffeur</span>
             </h1>
 
@@ -38,7 +38,7 @@ export default function PrivateChauffer() {
       </section>
 
       {/* 🚗 THE FLEET: VINTAGE & MODERN (Rolls Royce & Services) */}
-      <section className="py-32 px-6 md:px-16 lg:px-24 border-t border-white/5 relative bg-[#111310]">
+      <section className="py-24 md:py-32 px-6 md:px-16 lg:px-24 border-t border-white/5 relative bg-[#111310]">
         {/* Ambient Glow */}
         <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-amber-900/10 rounded-full blur-[150px] pointer-events-none"></div>
 
@@ -52,7 +52,7 @@ export default function PrivateChauffer() {
                 <div className="h-[1px] w-12 bg-amber-500/30"></div>
               </div>
 
-              <h2 className="font-cinzel text-4xl md:text-5xl leading-tight text-white/90">
+              <h2 className="font-cinzel text-3xl md:text-4xl lg:text-5xl leading-tight text-white/90">
                 Heritage & <span className="italic font-georgia text-amber-500 block">Modern Luxury</span>
               </h2>
 
@@ -69,7 +69,7 @@ export default function PrivateChauffer() {
 
             {/* Right Images */}
             <div className="lg:col-span-7 relative space-y-12 pb-12">
-              <div className="relative aspect-video w-full overflow-hidden shadow-2xl md:ml-12 border border-white/5">
+              <div className="relative aspect-video w-full overflow-hidden shadow-2xl lg:ml-12 border border-white/5">
                 <img src="/src/assets/images/Lincoln/Chauffeur/RollsRoyce.avif" className="w-full h-full object-cover transition-all duration-1000 scale-105 hover:scale-100" alt="Rolls Royce" />
               </div>
               <div className="relative aspect-video w-[85%] overflow-hidden shadow-2xl border border-white/5">
@@ -82,16 +82,16 @@ export default function PrivateChauffer() {
       </section>
 
       {/* 🚁 AVIATION & ARRIVALS (Helicopter & Greetings) */}
-      <section className="py-32 px-6 md:px-16 lg:px-24 bg-[#0a0c09] relative border-t border-white/5">
+      <section className="py-24 md:py-32 px-6 md:px-16 lg:px-24 bg-[#0a0c09] relative border-t border-white/5">
         <div className="max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-12 gap-16 lg:gap-24 items-center">
 
             {/* Left Images */}
             <div className="lg:col-span-7 order-2 lg:order-1 relative space-y-12">
-              <div className="relative aspect-video w-[85%] overflow-hidden shadow-2xl relative left-[15%] border border-white/5">
+              <div className="relative aspect-video w-[85%] lg:w-[75%] overflow-hidden shadow-2xl relative left-[15%] lg:left-[25%] border border-white/5">
                 <img src="/src/assets/images/Lincoln/Chauffeur/lobby.jpg" className="w-full h-full object-cover transition-all duration-1000 scale-105 hover:scale-100" alt="Chauffeur Greetings" />
               </div>
-              <div className="relative aspect-video w-full overflow-hidden shadow-2xl border border-white/5 md:-ml-6">
+              <div className="relative aspect-video w-full lg:w-[90%] overflow-hidden shadow-2xl border border-white/5 lg:-ml-6 -mt-12 lg:-mt-24 z-10">
                 <img src="/src/assets/images/Lincoln/Chauffeur/helicoptor.png" className="w-full h-full object-cover transition-all duration-1000 scale-105 hover:scale-100" alt="Private Helicopter Transfer" />
               </div>
             </div>
@@ -103,7 +103,7 @@ export default function PrivateChauffer() {
                 <div className="h-[1px] w-12 bg-amber-500/30"></div>
               </div>
 
-              <h2 className="font-cinzel text-4xl md:text-5xl leading-tight text-white/90">
+              <h2 className="font-cinzel text-3xl md:text-4xl lg:text-5xl leading-tight text-white/90">
                 Aviation & <span className="italic font-georgia text-amber-500 block">Airfield Transfers</span>
               </h2>
 
