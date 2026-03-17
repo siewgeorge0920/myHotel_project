@@ -46,7 +46,6 @@ app.post('/api/login', async (req, res) => {
     res.status(500).json({ message: 'Server Error', error: error.message });
   }
 });
-const PORT = process.env.PORT || 5000;
 
 // ==========================================
 // ROOMS — CRUD
