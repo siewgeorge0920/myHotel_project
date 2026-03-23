@@ -110,11 +110,11 @@ export default function ContinentalBreakfast() {
               </div>
             </div>
 
-            {/* Item 4: Wood Board */}
+            {/* Item 4: Cheese Board */}
             <div className="flex flex-col lg:flex-row gap-16 lg:gap-32 items-center group">
               <div className="lg:w-1/2">
                 <div className="relative overflow-hidden h-80 md:h-[500px] lg:h-[700px] w-full bg-[#f4f2eb] drop-shadow-2xl">
-                  <img src="/src/assets/images/Lincoln/Breakfast/20210716-americaniconswoodbackgroundsquare1WEBSIZE_580x_1.jpg" alt="American Icons" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-[3000ms] ease-out brightness-[0.95]" />
+                  <img src="/src/assets/images/Lincoln/Breakfast/20210716-americaniconswoodbackgroundsquare1WEBSIZE_580x_1.jpg" alt="Artisan Cheese Board" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-[3000ms] ease-out brightness-[0.95]" />
                   <div className="absolute inset-x-8 top-8 h-[1px] bg-white/50"></div>
                   <div className="absolute inset-y-8 right-8 w-[1px] bg-white/50"></div>
                 </div>
@@ -125,9 +125,9 @@ export default function ContinentalBreakfast() {
                     <span>No. 04</span>
                     <div className="h-[1px] w-12 bg-amber-800/30"></div>
                   </div>
-                  <h3 className="font-cinzel text-4xl md:text-5xl text-[#242820]">The Manor's<br />Harvest</h3>
+                  <h3 className="font-cinzel text-4xl md:text-5xl text-[#242820]">Artisan<br />Cheese Board</h3>
                   <p className="text-base font-light leading-[2.2] text-[#5a6254]">
-                    A robust offering showcasing the absolute best of local produce. Featuring thick-cut bacon, roasted heirloom tomatoes, and freshly baked rustic breads presented beautifully on charred oak boards.
+                    A curated selection of the finest aged cheeses, accompanied by fresh honeycomb, orchard fruits, and crisp artisan crackers beautifully presented on charred oak boards.
                   </p>
                   <div className="pt-8">
                     <button className="relative overflow-hidden group/btn border border-amber-900/30 px-12 py-4 text-[#343a2f] text-xs uppercase font-black tracking-[0.2em] transition-all hover:border-amber-900">

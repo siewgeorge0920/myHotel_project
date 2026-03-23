@@ -167,7 +167,7 @@ export default function MichelineQualityFood() {
               <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-700"></div>
               <div className="absolute bottom-0 left-0 p-8 md:p-12 translate-y-8 group-hover:translate-y-0 transition-transform duration-700 ease-out">
                 <p className="text-amber-500 text-[10px] uppercase tracking-[0.4em] font-bold mb-3 opacity-0 group-hover:opacity-100 transition-opacity duration-700 delay-100">Sweet Finale</p>
-                <h4 className="font-cinzel text-3xl md:text-4xl text-white opacity-0 group-hover:opacity-100 transition-opacity duration-700 delay-200">Dark Chocolate Sphere</h4>
+                <h4 className="font-cinzel text-3xl md:text-4xl text-white opacity-0 group-hover:opacity-100 transition-opacity duration-700 delay-200">White Chocolate Moelluex</h4>
               </div>
               <div className="absolute inset-x-8 md:inset-x-12 bottom-0 h-[1px] bg-gradient-to-r from-amber-500/50 to-transparent scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-[1000ms] delay-300"></div>
             </div>
