@@ -128,6 +128,9 @@ export default function CalendarPage() {
     setIsSubmitting(true);
     
     try {
+      const deptMap = { lodge: 'Private Lodge', residence: 'Private Residence', ultimate: 'Ultimate Exclusivity' };
+      const realDepartment = deptMap[category] || category;
+
       // Step 1: Create the Booking record in our DB (status = Pending)
       const bookingRes = await fetch('http://localhost:5000/api/bookings/create', {
         method: 'POST',
@@ -135,6 +138,7 @@ export default function CalendarPage() {
         body: JSON.stringify({
           checkIn,
           checkOut,
+          department: realDepartment,
           roomName: selectedItem.name,
           guestEmail: guestInfo.email,
           guestFirstName: guestInfo.firstName,

@@ -21,14 +21,35 @@ export default function AdminIAM() {
   const [isEdit, setIsEdit] = useState(false);
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState(null);
+  const [settings, setSettings] = useState({});
 
   const fetchStaff = () => {
     fetch('http://localhost:5000/api/staff')
       .then(r => r.json())
       .then(setStaffList);
   };
+  
+  const fetchSettings = () => {
+    fetch('http://localhost:5000/api/settings')
+      .then(r => r.json())
+      .then(setSettings);
+  };
 
-  useEffect(() => { fetchStaff(); }, []);
+  useEffect(() => { fetchStaff(); fetchSettings(); }, []);
+  
+  const updateSetting = async (key, value) => {
+    setSettings(prev => ({ ...prev, [key]: value }));
+    try {
+      await fetch('http://localhost:5000/api/settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ [key]: value })
+      });
+      flash(`✅ Updated ${key}`);
+    } catch {
+      flash(`❌ Failed to update ${key}`, true);
+    }
+  };
 
   const flash = (text, isErr = false) => {
     setMsg({ text, isErr });
@@ -216,7 +237,7 @@ export default function AdminIAM() {
                     <td className="p-5 text-right space-x-4">
                       <button onClick={() => { setIsEdit(true); setForm({ _id: s._id, name: s.name, password: '', role: s.role || 'staff', status: s.status || 'Active' }); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
                         className="text-[10px] uppercase font-black tracking-widest text-amber-500 hover:text-amber-300">Edit</button>
-                      <button onClick={() => handleDelete(s._id, s.name)}
+                      <button onClick={() => requestDelete(s._id, s.name)}
                         className="text-[10px] uppercase font-black tracking-widest text-red-500/50 hover:text-red-400">Delete</button>
                     </td>
                   </tr>
@@ -225,6 +246,30 @@ export default function AdminIAM() {
             </table>
           </div>
         </div>
+
+        {/* Global Settings Block */}
+        <div className="mt-10 p-8 border" style={{ backgroundColor: COLORS.bgSurface, borderColor: COLORS.amber }}>
+          <h2 className="text-lg font-serif italic mb-6">⚙️ Global Hotel Settings</h2>
+          <div className="flex flex-col md:flex-row gap-10">
+            <div className="flex-1">
+              <label className="block text-[10px] uppercase tracking-widest text-amber-500 font-bold mb-1">Standard Check-In Time</label>
+              <input type="time" value={settings.defaultCheckInTime || "14:00"}
+                onChange={e => updateSetting('defaultCheckInTime', e.target.value)}
+                className="w-full bg-white/5 border p-3 text-sm outline-none focus:border-amber-500 transition-colors"
+                style={{ borderColor: COLORS.border }} />
+              <p className="text-[10px] text-white/30 mt-2">New bookings will use this by default, but staff can override it.</p>
+            </div>
+            <div className="flex-1">
+              <label className="block text-[10px] uppercase tracking-widest text-amber-500 font-bold mb-1">Standard Check-Out Time</label>
+              <input type="time" value={settings.defaultCheckOutTime || "12:00"}
+                onChange={e => updateSetting('defaultCheckOutTime', e.target.value)}
+                className="w-full bg-white/5 border p-3 text-sm outline-none focus:border-amber-500 transition-colors"
+                style={{ borderColor: COLORS.border }} />
+              <p className="text-[10px] text-white/30 mt-2">Automated system prompt will flag any active guest past this time.</p>
+            </div>
+          </div>
+        </div>
+
       </main>
 
       <CustomModal 

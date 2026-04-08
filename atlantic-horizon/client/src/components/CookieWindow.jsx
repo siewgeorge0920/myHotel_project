@@ -22,9 +22,19 @@ const CookieWindow = ({ isOpen, onClose }) => {
   };
 
   // Handler for the form submission when the user clicks "Save Preferences"
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault(); // Prevents the default browser behavior of refreshing the page
-    console.log("Cookies saved: ", acceptCookies ? "Accepted All" : "Declined Non-Essential");
+    const consentType = acceptCookies ? "Accepted All" : "Declined Non-Essential";
+    
+    try {
+      await fetch('http://localhost:5000/api/cookies', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ consentType })
+      });
+    } catch (err) {
+      console.warn("Could not save cookie consent to database.");
+    }
     
     // Call the onClose function passed from App.jsx to hide the modal
     onClose(); 

@@ -36,11 +36,12 @@ import Inventory from './pages/inventory';
 import AdminIAM from './pages/adminIAM';
 import AdminLogs from './pages/adminLogs';
 import RoomManagement from './pages/roomManagement';
+import RoomPackage from './pages/roomPackage';
 import BookingManagement from './pages/bookingManagement';
 import Transactions from './pages/transactions';
 import AdminCalendar from './pages/adminCalendar';
-import RoomCapacity from './pages/roomCapacity';
 import RoomService from './pages/roomService';
+import PhysicalRoomManager from './pages/physicalRoomManager';
 
 import PaymentPage from './pages/PaymentPage';
 
@@ -70,10 +71,10 @@ const LayoutWrapper = ({ children }) => {
   }, [location.pathname]);
 
   const isManagement = [
-    '/staffDashboard', '/adminIam', '/inventory', '/adminLogs', 
-    '/roomManagement', '/bookings', '/transactions', 
-    '/adminCalendar', '/roomCapacity', '/roomService'
-  ].some(p => location.pathname.startsWith(p));
+    '/staffdashboard', '/adminiam', '/inventory', '/adminlogs', 
+    '/roommanagement', '/roompackage', '/physicalrooms', '/bookings', '/transactions', 
+    '/admincalendar', '/roomservice'
+  ].some(p => location.pathname.toLowerCase().startsWith(p));
 
   if (isManagement) {
     return (
@@ -135,11 +136,12 @@ export default function App() {
           <Route path="/adminIam" element={<ProtectedRoute><AdminIAM /></ProtectedRoute>} />
           <Route path="/adminLogs" element={<ProtectedRoute><AdminLogs /></ProtectedRoute>} />
           <Route path="/roomManagement" element={<ProtectedRoute><RoomManagement /></ProtectedRoute>} />
+          <Route path="/roomPackage" element={<ProtectedRoute><RoomPackage /></ProtectedRoute>} />
           <Route path="/bookings" element={<ProtectedRoute><BookingManagement /></ProtectedRoute>} />
           <Route path="/transactions" element={<ProtectedRoute><Transactions /></ProtectedRoute>} />
           <Route path="/adminCalendar" element={<ProtectedRoute><AdminCalendar /></ProtectedRoute>} />
-          <Route path="/roomCapacity" element={<ProtectedRoute><RoomCapacity /></ProtectedRoute>} />
           <Route path="/roomService" element={<ProtectedRoute><RoomService /></ProtectedRoute>} />
+          <Route path="/physicalRooms" element={<ProtectedRoute><PhysicalRoomManager /></ProtectedRoute>} />
 
         </Routes>
       </LayoutWrapper>

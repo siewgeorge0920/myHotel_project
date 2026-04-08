@@ -1,17 +1,73 @@
-import mongoose from 'mongoose';  // ✅ 换成 import
+import mongoose from 'mongoose';
 
 const roomSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  pricePerNight: { type: Number, required: true },
-  description: { type: String, required: true },
-  category: {
+  description: {
+    default: "Luxury package details pending.",
     type: String,
-    enum: ['Resort', 'Private Lodge', 'Villa'],
-    default: 'Resort'
   },
-  capacity: { type: Number, default: 1 }, 
-  imageUrl: { type: String, default: 'https://via.placeholder.com/400' },
-  isAvailable: { type: Boolean, default: true }
-}, { timestamps: true });
+
+  // 🏢 INTERNAL STAFF TRACKING ONLY
+  unitNumbers: [{
+    type: String 
+  }],
+
+  // 1. The Foundation (Department)
+  department: {
+    type: String,
+    required: true,
+    enum: ['Private Lodge', 'Private Residences & Villas', 'Ultimate Exclusivity']
+  },
+  
+  // 2. The Identity
+  name: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  bedType: {
+    type: String,
+    required: true,
+    enum: ['Single', 'Twin', 'Double', 'Queen', 'King', 'Residence Bed']
+  },
+  layout: {
+    type: String,
+    required: true,
+    enum: ['Studio-style', 'Linked House', 'Standalone Villa', 'Water Villa']
+  },
+
+  // 3. The "Wow" Factor (Tags & Services)
+  services: [{
+    type: String 
+  }],
+
+  // 4. Inventory & Pricing
+  pricePerNight: {
+    type: Number,
+    required: true,
+    min: 0
+  },
+  inventoryQuantity: {
+    type: Number,
+    required: true,
+    min: 1,
+    default: 1 
+  },
+  maxGuests: {
+    type: Number,
+    required: true,
+    min: 1 
+  },
+
+  // 5. Appearance & Status
+  images: [{
+    type: String 
+  }],
+  isAvailable: {
+    type: Boolean,
+    default: true
+  }
+}, { 
+  timestamps: true 
+});
 
 export default mongoose.model('Room', roomSchema);

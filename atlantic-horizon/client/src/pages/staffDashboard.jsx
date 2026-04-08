@@ -142,10 +142,10 @@ export default function StaffDashboard() {
         {/* === STAFF CARDS (Basic) === */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="p-10 border" style={{ backgroundColor: COLORS.bgSurface, borderColor: COLORS.border }}>
-            <h3 className="text-xl font-serif mb-4 italic">Quick Inventory Check</h3>
-            <p className="text-gray-400 text-sm mb-8 leading-relaxed">Manage your room allocations and availability for the manor's guests.</p>
-            <a href="/inventory" className="inline-block py-3 px-8 text-[10px] uppercase font-black tracking-widest border border-amber-500 text-amber-500 hover:bg-amber-500 hover:text-white transition-all">
-              Manage Rooms
+            <h3 className="text-xl font-serif mb-4 italic">Booking Management</h3>
+            <p className="text-gray-400 text-sm mb-8 leading-relaxed">Manage guest reservations, check-ins, and booking status across all wings.</p>
+            <a href="/bookings" className="inline-block py-3 px-8 text-[10px] uppercase font-black tracking-widest border border-amber-500 text-amber-500 hover:bg-amber-500 hover:text-white transition-all">
+              Manage Bookings
             </a>
           </div>
 

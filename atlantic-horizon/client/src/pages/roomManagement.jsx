@@ -3,213 +3,183 @@ import ManagementSidebar from '../components/managementSidebar';
 import { COLORS } from '../colors';
 import CustomModal from '../components/CustomModal';
 
-const EMPTY_ROOM = { name: '', pricePerNight: '', category: 'Resort', description: '', imageUrl: '', isAvailable: true };
+const DEPARTMENTS = ['Private Lodge', 'Private Residences & Villas', 'Ultimate Exclusivity'];
+
+const STATUS_COLORS = {
+  Confirmed: 'text-green-400 border-green-500/40',
+  Cancelled: 'text-red-400 border-red-500/40',
+  CheckedIn: 'text-amber-400 border-amber-500/40',
+  CheckedOut: 'text-blue-400 border-blue-500/40',
+  Pending: 'text-white/40 border-white/20',
+};
 
 export default function RoomManagement() {
   const user = JSON.parse(localStorage.getItem('user'));
   const isManagerMode = localStorage.getItem('managerMode') === 'true';
-  const [rooms, setRooms] = useState([]);
-  const [form, setForm] = useState(EMPTY_ROOM);
-  const [editId, setEditId] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [msg, setMsg] = useState(null);
 
-  const fetchRooms = async () => {
-    const res = await fetch('http://localhost:5000/api/rooms');
-    const data = await res.json();
-    setRooms(data);
-  };
+  const [department, setDepartment] = useState(DEPARTMENTS[0]);
+  const [bookings, setBookings] = useState([]);
+  const [physicalRooms, setPhysicalRooms] = useState([]);
+  const [loading, setLoading] = useState(true);
+  
+  const [checkInModal, setCheckInModal] = useState(null);
+  const [assignedUnit, setAssignedUnit] = useState('');
 
-  useEffect(() => { fetchRooms(); }, []);
-
-  const flash = (text, isErr = false) => {
-    setMsg({ text, isErr });
-    setTimeout(() => setMsg(null), 3000);
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const fetchData = async () => {
     setLoading(true);
-    const url = editId ? `http://localhost:5000/api/rooms/${editId}` : 'http://localhost:5000/api/rooms';
-    const method = editId ? 'PUT' : 'POST';
     try {
-      const res = await fetch(url, {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...form, pricePerNight: Number(form.pricePerNight) })
-      });
-      if (!res.ok) throw new Error('Failed');
-      flash(editId ? '✅ Room updated' : '✅ Room created');
-      setForm(EMPTY_ROOM);
-      setEditId(null);
-      fetchRooms();
-    } catch {
-      flash('❌ Error occurred', true);
-    } finally {
-      setLoading(false);
-    }
+      const [resB, resP] = await Promise.all([
+        fetch('http://localhost:5000/api/bookings'),
+        fetch('http://localhost:5000/api/physical-rooms')
+      ]);
+      setBookings(await resB.json());
+      setPhysicalRooms(await resP.json());
+    } catch { } finally { setLoading(false); }
   };
 
-  const handleEdit = (room) => {
-    setForm({ name: room.name, pricePerNight: room.pricePerNight, category: room.category, description: room.description, imageUrl: room.imageUrl || '', isAvailable: room.isAvailable });
-    setEditId(room._id);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  useEffect(() => { fetchData(); }, []);
+
+  const updateStatus = async (id, status) => {
+    await fetch(`http://localhost:5000/api/bookings/${id}/status`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status })
+    });
+    fetchData();
+  };
+  
+  const handleCheckIn = async () => {
+    if(!assignedUnit) return alert('Physical unit number required.');
+    await fetch(`http://localhost:5000/api/bookings/${checkInModal._id}/status`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status: 'CheckedIn', assignedUnit })
+    });
+    setCheckInModal(null);
+    setAssignedUnit('');
+    fetchData();
   };
 
-  const [deleteModal, setDeleteModal] = useState({ isOpen: false, id: null, name: null });
-
-  const requestDelete = (id, name) => {
-    setDeleteModal({ isOpen: true, id, name });
-  };
-
-  const confirmDelete = async () => {
-    const { id } = deleteModal;
-    setDeleteModal({ isOpen: false, id: null, name: null });
-    await fetch(`http://localhost:5000/api/rooms/${id}`, { method: 'DELETE' });
-    flash('🗑️ Room deleted');
-    fetchRooms();
-  };
-
-  const CATEGORIES = ['Resort', 'Private Lodge', 'Villa'];
-  const FIELDS = [
-    { key: 'name', label: 'Room Name', type: 'text', placeholder: 'e.g. Cliffside Ocean Suite', required: true },
-    { key: 'pricePerNight', label: 'Price / Night (€)', type: 'number', placeholder: '450', required: true },
-    { key: 'imageUrl', label: 'Image URL', type: 'text', placeholder: 'https://...' },
-    { key: 'description', label: 'Description', type: 'textarea', placeholder: 'Brief description...' },
-  ];
+  const deptBookings = bookings.filter(b => b.department === department && b.bookingStatus !== 'Cancelled' && b.bookingStatus !== 'CheckedOut');
+  const deptRooms = physicalRooms.filter(r => r.department === department);
 
   return (
     <div className="flex min-h-screen text-white font-sans" style={{ backgroundColor: COLORS.bgDeep }}>
       <ManagementSidebar user={user} isManagerMode={isManagerMode} />
       <main className="flex-1 p-8 lg:p-16 overflow-y-auto">
         <header className="mb-10 border-b pb-8" style={{ borderColor: COLORS.border }}>
-          <p className="text-amber-500 uppercase tracking-[0.4em] text-[10px] font-black mb-2">Admin Control</p>
-          <h1 className="text-4xl font-serif italic">Room Management</h1>
-          <p className="text-white/30 text-sm mt-1">{rooms.length} rooms in database</p>
+          <p className="text-amber-500 uppercase tracking-[0.4em] text-[10px] font-black mb-2">Staff Operation</p>
+          <h1 className="text-4xl font-serif italic">Front Desk Ops Dashboard</h1>
+          <p className="text-white/40 text-xs mt-2 uppercase tracking-widest">Unified booking and physical room command center.</p>
         </header>
 
-        {msg && (
-          <div className={`mb-6 px-6 py-4 text-sm font-bold uppercase tracking-widest border ${msg.isErr ? 'border-red-500/40 bg-red-500/10 text-red-400' : 'border-amber-500/40 bg-amber-500/10 text-amber-400'}`}>
-            {msg.text}
-          </div>
-        )}
+        <div className="mb-8 flex gap-4 overflow-x-auto pb-2">
+          {DEPARTMENTS.map(dep => (
+             <button key={dep} onClick={() => setDepartment(dep)}
+               className={`whitespace-nowrap py-3 px-6 text-[10px] font-black uppercase tracking-[0.2em] transition-all border ${department === dep ? 'bg-amber-600 border-amber-500 text-white shadow-lg' : 'bg-white/5 border-white/10 text-white/50 hover:bg-white/10 hover:border-white/20'}`}>
+               {dep}
+             </button>
+          ))}
+        </div>
 
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-10">
-          {/* Form */}
-          <div className="p-8 border" style={{ backgroundColor: COLORS.bgSurface, borderColor: editId ? COLORS.amber : COLORS.border }}>
-            <h2 className="text-lg font-serif italic mb-6">{editId ? '✏️ Editing Room' : '+ Create New Room'}</h2>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              {FIELDS.map(f => (
-                <div key={f.key}>
-                  <label className="block text-[10px] uppercase tracking-widest text-amber-500 font-bold mb-1">{f.label}</label>
-                  {f.type === 'textarea' ? (
-                    <textarea
-                      value={form[f.key]}
-                      onChange={e => setForm({ ...form, [f.key]: e.target.value })}
-                      placeholder={f.placeholder}
-                      rows={3}
-                      className="w-full bg-white/5 border p-3 text-sm outline-none focus:border-amber-500 transition-colors resize-none"
-                      style={{ borderColor: COLORS.border }}
-                    />
-                  ) : (
-                    <input
-                      type={f.type}
-                      value={form[f.key]}
-                      onChange={e => setForm({ ...form, [f.key]: e.target.value })}
-                      placeholder={f.placeholder}
-                      required={f.required}
-                      className="w-full bg-white/5 border p-3 text-sm outline-none focus:border-amber-500 transition-colors"
-                      style={{ borderColor: COLORS.border }}
-                    />
-                  )}
-                </div>
-              ))}
-
-              <div>
-                <label className="block text-[10px] uppercase tracking-widest text-amber-500 font-bold mb-1">Category</label>
-                <select value={form.category} onChange={e => setForm({ ...form, category: e.target.value })}
-                  className="w-full bg-white/5 border p-3 text-sm outline-none focus:border-amber-500 transition-colors"
-                  style={{ borderColor: COLORS.border }}>
-                  {CATEGORIES.map(c => <option key={c} value={c} className="bg-[#242820]">{c}</option>)}
-                </select>
-              </div>
-
-              <div className="flex items-center gap-3">
-                <label className="text-[10px] uppercase tracking-widest text-amber-500 font-bold">Available</label>
-                <button type="button" onClick={() => setForm({ ...form, isAvailable: !form.isAvailable })}
-                  className={`relative w-12 h-6 rounded-full transition-colors ${form.isAvailable ? 'bg-amber-600' : 'bg-white/20'}`}>
-                  <span className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all ${form.isAvailable ? 'left-7' : 'left-1'}`} />
-                </button>
-                <span className="text-xs text-white/50">{form.isAvailable ? 'Yes' : 'No'}</span>
-              </div>
-
-              <div className="flex gap-3 pt-2">
-                <button type="submit" disabled={loading} style={{ backgroundColor: COLORS.amber }}
-                  className="flex-1 py-3 uppercase text-[10px] font-black tracking-widest hover:brightness-110 disabled:opacity-50">
-                  {loading ? 'Saving...' : (editId ? 'Save Changes' : 'Create Room')}
-                </button>
-                {editId && (
-                  <button type="button" onClick={() => { setForm(EMPTY_ROOM); setEditId(null); }}
-                    className="px-4 border border-white/20 text-[10px] uppercase font-black hover:bg-white/5">
-                    Cancel
-                  </button>
-                )}
-              </div>
-            </form>
-          </div>
-
-          {/* Rooms Grid */}
-          <div className="xl:col-span-2 space-y-4">
-            {rooms.length === 0 ? (
-              <div className="p-12 border border-dashed text-center text-white/20 uppercase tracking-widest text-xs" style={{ borderColor: COLORS.border }}>
-                No rooms yet. Create your first room →
-              </div>
-            ) : (
-              rooms.map(room => (
-                <div key={room._id} className="flex gap-4 p-5 border hover:border-white/20 transition-all" style={{ backgroundColor: COLORS.bgSurface, borderColor: COLORS.border }}>
-                  {room.imageUrl && (
-                    <img src={room.imageUrl} alt={room.name} className="w-24 h-20 object-cover flex-shrink-0"
-                      onError={e => { e.target.style.display = 'none'; }} />
-                  )}
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-start justify-between gap-4">
+        {loading ? <p className="animate-pulse text-white/30 text-xs tracking-widest uppercase">Syncing operations...</p> : (
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-12">
+            
+            {/* Grid 1: Bookings */}
+            <div>
+              <h2 className="text-2xl font-serif text-amber-500 mb-6 border-b pb-2 inline-block" style={{ borderColor: COLORS.border }}>Upcoming & Active Guests</h2>
+              <div className="space-y-4">
+                {deptBookings.length === 0 && <p className="text-xs text-white/40 italic p-6 border border-dashed text-center" style={{ borderColor: COLORS.border }}>No active guests for this department.</p>}
+                {deptBookings.map(b => (
+                  <div key={b._id} className="p-5 border flex flex-col justify-between" style={{ backgroundColor: COLORS.bgSurface, borderColor: COLORS.border }}>
+                    <div className="flex justify-between items-start mb-4">
                       <div>
-                        <h3 className="font-serif text-lg">{room.name}</h3>
-                        <p className="text-[10px] uppercase tracking-widest text-amber-500 mt-0.5">{room.category}</p>
+                        <h4 className="text-lg font-serif">
+                           {b.clientId ? `${b.clientId.firstName} ${b.clientId.lastName}` : b.guestFirstName ? `${b.guestFirstName} ${b.guestLastName}` : 'Unknown Guest'}
+                        </h4>
+                        <p className="text-[10px] uppercase font-bold tracking-widest text-amber-500 mt-1">{b.roomName}</p>
+                        <p className="text-[10px] uppercase tracking-widest text-white/40 mt-1">In: {new Date(b.checkInDate).toLocaleDateString()} | Out: {new Date(b.checkOutDate).toLocaleDateString()}</p>
                       </div>
-                      <div className="text-right flex-shrink-0">
-                        <p className="text-2xl font-serif italic text-amber-400">€{room.pricePerNight}</p>
-                        <p className="text-[9px] text-white/30 uppercase">/night</p>
+                      <div className="text-right">
+                        <span className={`text-[9px] uppercase font-black px-2 py-1 tracking-widest border ${STATUS_COLORS[b.bookingStatus]}`}>{b.bookingStatus}</span>
+                        {b.assignedUnit && <p className="text-[10px] mt-2 font-mono bg-white/10 px-2 py-1 border border-white/20 text-center">{b.assignedUnit}</p>}
                       </div>
                     </div>
-                    {room.description && <p className="text-xs text-white/40 mt-2 truncate">{room.description}</p>}
-                    <div className="flex items-center justify-between mt-3">
-                      <span className={`text-[9px] uppercase tracking-widest font-black px-2 py-1 border ${room.isAvailable ? 'border-green-500/40 text-green-400' : 'border-red-500/40 text-red-400'}`}>
-                        {room.isAvailable ? '✓ Available' : '✗ Unavailable'}
-                      </span>
-                      <div className="flex gap-4">
-                        <button onClick={() => handleEdit(room)} className="text-[10px] uppercase font-black tracking-widest text-amber-500 hover:text-amber-300">Edit</button>
-                        <button onClick={() => requestDelete(room._id, room.name)} className="text-[10px] uppercase font-black tracking-widest text-red-500/60 hover:text-red-400">Delete</button>
-                      </div>
+
+                    <div className="flex gap-2 mt-auto border-t pt-4" style={{ borderColor: COLORS.border }}>
+                      {b.bookingStatus === 'Confirmed' && (
+                        <button onClick={() => setCheckInModal(b)} className="px-3 py-1.5 text-[9px] uppercase font-black bg-amber-600 hover:bg-amber-500 transition-colors">Check-In</button>
+                      )}
+                      {b.bookingStatus === 'CheckedIn' && (
+                        <button onClick={() => updateStatus(b._id, 'CheckedOut')} className="px-3 py-1.5 text-[9px] uppercase font-black border border-white/20 hover:bg-white/10 transition-colors">Check-Out</button>
+                      )}
                     </div>
                   </div>
-                </div>
-              ))
-            )}
+                ))}
+              </div>
+            </div>
+
+            {/* Grid 2: Physical Rooms */}
+            <div>
+              <h2 className="text-2xl font-serif text-amber-500 mb-6 border-b pb-2 inline-block" style={{ borderColor: COLORS.border }}>Physical Unit Radar</h2>
+              <div className="grid grid-cols-2 gap-4">
+                {deptRooms.length === 0 && <p className="text-xs text-white/40 italic p-6 border border-dashed text-center col-span-2" style={{ borderColor: COLORS.border }}>No physical units registered.</p>}
+                {deptRooms.map(r => {
+                  let statusColor = 'text-white/40';
+                  if(r.cleaningStatus === 'Clean') statusColor = 'text-green-400 border-green-500/30';
+                  if(r.cleaningStatus === 'Dirty') statusColor = 'text-red-400 border-red-500/30';
+                  if(r.cleaningStatus === 'In Service') statusColor = 'text-blue-400 border-blue-500/30';
+                  if(r.cleaningStatus === 'Maintenance') statusColor = 'text-amber-400 border-amber-500/30';
+                  
+                  const occupier = bookings.find(b => b.assignedUnit === r.roomName && b.bookingStatus === 'CheckedIn');
+
+                  return (
+                    <div key={r._id} className="p-4 border" style={{ backgroundColor: COLORS.bgSurface, borderColor: COLORS.border }}>
+                      <div className="flex justify-between items-start mb-2">
+                        <h4 className="text-sm font-serif font-bold text-white">{r.roomName}</h4>
+                        {occupier && <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" title="Occupied"></span>}
+                      </div>
+                      <p className="text-[9px] text-white/40 uppercase tracking-widest truncate">{r.roomType}</p>
+                      <div className="mt-4 flex justify-between items-center">
+                        <span className={`text-[8px] uppercase font-black px-1.5 py-0.5 tracking-widest border ${statusColor}`}>{r.cleaningStatus}</span>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+            
+          </div>
+        )}
+      </main>
+
+      {/* Check In Modal */}
+      {checkInModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
+          <div className="w-full max-w-sm p-8 border" style={{ backgroundColor: COLORS.bgSurface, borderColor: COLORS.amber }}>
+            <h3 className="font-serif text-xl italic mb-4">Assign Unit & Check In</h3>
+            <p className="text-white/60 text-xs tracking-widest uppercase mb-4 border border-white/10 p-2 text-center bg-white/5">
+              <span className="text-[9px] block text-amber-500 mb-1">Department & Room Type</span>
+              {checkInModal.department || 'Unknown'} <br/> {checkInModal.roomName}
+            </p>
+            <div className="mb-4">
+              <label className="block text-[10px] uppercase tracking-widest text-amber-500 font-bold mb-1">Select Room Name (Unit No.)</label>
+              <select value={assignedUnit} onChange={e => setAssignedUnit(e.target.value)}
+                className="w-full bg-white/5 border px-3 py-2 text-sm outline-none focus:border-amber-500 uppercase"
+                style={{ borderColor: COLORS.border }}>
+                <option value="">-- Select specific unit --</option>
+                {deptRooms.filter(r => r.roomType === checkInModal.roomName).map(u => (
+                  <option key={u.roomName} value={u.roomName}>{u.roomName} ({u.cleaningStatus})</option>
+                ))}
+              </select>
+            </div>
+            <div className="flex gap-2">
+              <button onClick={handleCheckIn} className="flex-1 bg-amber-600 font-black text-[10px] uppercase py-3 hover:bg-amber-500">Confirm</button>
+              <button onClick={() => setCheckInModal(null)} className="flex-1 border border-white/20 font-black text-[10px] uppercase py-3 hover:bg-white/5">Cancel</button>
+            </div>
           </div>
         </div>
-      </main>
-      
-      <CustomModal 
-        isOpen={deleteModal.isOpen}
-        title="Delete Room"
-        message={`Are you sure you want to permanently delete "${deleteModal.name}"? This cannot be undone.`}
-        isAlert={true}
-        onConfirm={confirmDelete}
-        onCancel={() => setDeleteModal({ isOpen: false, id: null, name: null })}
-        confirmText="Yes, Delete Room"
-        cancelText="Cancel"
-      />
+      )}
     </div>
   );
 }

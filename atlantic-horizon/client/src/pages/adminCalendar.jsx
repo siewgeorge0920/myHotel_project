@@ -7,12 +7,17 @@ export default function AdminCalendar() {
   const isManagerMode = localStorage.getItem('managerMode') === 'true';
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [physicalRooms, setPhysicalRooms] = useState([]);
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/bookings')
-      .then(res => res.json())
-      .then(data => {
-        setBookings(data);
+    Promise.all([
+      fetch('http://localhost:5000/api/bookings'),
+      fetch('http://localhost:5000/api/physical-rooms')
+    ])
+      .then(([resB, resP]) => Promise.all([resB.json(), resP.json()]))
+      .then(([dataB, dataP]) => {
+        setBookings(dataB);
+        setPhysicalRooms(dataP);
         setLoading(false);
       });
   }, []);
@@ -52,13 +57,17 @@ export default function AdminCalendar() {
                   </div>
                 ))}
               </div>
-              {/* Body rows */}
-              {['The Sovereign Mansion', 'Atlantic Private Estate', 'Deluxe Lodge (Double)', 'Superior Lodge (King)', 'Club Villa (VIP Access)'].map(dept => (
-                <div key={dept} className="flex border-b hover:bg-white/[0.02]" style={{ borderColor: COLORS.border }}>
-                   <div className="w-48 p-4 text-[11px] font-serif border-r text-white/80" style={{ borderColor: COLORS.border }}>{dept}</div>
+              {/* Body rows (Physical Units) */}
+              {physicalRooms.map(unit => (
+                <div key={unit._id} className="flex border-b hover:bg-white/[0.02]" style={{ borderColor: COLORS.border }}>
+                   <div className="w-48 p-4 border-r" style={{ borderColor: COLORS.border }}>
+                     <p className="font-serif text-[13px] text-amber-500 font-bold">{unit.roomName}</p>
+                     <p className="text-[10px] uppercase text-white/50 tracking-widest">{unit.department} - {unit.roomType}</p>
+                   </div>
                    {days.map((d, i) => {
                       const dayBookings = bookings.filter(b => {
-                        if (b.roomName !== dept) return false;
+                        // In calendar, we check if the physical room is already assigned
+                        if (b.assignedUnit !== unit.roomName) return false;
                         const start = new Date(b.checkInDate).setHours(0,0,0,0);
                         const end = new Date(b.checkOutDate).setHours(0,0,0,0);
                         return d.getTime() >= start && d.getTime() < end; 
@@ -84,6 +93,12 @@ export default function AdminCalendar() {
                    })}
                 </div>
               ))}
+              
+              {physicalRooms.length === 0 && (
+                <div className="p-8 text-center text-xs uppercase tracking-widest text-white/30 border-b" style={{ borderColor: COLORS.border }}>
+                  No Physical Units Registered Yet. Please register units under Admin Control.
+                </div>
+              )}
             </div>
           </div>
         )}

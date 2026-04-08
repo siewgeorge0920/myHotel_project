@@ -9,7 +9,7 @@ export default function RoomService() {
   const [loading, setLoading] = useState(true);
 
   const fetchServices = () => {
-    fetch('http://localhost:5000/api/room-services')
+    fetch('http://localhost:5000/api/physical-rooms')
       .then(res => res.json())
       .then(data => {
         setServices(data);
@@ -23,10 +23,10 @@ export default function RoomService() {
 
   const updateCleaningStatus = async (id, status) => {
     try {
-      await fetch(`http://localhost:5000/api/room-services/${id}`, {
+      await fetch(`http://localhost:5000/api/physical-rooms/${id}/status`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ cleaningStatus: status, managedBy: user?.name })
+        body: JSON.stringify({ status })
       });
       fetchServices();
     } catch (e) {
@@ -34,23 +34,7 @@ export default function RoomService() {
     }
   };
 
-  const createTracking = async (e) => {
-    e.preventDefault();
-    const fd = new FormData(e.target);
-    try {
-      await fetch('http://localhost:5000/api/room-services', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          roomName: fd.get('department'),
-          roomNumber: fd.get('roomNumber'),
-          cleaningStatus: 'Dirty'
-        })
-      });
-      e.target.reset();
-      fetchServices();
-    } catch (e) {}
-  };
+  const departments = Array.from(new Set(services.map(s => s.department)));
 
   return (
     <div className="flex min-h-screen text-white font-sans" style={{ backgroundColor: COLORS.bgDeep }}>
@@ -59,63 +43,63 @@ export default function RoomService() {
         <header className="mb-10 border-b pb-8 flex flex-col sm:flex-row sm:items-end justify-between" style={{ borderColor: COLORS.border }}>
           <div>
             <p className="text-amber-500 uppercase tracking-[0.4em] text-[10px] font-black mb-2">Staff Operation</p>
-            <h1 className="text-4xl font-serif italic">Housekeeping &amp; Services</h1>
+            <h1 className="text-4xl font-serif italic">Housekeeping Dashboard</h1>
+            <p className="text-white/40 text-xs mt-2 uppercase tracking-widest">Live unit cleaning status and maintenance.</p>
           </div>
         </header>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Create form */}
-          <div className="p-6 border h-fit" style={{ backgroundColor: COLORS.bgSurface, borderColor: COLORS.border }}>
-            <h3 className="font-serif text-xl text-amber-500 mb-6">Register Room</h3>
-            <form onSubmit={createTracking} className="space-y-4">
-              <div>
-                <label className="block text-[10px] uppercase tracking-widest text-white/50 mb-2">Department</label>
-                <select name="department" className="w-full bg-white/5 border border-white/10 p-3 text-sm focus:border-amber-500 outline-none">
-                  <option value="Superior Lodge">Superior Lodge</option>
-                  <option value="Premium Residence">Premium Residence</option>
-                  <option value="Ultimate Estate">Ultimate Estate</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-[10px] uppercase tracking-widest text-white/50 mb-2">Room Identifier (e.g. 101, A)</label>
-                <input name="roomNumber" required className="w-full bg-white/5 border border-white/10 p-3 text-sm focus:border-amber-500 outline-none" />
-              </div>
-              <button className="w-full bg-white/10 hover:bg-white/20 text-[10px] uppercase tracking-widest font-black py-3 border border-white/20 transition-all">
-                Add Room Tracking
-              </button>
-            </form>
-          </div>
+        {loading ? <p className="animate-pulse text-white/30 text-xs tracking-widest uppercase">Loading units...</p> : (
+          <div className="space-y-12">
+            {departments.map(dept => (
+               <div key={dept}>
+                 <h2 className="text-xl font-serif text-amber-500 mb-6 border-b pb-2 inline-block" style={{ borderColor: COLORS.border }}>{dept}</h2>
+                 <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
+                   {services.filter(s => s.department === dept).map(srv => {
+                     let statusColor = 'text-white/40';
+                     if(srv.cleaningStatus === 'Clean') statusColor = 'text-green-400 bg-green-400/10 border-green-400/30';
+                     if(srv.cleaningStatus === 'Dirty') statusColor = 'text-red-400 bg-red-400/10 border-red-400/30';
+                     if(srv.cleaningStatus === 'In Service') statusColor = 'text-blue-400 bg-blue-400/10 border-blue-400/30';
+                     if(srv.cleaningStatus === 'Maintenance') statusColor = 'text-amber-400 bg-amber-400/10 border-amber-400/30';
 
-          {/* Service List */}
-          <div className="lg:col-span-2 space-y-4">
-            {loading ? <p className="animate-pulse text-white/30 text-xs">Loading rooms...</p> : services.map(srv => (
-              <div key={srv._id} className="p-5 border flex items-center justify-between" style={{ backgroundColor: COLORS.bgSurface, borderColor: COLORS.border }}>
-                <div>
-                  <h4 className="text-lg font-serif">Room: {srv.roomNumber} <span className="text-xs text-white/40 ml-2 font-sans">({srv.roomName})</span></h4>
-                  <div className="mt-2 flex items-center gap-3">
-                    <span className={`text-[9px] uppercase font-black px-2 py-1 tracking-widest border border-current ${
-                      srv.cleaningStatus === 'Clean' ? 'text-green-400' : srv.cleaningStatus === 'Dirty' ? 'text-red-400' : 'text-blue-400'
-                    }`}>
-                      {srv.cleaningStatus}
-                    </span>
-                  </div>
-                </div>
+                     return (
+                       <div key={srv._id} className="p-5 border flex flex-col justify-between h-40" style={{ backgroundColor: COLORS.bgSurface, borderColor: COLORS.border }}>
+                         <div className="flex justify-between items-start">
+                           <div>
+                             <h4 className="text-2xl font-serif">{srv.roomName}</h4>
+                             <p className="text-[10px] text-white/40 uppercase tracking-widest font-black mt-1">{srv.roomType}</p>
+                           </div>
+                           <span className={`text-[9px] uppercase font-black px-2 py-1 tracking-widest border ${statusColor}`}>
+                             {srv.cleaningStatus}
+                           </span>
+                         </div>
 
-                <div className="flex gap-2">
-                  {srv.cleaningStatus !== 'Clean' && (
-                    <button onClick={() => updateCleaningStatus(srv._id, 'Clean')} className="px-4 py-2 text-[10px] uppercase font-black text-green-400 border border-green-500/30 hover:bg-green-500/10">Mark Clean</button>
-                  )}
-                  {srv.cleaningStatus !== 'In Service' && (
-                    <button onClick={() => updateCleaningStatus(srv._id, 'In Service')} className="px-4 py-2 text-[10px] uppercase font-black text-blue-400 border border-blue-500/30 hover:bg-blue-500/10">In Service</button>
-                  )}
-                  {srv.cleaningStatus !== 'Dirty' && (
-                    <button onClick={() => updateCleaningStatus(srv._id, 'Dirty')} className="px-4 py-2 text-[10px] uppercase font-black text-red-400 border border-red-500/30 hover:bg-red-500/10">Mark Dirty</button>
-                  )}
-                </div>
-              </div>
+                         <div className="flex gap-2 flex-wrap mt-4">
+                           {srv.cleaningStatus !== 'Clean' && (
+                             <button onClick={() => updateCleaningStatus(srv._id, 'Clean')} className="px-3 py-1.5 text-[9px] uppercase font-black text-green-400 border border-white/10 hover:border-green-500/30 hover:bg-green-500/10">Mark Clean</button>
+                           )}
+                           {srv.cleaningStatus !== 'In Service' && (
+                             <button onClick={() => updateCleaningStatus(srv._id, 'In Service')} className="px-3 py-1.5 text-[9px] uppercase font-black text-blue-400 border border-white/10 hover:border-blue-500/30 hover:bg-blue-500/10">In Service</button>
+                           )}
+                           {srv.cleaningStatus !== 'Dirty' && (
+                             <button onClick={() => updateCleaningStatus(srv._id, 'Dirty')} className="px-3 py-1.5 text-[9px] uppercase font-black text-red-400 border border-white/10 hover:border-red-500/30 hover:bg-red-500/10">Mark Dirty</button>
+                           )}
+                           {srv.cleaningStatus !== 'Maintenance' && (
+                             <button onClick={() => updateCleaningStatus(srv._id, 'Maintenance')} className="px-3 py-1.5 text-[9px] uppercase font-black text-amber-400 border border-white/10 hover:border-amber-500/30 hover:bg-amber-500/10">Maintenance 🛠️</button>
+                           )}
+                         </div>
+                       </div>
+                     )
+                   })}
+                 </div>
+               </div>
             ))}
+            {services.length === 0 && (
+              <div className="p-10 border border-dashed text-center text-white/30 uppercase tracking-widest text-xs" style={{ borderColor: COLORS.border }}>
+                No physical unit numbers have been assigned or created yet.
+              </div>
+            )}
           </div>
-        </div>
+        )}
       </main>
     </div>
   );
