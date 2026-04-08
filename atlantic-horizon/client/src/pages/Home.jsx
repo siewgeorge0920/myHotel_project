@@ -1,6 +1,6 @@
 import React from 'react';
 import HeroSlider from '../components/HeroSlider';
-import QuickBook from '../components/QuickBook'; 
+import QuickBook from '../components/quickBook';
 import Introduction from '../components/Introduction';
 import ExperienceSection from '../components/ExperienceSection';
 import Newsletter from '../components/Newsletter';
