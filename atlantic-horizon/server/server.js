@@ -15,6 +15,7 @@ import Client from './models/client.js';
 import Stripe from 'stripe';
 import PhysicalRoom from './models/physicalRoom.js';
 import CookieConsent from './models/cookieConsent.js';
+import RoomService from './models/roomService.js';
 
 dotenv.config();
 
