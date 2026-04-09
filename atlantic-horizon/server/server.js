@@ -762,6 +762,10 @@ app.post('/api/cookies', async (req, res) => {
 });
 
 // START SERVER
-app.listen(PORT, () => {
-  console.log(`✅ Backend server tengah run kat port: ${PORT}`);
-});
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => {
+    console.log(`✅ Backend server tengah run kat port: ${PORT}`);
+  });
+}
+
+export default app;
