@@ -1,6 +1,6 @@
 import React from 'react';
-import jacuzzi1 from '../../assets/images/Derrick/jacuzzi1.jpg';
-import jacuzzi2 from '../../assets/images/Derrick/jacuzzi2.png';
+import jacuzzi1 from '/images/Derrick/jacuzzi1.jpg';
+import jacuzzi2 from '/images/Derrick/jacuzzi2.png';
 
 const Jacuzzi = () => {
   return (

@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 
 const images = [
-  "/src/assets/images/main1.webp",
-  "/src/assets/images/main3.jpg",
-  "/src/assets/images/room1.jpg",
-  "/src/assets/images/diningHall.jpg",
-  "/src/assets/images/hot-spring.jpg"
+  "/images/main1.webp",
+  "/images/main3.jpg",
+  "/images/room1.jpg",
+  "/images/diningHall.jpg",
+  "/images/hot-spring.jpg"
 ];
 
 export default function HeroSlider() {

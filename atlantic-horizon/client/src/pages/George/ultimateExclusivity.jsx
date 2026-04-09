@@ -3,15 +3,15 @@ import { COLORS } from '../../colors';
 
 export default function UltimateExclusivity() {
   const superiorImgs = [
-    '/src/assets/images/RoomTypes/ultimate/view.avif',
-    '/src/assets/images/RoomTypes/ultimate/view2.jpg',
-    '/src/assets/images/RoomTypes/ultimate/view3.jpg',
-    '/src/assets/images/RoomTypes/ultimate/bed.avif',
-    '/src/assets/images/RoomTypes/ultimate/view4.jpg',
-    '/src/assets/images/RoomTypes/ultimate/view5.jpg',
-    '/src/assets/images/RoomTypes/ultimate/bathroom.jpg',
-    '/src/assets/images/RoomTypes/ultimate/livingRoom.jpg',
-    '/src/assets/images/RoomTypes/ultimate/view6.avif'
+    '/images/RoomTypes/ultimate/view.avif',
+    '/images/RoomTypes/ultimate/view2.jpg',
+    '/images/RoomTypes/ultimate/view3.jpg',
+    '/images/RoomTypes/ultimate/bed.avif',
+    '/images/RoomTypes/ultimate/view4.jpg',
+    '/images/RoomTypes/ultimate/view5.jpg',
+    '/images/RoomTypes/ultimate/bathroom.jpg',
+    '/images/RoomTypes/ultimate/livingRoom.jpg',
+    '/images/RoomTypes/ultimate/view6.avif'
   ];
 
   return (
@@ -74,7 +74,7 @@ export default function UltimateExclusivity() {
            <p className="text-xs opacity-40 uppercase tracking-[0.3em] mb-12 leading-loose">Connect with our Estates Director for a private consultation regarding extended stays or corporate retreats.</p>
            <button style={{ backgroundColor: COLORS.amber }} className="px-20 py-5 text-white text-[11px] uppercase tracking-[0.5em] font-black shadow-2xl hover:scale-110 transition-all">Connect Privately</button>
         </div>
-        <div className="absolute top-0 left-0 w-full h-full opacity-10 bg-[url('/src/assets/images/Logo.png')] bg-no-repeat bg-center bg-contain"></div>
+        <div className="absolute top-0 left-0 w-full h-full opacity-10 bg-[url('/images/Logo.png')] bg-no-repeat bg-center bg-contain"></div>
       </section>
     </div>
   );

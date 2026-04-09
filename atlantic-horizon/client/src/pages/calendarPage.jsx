@@ -45,14 +45,14 @@ export default function CalendarPage() {
     lodge: [
       { 
         name: 'Standard Lodge (King)', price: 450, 
-        img: '/src/assets/images/RoomTypes/Superior(Entry(King Bed(Double)))/view2.webp',
+        img: '/images/RoomTypes/Superior(Entry(King Bed(Double)))/view2.webp',
         facilities: ['32m²', 'King Bed', 'City View', 'Rain Shower'],
         packages: ['Free WiFi', 'Non-smoking'],
         rating: 9.0 
       },
       { 
         name: 'Deluxe Lodge (Double)', price: 650, 
-        img: '/src/assets/images/RoomTypes/premium/balcony.avif',
+        img: '/images/RoomTypes/premium/balcony.avif',
         facilities: ['55m²', 'Double Queen Bed', 'Sea View Balcony', 'Mini Bar'],
         packages: ['Free Breakfast', 'Free Cancellation'],
         rating: 9.4 
@@ -61,7 +61,7 @@ export default function CalendarPage() {
     residence: [
       { 
         name: 'Atlantic Private Estate', price: 2500, 
-        img: '/src/assets/images/RoomTypes/ultimate/view6.avif',
+        img: '/images/RoomTypes/ultimate/view6.avif',
         facilities: ['Private Land', 'Personal Gym', 'Home Cinema', 'Gourmet Kitchen'],
         packages: ['24/7 Butler Service', 'Airport Transfer', 'Daily Housekeeping'],
         rating: 9.9 
@@ -70,7 +70,7 @@ export default function CalendarPage() {
     ultimate: [
       { 
         name: 'The Sovereign Mansion', price: 5500, 
-        img: '/src/assets/images/RoomTypes/ultimate/livingRoom.jpg',
+        img: '/images/RoomTypes/ultimate/livingRoom.jpg',
         facilities: ['Private Helipad', 'Infinity Pool', 'Wine Cellar', 'Bulletproof Glass'],
         packages: ['Personal Helicopter Service', 'Michelin Private Chef', 'Elite Security'],
         rating: 10.0 
@@ -307,9 +307,9 @@ export default function CalendarPage() {
             <h1 className="font-cinzel text-3xl md:text-4xl text-center mb-10 md:mb-16 tracking-[0.2em]">CHOOSE YOUR EXPERIENCE</h1>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
               {[
-                { id: 'lodge', title: 'Private Lodge', desc: 'Hotel + Apartment Style', img: '/src/assets/images/room1.jpg' },
-                { id: 'residence', title: 'Private Residence', desc: 'Premium Land & Facilities', img: '/src/assets/images/RoomTypes/premium/view.webp' },
-                { id: 'ultimate', title: 'Ultimate Exclusivity', desc: 'Mansion + Helicopter Service', img: '/src/assets/images/RoomTypes/ultimate/view.avif' }
+                { id: 'lodge', title: 'Private Lodge', desc: 'Hotel + Apartment Style', img: '/images/room1.jpg' },
+                { id: 'residence', title: 'Private Residence', desc: 'Premium Land & Facilities', img: '/images/RoomTypes/premium/view.webp' },
+                { id: 'ultimate', title: 'Ultimate Exclusivity', desc: 'Mansion + Helicopter Service', img: '/images/RoomTypes/ultimate/view.avif' }
               ].map(item => (
                 <div key={item.id} onClick={() => { setCategory(item.id); goToStep(1); }}
                   className="group relative h-[280px] md:h-[500px] cursor-pointer overflow-hidden border border-white/10 hover:border-amber-600 transition-all">
@@ -395,9 +395,9 @@ export default function CalendarPage() {
              <h2 className="font-cinzel text-3xl text-center mb-12">ENHANCE YOUR SANCTUARY</h2>
              <div className="grid md:grid-cols-3 gap-6 mb-16">
                 {[
-                  { id: 'breakfast', label: 'Manor Breakfast', price: '€25 / Person', img: '/src/assets/images/food.jpg' },
-                  { id: 'spa', label: 'Derrick\'s Spa Ritual', price: '€150 / Session', img: '/src/assets/images/hot-spring.jpg' },
-                  { id: 'chauffer', label: 'Lincoln\'s Chauffeur', price: 'On Request', img: '/src/assets/images/main3.jpg' }
+                  { id: 'breakfast', label: 'Manor Breakfast', price: '€25 / Person', img: '/images/food.jpg' },
+                  { id: 'spa', label: 'Derrick\'s Spa Ritual', price: '€150 / Session', img: '/images/hot-spring.jpg' },
+                  { id: 'chauffer', label: 'Lincoln\'s Chauffeur', price: 'On Request', img: '/images/main3.jpg' }
                 ].map(opt => (
                   <div key={opt.id} onClick={() => setAddons(p => ({...p, [opt.id]: !p[opt.id]}))} className={`relative p-6 border transition-all cursor-pointer ${addons[opt.id] ? 'border-amber-600 bg-amber-600/5' : 'border-white/10 bg-white/5 hover:border-white/30'}`}>
                      <img src={opt.img} className="w-full h-32 object-cover mb-4 grayscale group-hover:grayscale-0" alt={opt.label} />

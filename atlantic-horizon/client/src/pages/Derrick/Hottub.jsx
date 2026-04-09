@@ -1,6 +1,6 @@
 import React from 'react';
-import hottub1 from '../../assets/images/Derrick/hottub1.webp';
-import hottub2 from '../../assets/images/Derrick/hottub2.jpg';
+import hottub1 from '/images/Derrick/hottub1.webp';
+import hottub2 from '/images/Derrick/hottub2.jpg';
 
 const HotTub = () => {
   return (

@@ -3,15 +3,15 @@ import { COLORS } from '../../colors';
 
 export default function PrivateResidences() {
   const clubImgs = [
-    '/src/assets/images/RoomTypes/premium/livingRoom.jpg',
-    '/src/assets/images/RoomTypes/premium/view.webp',
-    '/src/assets/images/RoomTypes/premium/view2.jfif',
-    '/src/assets/images/RoomTypes/premium/view3.webp',
-    '/src/assets/images/RoomTypes/premium/view4.avif',
-    '/src/assets/images/RoomTypes/premium/balcony.avif',
-    '/src/assets/images/RoomTypes/premium/view.webp',
-    '/src/assets/images/RoomTypes/premium/bathtub.jpg',
-    '/src/assets/images/RoomTypes/premium/bed.jpg'
+    '/images/RoomTypes/premium/livingRoom.jpg',
+    '/images/RoomTypes/premium/view.webp',
+    '/images/RoomTypes/premium/view2.jfif',
+    '/images/RoomTypes/premium/view3.webp',
+    '/images/RoomTypes/premium/view4.avif',
+    '/images/RoomTypes/premium/balcony.avif',
+    '/images/RoomTypes/premium/view.webp',
+    '/images/RoomTypes/premium/bathtub.jpg',
+    '/images/RoomTypes/premium/bed.jpg'
   ];
 
   return (

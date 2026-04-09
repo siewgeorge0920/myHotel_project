@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import GiftCard from './GiftCard'; 
-import logo from '../assets/images/Logo.png'; 
+import logo from '/images/Logo.png'; 
 
 const NAV_ITEMS = [
   {

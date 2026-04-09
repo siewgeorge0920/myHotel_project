@@ -8,7 +8,7 @@ export default function PrivateChauffer() {
       {/* 🎬 MAIN HERO - MAYBACH */}
       <section className="relative aspect-[4/3] md:aspect-video min-h-[500px] md:min-h-0 w-full overflow-hidden flex items-center justify-center pt-20">
         <div className="absolute inset-0 z-0">
-          <img src="/src/assets/images/Lincoln/Chauffeur/maybach.png" className="w-full h-full object-cover opacity-60 scale-105" alt="Lincoln Maybach Fleet" />
+          <img src="/images/Lincoln/Chauffeur/maybach.png" className="w-full h-full object-cover opacity-60 scale-105" alt="Lincoln Maybach Fleet" />
           <div className="absolute inset-0 bg-gradient-to-b from-[#111310]/80 via-transparent to-[#111310]"></div>
           <div className="absolute inset-0 bg-gradient-to-r from-[#111310]/90 via-[#111310]/40 to-transparent"></div>
         </div>
@@ -70,10 +70,10 @@ export default function PrivateChauffer() {
             {/* Right Images */}
             <div className="lg:col-span-7 relative space-y-12 pb-12">
               <div className="relative aspect-video w-full overflow-hidden shadow-2xl lg:ml-12 border border-white/5">
-                <img src="/src/assets/images/Lincoln/Chauffeur/RollsRoyce.avif" className="w-full h-full object-cover transition-all duration-1000 scale-105 hover:scale-100" alt="Rolls Royce" />
+                <img src="/images/Lincoln/Chauffeur/RollsRoyce.avif" className="w-full h-full object-cover transition-all duration-1000 scale-105 hover:scale-100" alt="Rolls Royce" />
               </div>
               <div className="relative aspect-video w-[85%] overflow-hidden shadow-2xl border border-white/5">
-                <img src="/src/assets/images/Lincoln/Chauffeur/services.png" className="w-full h-full object-cover transition-all duration-1000 scale-105 hover:scale-100" alt="Chauffeur Services" />
+                <img src="/images/Lincoln/Chauffeur/services.png" className="w-full h-full object-cover transition-all duration-1000 scale-105 hover:scale-100" alt="Chauffeur Services" />
               </div>
             </div>
 
@@ -89,10 +89,10 @@ export default function PrivateChauffer() {
             {/* Left Images */}
             <div className="lg:col-span-7 order-2 lg:order-1 relative space-y-12">
               <div className="relative aspect-video w-[85%] lg:w-[75%] overflow-hidden shadow-2xl relative left-[15%] lg:left-[25%] border border-white/5">
-                <img src="/src/assets/images/Lincoln/Chauffeur/lobby.jpg" className="w-full h-full object-cover transition-all duration-1000 scale-105 hover:scale-100" alt="Chauffeur Greetings" />
+                <img src="/images/Lincoln/Chauffeur/lobby.jpg" className="w-full h-full object-cover transition-all duration-1000 scale-105 hover:scale-100" alt="Chauffeur Greetings" />
               </div>
               <div className="relative aspect-video w-full lg:w-[90%] overflow-hidden shadow-2xl border border-white/5 lg:-ml-6 -mt-12 lg:-mt-24 z-10">
-                <img src="/src/assets/images/Lincoln/Chauffeur/helicoptor.png" className="w-full h-full object-cover transition-all duration-1000 scale-105 hover:scale-100" alt="Private Helicopter Transfer" />
+                <img src="/images/Lincoln/Chauffeur/helicoptor.png" className="w-full h-full object-cover transition-all duration-1000 scale-105 hover:scale-100" alt="Private Helicopter Transfer" />
               </div>
             </div>
 
@@ -129,7 +129,7 @@ export default function PrivateChauffer() {
       {/* ✨ FINAL TOUCH - LOBBY DEPARTURE */}
       <section className="relative aspect-video min-h-[400px] md:max-h-[80vh] w-full flex items-center justify-center overflow-hidden border-t border-white/5">
         <div className="absolute inset-0 z-0 opacity-40 mix-blend-luminosity">
-          <img src="/src/assets/images/Lincoln/Chauffeur/greetings.jpg" className="w-full h-full object-cover" alt="Hotel Lobby Departure" />
+          <img src="/images/Lincoln/Chauffeur/greetings.jpg" className="w-full h-full object-cover" alt="Hotel Lobby Departure" />
           <div className="absolute inset-0 bg-[#111310]/60 backdrop-blur-sm"></div>
         </div>
 

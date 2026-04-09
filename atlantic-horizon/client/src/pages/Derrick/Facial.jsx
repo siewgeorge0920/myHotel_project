@@ -1,6 +1,6 @@
 import React from 'react';
-import facial1 from '../../assets/images/Derrick/facial1.webp';
-import facial2 from '../../assets/images/Derrick/facial2.jpg';
+import facial1 from '/images/Derrick/facial1.webp';
+import facial2 from '/images/Derrick/facial2.jpg';
 
 const Facial = () => {
   return (

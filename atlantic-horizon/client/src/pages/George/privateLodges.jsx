@@ -3,14 +3,14 @@ import { COLORS } from '../../colors';
 
 export default function PrivateLodges() {
   const deluxeImages = [
-    '/src/assets/images/RoomTypes/Superior(Entry(King Bed(Double)))/balcony.jpg',
-    '/src/assets/images/RoomTypes/Superior(Entry(King Bed(Double)))/view.png',
-    '/src/assets/images/RoomTypes/Superior(Entry(King Bed(Double)))/view2.webp',
-    '/src/assets/images/RoomTypes/Superior(Entry(King Bed(Double)))/bed.avif',
-    '/src/assets/images/RoomTypes/Superior(Entry(King Bed(Double)))/livingRoom.jpg',
-    '/src/assets/images/RoomTypes/Superior(Entry(King Bed(Double)))/bathroom.jpg',
-    '/src/assets/images/RoomTypes/Superior(Entry(King Bed(Double)))/VIEW4.jpg',
-    '/src/assets/images/RoomTypes/Superior(Entry(King Bed(Double)))/view5.jpg'
+    '/images/RoomTypes/Superior(Entry(King Bed(Double)))/balcony.jpg',
+    '/images/RoomTypes/Superior(Entry(King Bed(Double)))/view.png',
+    '/images/RoomTypes/Superior(Entry(King Bed(Double)))/view2.webp',
+    '/images/RoomTypes/Superior(Entry(King Bed(Double)))/bed.avif',
+    '/images/RoomTypes/Superior(Entry(King Bed(Double)))/livingRoom.jpg',
+    '/images/RoomTypes/Superior(Entry(King Bed(Double)))/bathroom.jpg',
+    '/images/RoomTypes/Superior(Entry(King Bed(Double)))/VIEW4.jpg',
+    '/images/RoomTypes/Superior(Entry(King Bed(Double)))/view5.jpg'
   ];
 
   return (

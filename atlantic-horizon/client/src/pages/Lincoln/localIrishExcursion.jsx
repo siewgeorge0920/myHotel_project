@@ -23,7 +23,7 @@ export default function LocalIrishExcursion() {
                      <div className="h-[400px] md:h-[500px] overflow-hidden mb-8 relative drop-shadow-2xl">
                         <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-all duration-700 z-10"></div>
                         <img
-                           src={`/src/assets/images/Lincoln/Local/${j.img}`}
+                           src={`/images/Lincoln/Local/${j.img}`}
                            className={`w-full h-full transition-transform duration-[3000ms] ease-out group-hover:scale-[1.15] ${j.img === 'cliffs_of_moher.png' ? 'object-cover object-[15%_center]' : 'object-cover'}`}
                            alt={j.t}
                         />
@@ -67,10 +67,10 @@ export default function LocalIrishExcursion() {
                      <div className="absolute inset-0 bg-gradient-to-t from-[#1a1d17] via-[#1a1d17]/50 to-transparent z-20 lg:hidden"></div>
 
                      {/* Base Layer: Full Color Image */}
-                     <img src="/src/assets/images/Lincoln/Local/all.png" className="absolute inset-0 w-full h-full object-cover object-[30%_center] opacity-80 z-0" alt="The Elements Color" />
+                     <img src="/images/Lincoln/Local/all.png" className="absolute inset-0 w-full h-full object-cover object-[30%_center] opacity-80 z-0" alt="The Elements Color" />
 
                      {/* Top Layer: Grayscale Image with a Gradient Mask (fades left to right) */}
-                     <img src="/src/assets/images/Lincoln/Local/all.png" className="absolute inset-0 w-full h-full object-cover object-[30%_center] grayscale opacity-90 z-10 mix-blend-luminosity" style={{ WebkitMaskImage: 'linear-gradient(to right, black 20%, transparent 80%)', maskImage: 'linear-gradient(to right, black 20%, transparent 80%)' }} alt="The Elements Grayscale" aria-hidden="true" />
+                     <img src="/images/Lincoln/Local/all.png" className="absolute inset-0 w-full h-full object-cover object-[30%_center] grayscale opacity-90 z-10 mix-blend-luminosity" style={{ WebkitMaskImage: 'linear-gradient(to right, black 20%, transparent 80%)', maskImage: 'linear-gradient(to right, black 20%, transparent 80%)' }} alt="The Elements Grayscale" aria-hidden="true" />
                   </div>
                </div>
             </div>

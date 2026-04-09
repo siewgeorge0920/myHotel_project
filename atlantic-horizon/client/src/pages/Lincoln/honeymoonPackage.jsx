@@ -8,7 +8,7 @@ export default function HoneymoonPackage() {
       {/* 🥂 HERO SECTION */}
       <section className="relative h-screen w-full overflow-hidden flex items-center justify-center pt-20">
         <div className="absolute inset-0 z-0">
-           <img src="/src/assets/images/Lincoln/Honeymoon/sunset.png" className="w-full h-full object-cover opacity-90 scale-105" alt="Lincoln Honeymoon Sunset" />
+           <img src="/images/Lincoln/Honeymoon/sunset.png" className="w-full h-full object-cover opacity-90 scale-105" alt="Lincoln Honeymoon Sunset" />
            <div className="absolute inset-0 bg-gradient-to-t from-[#111310] via-transparent to-[#111310]/60"></div>
         </div>
         
@@ -52,7 +52,7 @@ export default function HoneymoonPackage() {
             <div className="col-span-1 lg:col-span-7 group">
                <div className="relative aspect-[4/3] overflow-hidden shadow-2xl mb-6 border border-white/5">
                   <div className="absolute inset-0 bg-black/40 group-hover:bg-transparent transition-all duration-700 z-10"></div>
-                  <img src="/src/assets/images/Lincoln/Honeymoon/dinner.png" className="w-full h-full object-cover transition-transform duration-[3000ms] ease-out group-hover:scale-105" alt="Private Michelin Dining" />
+                  <img src="/images/Lincoln/Honeymoon/dinner.png" className="w-full h-full object-cover transition-transform duration-[3000ms] ease-out group-hover:scale-105" alt="Private Michelin Dining" />
                </div>
                <div className="flex gap-4 items-start">
                   <span className="text-amber-500 font-cinzel text-2xl">01</span>
@@ -67,7 +67,7 @@ export default function HoneymoonPackage() {
             <div className="col-span-1 lg:col-span-5 group mt-8 lg:mt-32">
                <div className="relative aspect-[3/4] overflow-hidden shadow-2xl mb-6 border border-white/5">
                   <div className="absolute inset-0 bg-black/40 group-hover:bg-transparent transition-all duration-700 z-10"></div>
-                  <img src="/src/assets/images/Lincoln/Honeymoon/sunset_yatch.png" className="w-full h-full object-cover transition-transform duration-[3000ms] ease-out group-hover:scale-105" alt="Sunset Yacht Charter" />
+                  <img src="/images/Lincoln/Honeymoon/sunset_yatch.png" className="w-full h-full object-cover transition-transform duration-[3000ms] ease-out group-hover:scale-105" alt="Sunset Yacht Charter" />
                </div>
                <div className="flex gap-4 items-start">
                   <span className="text-amber-500 font-cinzel text-2xl">02</span>
@@ -82,7 +82,7 @@ export default function HoneymoonPackage() {
             <div className="col-span-1 lg:col-span-6 group mt-8 lg:mt-0">
                <div className="relative aspect-video overflow-hidden shadow-2xl mb-6 border border-white/5">
                   <div className="absolute inset-0 bg-black/40 group-hover:bg-transparent transition-all duration-700 z-10"></div>
-                  <img src="/src/assets/images/Lincoln/Honeymoon/massage.jpg" className="w-full h-full object-cover transition-transform duration-[3000ms] ease-out group-hover:scale-105" alt="Couples Massage" />
+                  <img src="/images/Lincoln/Honeymoon/massage.jpg" className="w-full h-full object-cover transition-transform duration-[3000ms] ease-out group-hover:scale-105" alt="Couples Massage" />
                </div>
                <div className="flex gap-4 items-start">
                   <span className="text-amber-500 font-cinzel text-2xl">03</span>
@@ -97,7 +97,7 @@ export default function HoneymoonPackage() {
             <div className="col-span-1 lg:col-span-6 group mt-8 lg:mt-24">
                <div className="relative aspect-video overflow-hidden shadow-2xl mb-6 border border-white/5">
                   <div className="absolute inset-0 bg-black/40 group-hover:bg-transparent transition-all duration-700 z-10"></div>
-                  <img src="/src/assets/images/Lincoln/Honeymoon/spa_robe.jpg" className="w-full h-full object-cover transition-transform duration-[3000ms] ease-out group-hover:scale-105" alt="Spa Robes" />
+                  <img src="/images/Lincoln/Honeymoon/spa_robe.jpg" className="w-full h-full object-cover transition-transform duration-[3000ms] ease-out group-hover:scale-105" alt="Spa Robes" />
                </div>
                <div className="flex gap-4 items-start">
                   <span className="text-amber-500 font-cinzel text-2xl">04</span>
@@ -119,7 +119,7 @@ export default function HoneymoonPackage() {
             <div className="absolute inset-0 opacity-10 mix-blend-overlay pointer-events-none" style={{ backgroundImage: 'url("https://www.transparenttextures.com/patterns/stardust.png")' }}></div>
 
             <div className="relative aspect-video lg:aspect-auto lg:h-full w-full">
-               <img src="/src/assets/images/Lincoln/Honeymoon/movie.png" className="absolute inset-0 w-full h-full object-cover opacity-80" alt="Private Cinema Screening" />
+               <img src="/images/Lincoln/Honeymoon/movie.png" className="absolute inset-0 w-full h-full object-cover opacity-80" alt="Private Cinema Screening" />
                <div className="absolute inset-0 bg-gradient-to-r from-transparent to-[#0a0c09] hidden lg:block"></div>
                <div className="absolute inset-0 bg-gradient-to-t from-[#0a0c09] to-transparent lg:hidden"></div>
             </div>

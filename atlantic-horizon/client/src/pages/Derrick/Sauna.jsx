@@ -1,6 +1,6 @@
 import React from 'react';
-import sauna1 from '../../assets/images/Derrick/sauna1.jpg';
-import sauna2 from '../../assets/images/Derrick/sauna2.jpg';
+import sauna1 from '/images/Derrick/sauna1.jpg';
+import sauna2 from '/images/Derrick/sauna2.jpg';
 
 const Sauna = () => {
   return (

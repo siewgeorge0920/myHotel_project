@@ -54,7 +54,7 @@ export default function MichelineQualityFood() {
           <div className="lg:w-7/12 relative group p-1">
             <div className="absolute inset-0 bg-amber-500/5 blur-2xl group-hover:bg-amber-500/15 transition-all duration-1000"></div>
             <div className="relative overflow-hidden group border border-white/5">
-              <img src="/src/assets/images/diningHall.jpg" className="w-full h-80 md:h-[750px] object-cover filter brightness-[0.85] contrast-[1.1] group-hover:brightness-100 group-hover:scale-105 transition-all duration-[2000ms] ease-out" alt="Dining Experience" />
+              <img src="/images/diningHall.jpg" className="w-full h-80 md:h-[750px] object-cover filter brightness-[0.85] contrast-[1.1] group-hover:brightness-100 group-hover:scale-105 transition-all duration-[2000ms] ease-out" alt="Dining Experience" />
               <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-all duration-1000"></div>
             </div>
             {/* Decorative floating elements */}
@@ -73,7 +73,7 @@ export default function MichelineQualityFood() {
             <div className="absolute -top-[300px] -left-[300px] w-[600px] h-[600px] bg-amber-900/10 rounded-full blur-[100px] pointer-events-none mix-blend-screen opacity-50"></div>
 
             <div className="relative z-10 flex flex-col items-center text-center">
-              <img src="/src/assets/images/food.jpg" alt="Breakfast" className="w-24 h-24 rounded-full object-cover mb-12 border border-amber-500/30 grayscale hover:grayscale-0 transition-all duration-1000 shadow-[0_0_30px_rgba(217,119,6,0.1)]" />
+              <img src="/images/food.jpg" alt="Breakfast" className="w-24 h-24 rounded-full object-cover mb-12 border border-amber-500/30 grayscale hover:grayscale-0 transition-all duration-1000 shadow-[0_0_30px_rgba(217,119,6,0.1)]" />
 
               <h3 className="font-cinzel text-4xl md:text-5xl lg:text-6xl mb-6 text-white/95 leading-tight tracking-wider">Mornings at<br /><span className="italic text-amber-500 font-georgia text-3xl md:text-4xl block mt-2">The Manor</span></h3>
 
@@ -133,7 +133,7 @@ export default function MichelineQualityFood() {
           <div className="grid grid-cols-1 md:grid-cols-12 gap-6 relative z-10 w-full mx-auto">
 
             <div className="md:col-span-8 relative group overflow-hidden h-80 md:h-[650px] bg-[#1a1d17] cursor-pointer">
-              <img src="/src/assets/images/Lincoln/Michelin/Salmon.jpg" alt="Atlantic Harvest" className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-[3000ms] brightness-[0.85] group-hover:brightness-100 ease-out" />
+              <img src="/images/Lincoln/Michelin/Salmon.jpg" alt="Atlantic Harvest" className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-[3000ms] brightness-[0.85] group-hover:brightness-100 ease-out" />
               <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-700"></div>
               <div className="absolute bottom-0 left-0 p-8 md:p-12 translate-y-8 group-hover:translate-y-0 transition-transform duration-700 ease-out">
                 <p className="text-amber-500 text-[10px] uppercase tracking-[0.4em] font-bold mb-3 opacity-0 group-hover:opacity-100 transition-opacity duration-700 delay-100">Atlantic Harvest</p>
@@ -143,7 +143,7 @@ export default function MichelineQualityFood() {
             </div>
 
             <div className="md:col-span-4 relative group overflow-hidden h-80 md:h-[650px] bg-[#1a1d17] cursor-pointer">
-              <img src="/src/assets/images/Lincoln/Michelin/Steak.webp" alt="Estate Garden" className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-[3000ms] brightness-[0.85] group-hover:brightness-100 ease-out" />
+              <img src="/images/Lincoln/Michelin/Steak.webp" alt="Estate Garden" className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-[3000ms] brightness-[0.85] group-hover:brightness-100 ease-out" />
               <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-700"></div>
               <div className="absolute bottom-0 left-0 p-8 md:p-12 translate-y-8 group-hover:translate-y-0 transition-transform duration-700 ease-out">
                 <p className="text-amber-500 text-[10px] uppercase tracking-[0.4em] font-bold mb-3 opacity-0 group-hover:opacity-100 transition-opacity duration-700 delay-100">Estate Garden</p>
@@ -153,7 +153,7 @@ export default function MichelineQualityFood() {
             </div>
 
             <div className="md:col-span-4 relative group overflow-hidden h-80 md:h-[500px] bg-[#1a1d17] cursor-pointer md:mt-8 z-20 shadow-2xl">
-              <img src="/src/assets/images/Lincoln/Michelin/Wagyu.webp" alt="Signature wagyu" className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-[3000ms] brightness-[0.85] group-hover:brightness-100 ease-out" />
+              <img src="/images/Lincoln/Michelin/Wagyu.webp" alt="Signature wagyu" className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-[3000ms] brightness-[0.85] group-hover:brightness-100 ease-out" />
               <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-700"></div>
               <div className="absolute bottom-0 left-0 p-8 md:p-10 translate-y-8 group-hover:translate-y-0 transition-transform duration-700 ease-out">
                 <p className="text-amber-500 text-[10px] uppercase tracking-[0.4em] font-bold mb-3 opacity-0 group-hover:opacity-100 transition-opacity duration-700 delay-100">Signature</p>
@@ -163,7 +163,7 @@ export default function MichelineQualityFood() {
             </div>
 
             <div className="md:col-span-8 relative group overflow-hidden h-64 md:h-[500px] bg-[#1a1d17] cursor-pointer md:mt-8">
-              <img src="/src/assets/images/Lincoln/Michelin/Dessert.webp" alt="Sweet Finale" className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-[3000ms] brightness-[0.85] group-hover:brightness-100 ease-out" />
+              <img src="/images/Lincoln/Michelin/Dessert.webp" alt="Sweet Finale" className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-[3000ms] brightness-[0.85] group-hover:brightness-100 ease-out" />
               <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-700"></div>
               <div className="absolute bottom-0 left-0 p-8 md:p-12 translate-y-8 group-hover:translate-y-0 transition-transform duration-700 ease-out">
                 <p className="text-amber-500 text-[10px] uppercase tracking-[0.4em] font-bold mb-3 opacity-0 group-hover:opacity-100 transition-opacity duration-700 delay-100">Sweet Finale</p>

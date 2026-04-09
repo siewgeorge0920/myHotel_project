@@ -57,7 +57,7 @@ export default function ContinentalBreakfast() {
               </div>
               <div className="lg:w-1/2 order-1 lg:order-2">
                 <div className="relative overflow-hidden h-80 md:h-[500px] lg:h-[700px] w-full bg-[#f4f2eb] drop-shadow-2xl">
-                  <img src="/src/assets/images/Lincoln/Breakfast/eggs_benedict.jpg" alt="Eggs Benedict" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-[3000ms] ease-out brightness-[0.95]" />
+                  <img src="/images/Lincoln/Breakfast/eggs_benedict.jpg" alt="Eggs Benedict" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-[3000ms] ease-out brightness-[0.95]" />
                   <div className="absolute inset-x-8 bottom-8 h-[1px] bg-white/50"></div>
                   <div className="absolute inset-y-8 left-8 w-[1px] bg-white/50"></div>
                 </div>
@@ -68,7 +68,7 @@ export default function ContinentalBreakfast() {
             <div className="flex flex-col lg:flex-row gap-16 lg:gap-32 items-center group">
               <div className="lg:w-1/2">
                 <div className="relative overflow-hidden h-80 md:h-[500px] lg:h-[700px] w-full bg-[#f4f2eb] drop-shadow-2xl">
-                  <img src="/src/assets/images/Lincoln/Breakfast/Charcuterie.jpg" alt="Charcuterie Board" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-[3000ms] ease-out brightness-[0.95]" />
+                  <img src="/images/Lincoln/Breakfast/Charcuterie.jpg" alt="Charcuterie Board" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-[3000ms] ease-out brightness-[0.95]" />
                   <div className="absolute inset-x-8 bottom-8 h-[1px] bg-white/50"></div>
                   <div className="absolute inset-y-8 right-8 w-[1px] bg-white/50"></div>
                 </div>
@@ -103,7 +103,7 @@ export default function ContinentalBreakfast() {
               </div>
               <div className="lg:w-1/2 order-1 lg:order-2">
                 <div className="relative overflow-hidden h-80 md:h-[500px] lg:h-[700px] w-full bg-[#f4f2eb] drop-shadow-2xl">
-                  <img src="/src/assets/images/Lincoln/Breakfast/barista_coffee.png" alt="Barista Coffee" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-[3000ms] ease-out brightness-[0.95]" />
+                  <img src="/images/Lincoln/Breakfast/barista_coffee.png" alt="Barista Coffee" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-[3000ms] ease-out brightness-[0.95]" />
                   <div className="absolute inset-x-8 top-8 h-[1px] bg-white/50"></div>
                   <div className="absolute inset-y-8 left-8 w-[1px] bg-white/50"></div>
                 </div>
@@ -114,7 +114,7 @@ export default function ContinentalBreakfast() {
             <div className="flex flex-col lg:flex-row gap-16 lg:gap-32 items-center group">
               <div className="lg:w-1/2">
                 <div className="relative overflow-hidden h-80 md:h-[500px] lg:h-[700px] w-full bg-[#f4f2eb] drop-shadow-2xl">
-                  <img src="/src/assets/images/Lincoln/Breakfast/20210716-americaniconswoodbackgroundsquare1WEBSIZE_580x_1.jpg" alt="Artisan Cheese Board" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-[3000ms] ease-out brightness-[0.95]" />
+                  <img src="/images/Lincoln/Breakfast/20210716-americaniconswoodbackgroundsquare1WEBSIZE_580x_1.jpg" alt="Artisan Cheese Board" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-[3000ms] ease-out brightness-[0.95]" />
                   <div className="absolute inset-x-8 top-8 h-[1px] bg-white/50"></div>
                   <div className="absolute inset-y-8 right-8 w-[1px] bg-white/50"></div>
                 </div>

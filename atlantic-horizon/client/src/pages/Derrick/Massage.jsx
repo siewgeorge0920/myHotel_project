@@ -1,6 +1,6 @@
 import React from 'react';
-import massage1 from '../../assets/images/Derrick/massage1.jpg';
-import massage2 from '../../assets/images/Derrick/massage2.webp';
+import massage1 from '/images/Derrick/massage1.jpg';
+import massage2 from '/images/Derrick/massage2.webp';
 
 const Massage = () => {
   return (

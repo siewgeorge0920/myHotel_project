@@ -3,14 +3,14 @@ const features = [
     title: "Luxury Accommodations",
     eyebrow: "Private Lodges & Estates",
     text: "Our elegantly appointed rooms and suites offer the perfect blend of comfort and sophistication. Each space is designed with your relaxation in mind, featuring premium amenities and breathtaking Atlantic views.",
-    img: "/src/assets/images/room1.jpg",
+    img: "/images/room1.jpg",
     reverse: false
   },
   {
     title: "Culinary Excellence",
     eyebrow: "Michelin-Inspired Dining",
     text: "Indulge in exceptional cuisine crafted by our award-winning chefs. From fine dining to coastal fare, our restaurants celebrate the rich flavors of Ireland's southwest — where land meets sea on every plate.",
-    img: "/src/assets/images/food.jpg",
+    img: "/images/food.jpg",
     reverse: true
   }
 ];
