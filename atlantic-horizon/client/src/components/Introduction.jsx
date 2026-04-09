@@ -1,5 +1,3 @@
-import logo from "/images/Logo.png";
-
 export default function Introduction() {
   return (
     <section className="relative overflow-hidden py-24 px-6" style={{ background: 'linear-gradient(160deg, #0d0f0b 0%, #1a1d17 50%, #141610 100%)' }}>
@@ -18,7 +16,7 @@ export default function Introduction() {
 
         {/* Hotel crest */}
         <div className="mb-8">
-          <img src={logo} alt="Atlantic Horizon Crest" className="h-20 w-auto mx-auto opacity-60 filter brightness-150" />
+          <img src="/images/Logo.png" alt="Atlantic Horizon Crest" className="h-20 w-auto mx-auto opacity-60 filter brightness-150" />
         </div>
 
         {/* Thin gold divider */}

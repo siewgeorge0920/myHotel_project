@@ -1,6 +1,4 @@
 import React from 'react';
-import hottub1 from '/images/Derrick/hottub1.webp';
-import hottub2 from '/images/Derrick/hottub2.jpg';
 
 const HotTub = () => {
   return (
@@ -24,7 +22,7 @@ const HotTub = () => {
 
             {/* Image 1 */}
             <img 
-              src={hottub1} 
+              src="/images/Derrick/hottub1.webp" 
               alt="Family Hot Tub Experience" 
               className="order-1 md:order-2 w-full h-72 md:h-[400px] object-cover rounded-sm shadow-md"
             />
@@ -34,7 +32,7 @@ const HotTub = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20 items-center">
             {/* Image 2 */}
             <img 
-              src={hottub2} 
+              src="/images/Derrick/hottub2.jpg" 
               alt="Hot Tub Relaxation and Views" 
               className="w-full h-72 md:h-[400px] object-cover rounded-sm shadow-md"
             />

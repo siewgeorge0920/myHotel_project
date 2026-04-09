@@ -1,6 +1,4 @@
 import React from 'react';
-import massage1 from '/images/Derrick/massage1.jpg';
-import massage2 from '/images/Derrick/massage2.webp';
 
 const Massage = () => {
   return (
@@ -14,7 +12,7 @@ const Massage = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20 items-center mb-24">
             {/* Image 1 */}
             <img 
-              src={massage1} 
+              src="/images/Derrick/massage1.jpg" 
               alt="Signature Massage Therapy" 
               className="w-full h-72 md:h-[400px] object-cover rounded-sm shadow-md"
             />
@@ -47,7 +45,7 @@ const Massage = () => {
 
             {/* Image 2 */}
             <img 
-              src={massage2} 
+              src="/images/Derrick/massage2.webp" 
               alt="Relaxing Spa Environment and Oils" 
               className="order-1 md:order-2 w-full h-72 md:h-[400px] object-cover rounded-sm shadow-md"
             />

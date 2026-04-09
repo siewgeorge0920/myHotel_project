@@ -1,6 +1,4 @@
 import React from 'react';
-import jacuzzi1 from '/images/Derrick/jacuzzi1.jpg';
-import jacuzzi2 from '/images/Derrick/jacuzzi2.png';
 
 const Jacuzzi = () => {
   return (
@@ -14,7 +12,7 @@ const Jacuzzi = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20 items-center mb-24">
             {/* Image 1 */}
             <img 
-              src={jacuzzi1} 
+              src="/images/Derrick/jacuzzi1.jpg" 
               alt="The Hydrotherapy Jacuzzi" 
               className="w-full h-72 md:h-[400px] object-cover rounded-sm shadow-md"
             />
@@ -47,7 +45,7 @@ const Jacuzzi = () => {
 
             {/* Image 2 */}
             <img 
-              src={jacuzzi2} 
+              src="/images/Derrick/jacuzzi2.png" 
               alt="Jacuzzi Jets and Relaxation" 
               className="order-1 md:order-2 w-full h-72 md:h-[400px] object-cover rounded-sm shadow-md"
             />

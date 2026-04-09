@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import GiftCard from './GiftCard'; 
-import logo from '/images/Logo.png'; 
 
 const NAV_ITEMS = [
   {
@@ -91,7 +90,7 @@ export default function Header() {
         <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
           <Link to="/">
             <img
-              src={logo}
+              src="/images/Logo.png"
               alt="The Atlantic Horizon Manor Logo"
               className="h-20 lg:h-32 w-auto transition-transform duration-300 hover:scale-105"
             />

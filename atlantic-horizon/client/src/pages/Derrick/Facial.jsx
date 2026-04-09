@@ -1,6 +1,4 @@
 import React from 'react';
-import facial1 from '/images/Derrick/facial1.webp';
-import facial2 from '/images/Derrick/facial2.jpg';
 
 const Facial = () => {
   return (
@@ -24,7 +22,7 @@ const Facial = () => {
 
             {/* Image 1 */}
             <img 
-              src={facial1} 
+              src="/images/Derrick/facial1.webp" 
               alt="Signature Facial Treatment" 
               className="order-1 md:order-2 w-full h-72 md:h-[400px] object-cover rounded-sm shadow-md"
             />
@@ -34,7 +32,7 @@ const Facial = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20 items-center">
             {/* Image 2 */}
             <img 
-              src={facial2} 
+              src="/images/Derrick/facial2.jpg" 
               alt="Facial Products and Spa Environment" 
               className="w-full h-72 md:h-[400px] object-cover rounded-sm shadow-md"
             />
