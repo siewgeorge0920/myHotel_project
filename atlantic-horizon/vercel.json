@@ -1,11 +1,6 @@
 {
   "version": 2,
   "installCommand": "npm install",
-  "build": {
-    "env": {
-      "ROLLUP_NATIVE": "0"
-    }
-  },
   "builds": [
     {
       "src": "server/server.js",

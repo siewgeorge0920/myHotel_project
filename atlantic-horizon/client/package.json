@@ -1,8 +1,15 @@
 {
   "name": "hotel-frontend",
-  "private": true,
   "version": "0.1.0",
-  "type": "module",
+  
+  "optionalDependencies": {
+    "@rollup/rollup-linux-x64-gnu": "*"
+  },
+  "overrides": {
+    "vite": {
+      "rollup": "npm:@rollup/wasm-node"
+    }
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
