@@ -68,7 +68,7 @@ export default function QuickBook() {
   );
 
   const DualBoxTrigger = forwardRef(({ onClick }, ref) => (
-    <div ref={ref} onClick={onClick} className="flex-1 flex items-center justify-center cursor-pointer group px-4 py-2 w-full md:w-auto">
+    <div ref={ref} onClick={onClick} className="flex-1 flex flex-col md:flex-row items-center justify-center cursor-pointer group px-4 py-2 w-full md:w-auto">
 
       {/* Check In */}
       <div className="flex flex-col items-center md:items-start text-center md:text-left flex-1 md:flex-none">
@@ -79,7 +79,7 @@ export default function QuickBook() {
       </div>
 
       {/* Divider Icon */}
-      <div className="mx-6 text-amber-600/30 font-light text-xl">―</div>
+      <div className="mx-6 my-2 md:my-0 text-amber-600/30 font-light text-xl rotate-90 md:rotate-0">―</div>
 
       {/* Check Out */}
       <div className="flex flex-col items-center md:items-start text-center md:text-left flex-1 md:flex-none">

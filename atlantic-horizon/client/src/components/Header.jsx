@@ -99,7 +99,7 @@ export default function Header() {
         </div>
 
         {/* ===== RIGHT: Action Buttons ===== */}
-        <div className="flex gap-4 lg:gap-6 flex-1 justify-end items-center">
+        <div className="flex gap-2 sm:gap-4 lg:gap-6 flex-1 justify-end items-center">
           
           <Link 
             to="/check-in"
@@ -128,7 +128,7 @@ export default function Header() {
 
           <button 
             onClick={() => setIsGiftCardOpen(true)}
-            className="border border-manorGold text-manorGold px-3 py-2 text-[10px] lg:px-4 uppercase tracking-wider transition-all duration-300 hover:bg-manorGold hover:text-manorGreen hover:-translate-y-0.5 hover:shadow-lg"
+            className="hidden sm:block border border-manorGold text-manorGold px-3 py-2 text-[10px] lg:px-4 uppercase tracking-wider transition-all duration-300 hover:bg-manorGold hover:text-manorGreen hover:-translate-y-0.5 hover:shadow-lg"
           >
             Gift Card
           </button>

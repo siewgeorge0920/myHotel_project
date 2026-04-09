@@ -18,9 +18,9 @@ export default function Footer({
           <p className="text-[12px] uppercase tracking-[1px]">Return To Top</p>
         </div>
 
-        <nav className="footer-nav flex flex-wrap justify-center gap-5 my-10 border-y border-manorGold/20 py-5">
+        <nav className="footer-nav flex flex-wrap justify-center gap-x-3 gap-y-4 md:gap-5 my-10 border-y border-manorGold/20 py-5">
           {links.map((link) => (
-            <button key={link} className="text-manorRose text-sm tracking-wide hover:text-white transition">{link}</button>
+            <button key={link} className="text-manorRose text-[11px] sm:text-sm tracking-wide hover:text-white transition">{link}</button>
           ))}
         </nav>
 

@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react'; // 🌟 核心修正 1：记得 Import useEffect
+import React, { Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 
 // Layout Components
@@ -50,6 +51,8 @@ import ProtectedRoute from './components/ProtectedRoute';
 import SelfCheckIn from './pages/SelfCheckIn';
 import LuxuryLoader from './components/luxuryLoader';
 
+const AdminLogs = React.lazy(() => import('./pages/adminLogs'));
+
 // 🌟 核心修正 2：自动回顶组件 (首字母一定要大写)
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -99,11 +102,13 @@ const LayoutWrapper = ({ children }) => {
 
 export default function App() {
   return (
+    
     <Router>
       {/* 🌟 核心修正 3：必须把 ScrollToTop 放在 Router 里面跑 */}
       <ScrollToTop /> 
 
       <LayoutWrapper>
+        <Suspense fallback={<p>Loading our luxury experience...</p>}>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/calendar" element={<CalendarPage />} />
@@ -144,6 +149,7 @@ export default function App() {
           <Route path="/physicalRooms" element={<ProtectedRoute><PhysicalRoomManager /></ProtectedRoute>} />
 
         </Routes>
+        </Suspense>
       </LayoutWrapper>
     </Router>
   );
