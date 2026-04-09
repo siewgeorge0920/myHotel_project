@@ -1,0 +1,80 @@
+/* --- THE ULTIMATE DARK GOLD THEME --- */
+
+/* 1. 整体容器 - 变黑背景 */
+.premium-datepicker .react-datepicker,
+.react-datepicker {
+  background-color: #242820 !important;
+  border: 1px solid #4b5563 !important;
+  border-radius: 0px !important;
+  font-family: 'serif' !important;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8) !important;
+  color: #ffffff !important;
+}
+
+/* 2. Header 部分 (月份/年份) */
+.react-datepicker__header {
+  background-color: #343a2f !important;
+  border-bottom: 1px solid #4b5563 !important;
+  border-radius: 0 !important;
+  padding-top: 15px !important;
+}
+
+.react-datepicker__current-month {
+  color: #fbbf24 !important; /* 金色 */
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-size: 0.9rem !important;
+  font-weight: 700 !important;
+}
+
+/* 3. 星期几 (M, T, W...) */
+.react-datepicker__day-name {
+  color: #94a3b8 !important; /* 灰色，不抢戏 */
+  text-transform: uppercase;
+  font-weight: 600 !important;
+}
+
+/* 4. 日期格子 (Default) */
+.react-datepicker__day {
+  color: #e5e7eb !important;
+  transition: all 0.2s ease;
+  border-radius: 0 !important;
+}
+
+.react-datepicker__day:hover {
+  background-color: #d97706 !important; /* Hover 变金 */
+  color: #ffffff !important;
+}
+
+/* 5. 重点：Range Highlighting (跟着鼠标跑的颜色) */
+.react-datepicker__day--in-range,
+.react-datepicker__day--in-selecting-range {
+  background-color: rgba(217, 119, 6, 0.2) !important; /* 淡淡的金光 */
+  color: #fbbf24 !important;
+}
+
+/* 6. 重点：选中的 Check-in 和 Check-out 端点 */
+.react-datepicker__day--range-start,
+.react-datepicker__day--range-end,
+.react-datepicker__day--selected {
+  background-color: #d97706 !important; /* 实心金 */
+  color: #ffffff !important;
+  font-weight: bold;
+}
+
+/* 7. 修正箭头的颜色 */
+.react-datepicker__navigation-icon::before {
+  border-color: #fbbf24 !important;
+}
+
+/* 8. 下面的小三角 (Popper Arrow) */
+.react-datepicker__triangle::before,
+.react-datepicker__triangle::after {
+  border-bottom-color: #343a2f !important;
+}
+
+/* 9. 不可以选的日期 (Past dates) */
+.react-datepicker__day--disabled {
+  color: #4b5563 !important;
+  background-color: transparent !important;
+}
