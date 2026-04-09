@@ -9,7 +9,8 @@
     {
       "src": "client/package.json",
       "use": "@vercel/static-build",
-      "config": { "distDir": "dist" }
+      "config": { "distDir": "dist" },
+      "env": { "ROLLUP_NATIVE": "0" }
     }
   ],
   "routes": [
