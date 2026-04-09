@@ -1,41 +1,3 @@
-import { useState, useEffect } from 'react'
-
-function App() {
-  const [message, setMessage] = useState('')
-
-  useEffect(() => {
-    fetch('/api/test')
-      .then((res) => res.json())
-      .then((data) => setMessage(data.message))
-      .catch((err) => console.error(err))
-  }, [])
-
-  return (
-    <div className="min-h-screen bg-gray-900 text-white flex flex-col items-center justify-center p-4">
-      <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent mb-8">
-        Atlantic Horizon
-      </h1>
-      <p className="text-xl mb-4 text-center">
-        Vite React + Tailwind CSS + Express Backend 🚀
-      </p>
-
-      <div className="p-6 max-w-md w-full bg-slate-800 rounded-xl shadow-[0_0_15px_rgba(52,211,153,0.3)] border border-emerald-500/20">
-        <div className="flex flex-col space-y-2">
-          <div className="text-xs font-semibold uppercase tracking-wider text-emerald-400">Message from Server (/api/test)</div>
-          <p className="text-lg text-gray-200">
-            {message ? message : "Waiting for backend..."}
-          </p>
-        </div>
-      </div>
-
-      <div className="mt-12 text-sm text-gray-400">
-        <p>Images go in <code className="bg-gray-800 px-1 py-0.5 rounded text-blue-300">client/src/assets/</code> or <code className="bg-gray-800 px-1 py-0.5 rounded text-blue-300">client/public/</code></p>
-      </div>
-    </div>
-  )
-}
-
-export default App
 import React, { Suspense, useEffect } from 'react'; // 🌟 核心修正 1：记得 Import useEffect
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 
@@ -63,7 +25,7 @@ import UltimateExclusivity from './pages/George/ultimateExclusivity';
 // 🌟 Derrick's Pages (Wellness)
 import Sauna from './pages/Derrick/Sauna';
 import Facial from './pages/Derrick/Facial';
-import Masaage from './pages/Derrick/Massage';
+import Masaage from './pages/Derrick/Massage'; 
 import Hottub from './pages/Derrick/Hottub';
 import Jacuzzi from './pages/Derrick/Jacuzzi';
 
@@ -110,8 +72,8 @@ const LayoutWrapper = ({ children }) => {
   }, [location.pathname]);
 
   const isManagement = [
-    '/staffdashboard', '/adminiam', '/inventory', '/adminlogs',
-    '/roommanagement', '/roompackage', '/physicalrooms', '/bookings', '/transactions',
+    '/staffdashboard', '/adminiam', '/inventory', '/adminlogs', 
+    '/roommanagement', '/roompackage', '/physicalrooms', '/bookings', '/transactions', 
     '/admincalendar', '/roomservice'
   ].some(p => location.pathname.toLowerCase().startsWith(p));
 
@@ -126,7 +88,7 @@ const LayoutWrapper = ({ children }) => {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <Header />
+      <Header /> 
       <main className="flex-grow" key={location.pathname}>
         {isTransitioning && <LuxuryLoader message="Loading Manor..." />}
         {children}
@@ -138,53 +100,53 @@ const LayoutWrapper = ({ children }) => {
 
 export default function App() {
   return (
-
+    
     <Router>
       {/* 🌟 核心修正 3：必须把 ScrollToTop 放在 Router 里面跑 */}
-      <ScrollToTop />
+      <ScrollToTop /> 
 
       <LayoutWrapper>
         <Suspense fallback={<p>Loading our luxury experience...</p>}>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/calendar" element={<CalendarPage />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/secure-payment" element={<PaymentPage />} />
-            <Route path="/check-in" element={<SelfCheckIn />} />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/calendar" element={<CalendarPage />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/secure-payment" element={<PaymentPage />} />
+          <Route path="/check-in" element={<SelfCheckIn />} />
+          
+          {/* Lincoln's Routes */}
+          <Route path="/continentalBreakfast" element={<ContinentalBreakfast />} />
+          <Route path="/honeymoonPackage" element={<HoneymoonPackage />} />
+          <Route path="/localIrishExcursion" element={<LocalIrishExcursion />} />
+          <Route path="/michelineQualityFood" element={<MichelineQualityFood />} />
+          <Route path="/privateChauffer" element={<PrivateChauffer />} />
 
-            {/* Lincoln's Routes */}
-            <Route path="/continentalBreakfast" element={<ContinentalBreakfast />} />
-            <Route path="/honeymoonPackage" element={<HoneymoonPackage />} />
-            <Route path="/localIrishExcursion" element={<LocalIrishExcursion />} />
-            <Route path="/michelineQualityFood" element={<MichelineQualityFood />} />
-            <Route path="/privateChauffer" element={<PrivateChauffer />} />
+          {/* George's Routes */}
+          <Route path="/lodges" element={<PrivateLodges />} />
+          <Route path="/villas" element={<PrivateResidences />} />
+          <Route path="/exclusivity" element={<UltimateExclusivity />} />
 
-            {/* George's Routes */}
-            <Route path="/lodges" element={<PrivateLodges />} />
-            <Route path="/villas" element={<PrivateResidences />} />
-            <Route path="/exclusivity" element={<UltimateExclusivity />} />
+          {/* Derrick's Routes */}
+          <Route path="/sauna" element={<Sauna />} />
+          <Route path="/facial" element={<Facial />} />
+          <Route path="/massage" element={<Masaage />} />
+          <Route path="/jacuzzi" element={<Jacuzzi />} />
+          <Route path="/hottub" element={<Hottub />} />
 
-            {/* Derrick's Routes */}
-            <Route path="/sauna" element={<Sauna />} />
-            <Route path="/facial" element={<Facial />} />
-            <Route path="/massage" element={<Masaage />} />
-            <Route path="/jacuzzi" element={<Jacuzzi />} />
-            <Route path="/hottub" element={<Hottub />} />
+          {/* Management Portal */}
+          <Route path="/staffDashboard" element={<ProtectedRoute><StaffDashboard /></ProtectedRoute>} />
+          <Route path="/inventory" element={<ProtectedRoute><Inventory /></ProtectedRoute>} />
+          <Route path="/adminIam" element={<ProtectedRoute><AdminIAM /></ProtectedRoute>} />
+          <Route path="/adminLogs" element={<ProtectedRoute><AdminLogs /></ProtectedRoute>} />
+          <Route path="/roomManagement" element={<ProtectedRoute><RoomManagement /></ProtectedRoute>} />
+          <Route path="/roomPackage" element={<ProtectedRoute><RoomPackage /></ProtectedRoute>} />
+          <Route path="/bookings" element={<ProtectedRoute><BookingManagement /></ProtectedRoute>} />
+          <Route path="/transactions" element={<ProtectedRoute><Transactions /></ProtectedRoute>} />
+          <Route path="/adminCalendar" element={<ProtectedRoute><AdminCalendar /></ProtectedRoute>} />
+          <Route path="/roomService" element={<ProtectedRoute><RoomService /></ProtectedRoute>} />
+          <Route path="/physicalRooms" element={<ProtectedRoute><PhysicalRoomManager /></ProtectedRoute>} />
 
-            {/* Management Portal */}
-            <Route path="/staffDashboard" element={<ProtectedRoute><StaffDashboard /></ProtectedRoute>} />
-            <Route path="/inventory" element={<ProtectedRoute><Inventory /></ProtectedRoute>} />
-            <Route path="/adminIam" element={<ProtectedRoute><AdminIAM /></ProtectedRoute>} />
-            <Route path="/adminLogs" element={<ProtectedRoute><AdminLogs /></ProtectedRoute>} />
-            <Route path="/roomManagement" element={<ProtectedRoute><RoomManagement /></ProtectedRoute>} />
-            <Route path="/roomPackage" element={<ProtectedRoute><RoomPackage /></ProtectedRoute>} />
-            <Route path="/bookings" element={<ProtectedRoute><BookingManagement /></ProtectedRoute>} />
-            <Route path="/transactions" element={<ProtectedRoute><Transactions /></ProtectedRoute>} />
-            <Route path="/adminCalendar" element={<ProtectedRoute><AdminCalendar /></ProtectedRoute>} />
-            <Route path="/roomService" element={<ProtectedRoute><RoomService /></ProtectedRoute>} />
-            <Route path="/physicalRooms" element={<ProtectedRoute><PhysicalRoomManager /></ProtectedRoute>} />
-
-          </Routes>
+        </Routes>
         </Suspense>
       </LayoutWrapper>
     </Router>
