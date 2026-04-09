@@ -31,7 +31,7 @@ export default function StaffDashboard() {
 
   const handleManagerLogin = async () => {
     try {
-      const res = await axios.post('http://localhost:5000/api/login', managerCreds);
+      const res = await axios.post('/api/login', managerCreds);
       const role = res.data.role;
       if (role === 'admin' || role === 'manager') {
         setIsManagerMode(true);

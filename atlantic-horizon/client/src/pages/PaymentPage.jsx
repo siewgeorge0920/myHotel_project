@@ -34,7 +34,7 @@ function CheckoutForm({ clientSecret, bookingId, totalPrice }) {
       setSucceeded(true);
       
       // Update booking status
-      await fetch(`http://localhost:5000/api/bookings/${bookingId}/status`, {
+      await fetch(`/api/bookings/${bookingId}/status`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ paymentStatus: 'Paid' })
@@ -92,7 +92,7 @@ export default function PaymentPage() {
       return;
     }
 
-    fetch('http://localhost:5000/api/create-payment-intent', {
+    fetch('/api/create-payment-intent', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

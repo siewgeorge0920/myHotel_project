@@ -16,7 +16,7 @@ export default function AdminLogs() {
   const [loading, setLoading] = useState(true);
 
   const fetchLogs = () => {
-    fetch('http://localhost:5000/api/logs')
+    fetch('/api/logs')
       .then(r => r.json())
       .then(data => {
         setLogs(data);

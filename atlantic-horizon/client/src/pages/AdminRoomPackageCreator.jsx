@@ -64,8 +64,8 @@ export default function AdminRoomPackageCreator({ onPackageCreated, editData, on
     setMessage('');
 
     const url = editData 
-      ? `http://localhost:5000/api/rooms/${editData._id}`
-      : 'http://localhost:5000/api/rooms';
+      ? `/api/rooms/${editData._id}`
+      : `/api/rooms`;
     
     const method = editData ? 'PUT' : 'POST';
 

@@ -29,8 +29,8 @@ export default function RoomManagement() {
     setLoading(true);
     try {
       const [resB, resP] = await Promise.all([
-        fetch('http://localhost:5000/api/bookings'),
-        fetch('http://localhost:5000/api/physical-rooms')
+        fetch('/api/bookings'),
+        fetch('/api/physical-rooms')
       ]);
       setBookings(await resB.json());
       setPhysicalRooms(await resP.json());
@@ -40,7 +40,7 @@ export default function RoomManagement() {
   useEffect(() => { fetchData(); }, []);
 
   const updateStatus = async (id, status) => {
-    await fetch(`http://localhost:5000/api/bookings/${id}/status`, {
+    await fetch(`/api/bookings/${id}/status`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ status })
@@ -50,7 +50,7 @@ export default function RoomManagement() {
   
   const handleCheckIn = async () => {
     if(!assignedUnit) return alert('Physical unit number required.');
-    await fetch(`http://localhost:5000/api/bookings/${checkInModal._id}/status`, {
+    await fetch(`/api/bookings/${checkInModal._id}/status`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ status: 'CheckedIn', assignedUnit })

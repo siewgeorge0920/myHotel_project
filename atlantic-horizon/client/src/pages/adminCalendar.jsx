@@ -11,8 +11,8 @@ export default function AdminCalendar() {
 
   useEffect(() => {
     Promise.all([
-      fetch('http://localhost:5000/api/bookings'),
-      fetch('http://localhost:5000/api/physical-rooms')
+      fetch('/api/bookings'),
+      fetch('/api/physical-rooms')
     ])
       .then(([resB, resP]) => Promise.all([resB.json(), resP.json()]))
       .then(([dataB, dataP]) => {

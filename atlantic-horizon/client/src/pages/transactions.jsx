@@ -17,7 +17,7 @@ export default function Transactions() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/transactions')
+    fetch('/api/transactions')
       .then(r => r.json())
       .then(data => { setTxns(data); setLoading(false); })
       .catch(() => setLoading(false));

@@ -26,8 +26,8 @@ export default function RoomPackage() {
     setLoading(true);
     try {
       const [resRooms, resUnits] = await Promise.all([
-        fetch('http://localhost:5000/api/rooms'),
-        fetch('http://localhost:5000/api/physical-rooms')
+        fetch('/api/rooms'),
+        fetch('/api/physical-rooms')
       ]);
       const dataRooms = await resRooms.json();
       const dataUnits = await resUnits.json();
@@ -68,7 +68,7 @@ export default function RoomPackage() {
 
   const confirmDelete = async () => {
     try {
-      const res = await fetch(`http://localhost:5000/api/rooms/${deleteModal.id}`, { method: 'DELETE' });
+      const res = await fetch(`/api/rooms/${deleteModal.id}`, { method: 'DELETE' });
       if (res.ok) {
         flash('Luxury Package deleted successfully ✅');
         fetchRooms();

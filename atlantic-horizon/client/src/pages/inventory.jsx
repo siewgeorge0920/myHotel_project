@@ -10,7 +10,7 @@ export default function Inventory() {
   const user = JSON.parse(localStorage.getItem('user'));
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/rooms')
+    fetch('/api/rooms')
       .then(res => res.json())
       .then(data => { setRooms(data); setLoading(false); });
   }, []);

@@ -95,7 +95,7 @@ export default function CalendarPage() {
       
       setIsChecking(true);
       
-      fetch('http://localhost:5000/api/check-availability', {
+      fetch('/api/check-availability', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ checkIn, checkOut }),
@@ -132,7 +132,7 @@ export default function CalendarPage() {
       const realDepartment = deptMap[category] || category;
 
       // Step 1: Create the Booking record in our DB (status = Pending)
-      const bookingRes = await fetch('http://localhost:5000/api/bookings/create', {
+      const bookingRes = await fetch('/api/bookings/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

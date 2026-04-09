@@ -9,7 +9,7 @@ export default function RoomService() {
   const [loading, setLoading] = useState(true);
 
   const fetchServices = () => {
-    fetch('http://localhost:5000/api/physical-rooms')
+    fetch('/api/physical-rooms')
       .then(res => res.json())
       .then(data => {
         setServices(data);
@@ -23,7 +23,7 @@ export default function RoomService() {
 
   const updateCleaningStatus = async (id, status) => {
     try {
-      await fetch(`http://localhost:5000/api/physical-rooms/${id}/status`, {
+      await fetch(`/api/physical-rooms/${id}/status`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status })

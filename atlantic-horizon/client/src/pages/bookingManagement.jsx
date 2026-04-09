@@ -39,7 +39,7 @@ export default function BookingManagement() {
 
   const fetchBookings = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/bookings');
+      const res = await fetch('/api/bookings');
       const data = await res.json();
       setBookings(data);
     } catch { } finally { setLoading(false); }
@@ -48,8 +48,8 @@ export default function BookingManagement() {
   const fetchRooms = async () => {
     try {
       const [resRooms, resUnits] = await Promise.all([
-        fetch('http://localhost:5000/api/rooms'),
-        fetch('http://localhost:5000/api/physical-rooms')
+        fetch('/api/rooms'),
+        fetch('/api/physical-rooms')
       ]);
       const dataRooms = await resRooms.json();
       const dataUnits = await resUnits.json();
@@ -72,7 +72,7 @@ export default function BookingManagement() {
   const [deleteModal, setDeleteModal] = useState({ isOpen: false, id: null, bookingId: null });
 
   const updateStatus = async (id, status) => {
-    await fetch(`http://localhost:5000/api/bookings/${id}/status`, {
+    await fetch(`/api/bookings/${id}/status`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ status })
@@ -83,7 +83,7 @@ export default function BookingManagement() {
   
   const handleCheckIn = async () => {
     if(!assignedUnit) return flash('❌ Physical unit number required.', true);
-    await fetch(`http://localhost:5000/api/bookings/${checkInModal._id}/status`, {
+    await fetch(`/api/bookings/${checkInModal._id}/status`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ status: 'CheckedIn', assignedUnit })
@@ -98,7 +98,7 @@ export default function BookingManagement() {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await fetch('http://localhost:5000/api/bookings/create', {
+      const res = await fetch('/api/bookings/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ...walkInForm, isWalkIn: true, paymentStatus: 'Paid' })
@@ -139,7 +139,7 @@ export default function BookingManagement() {
   const confirmDelete = async () => {
     const { id } = deleteModal;
     setDeleteModal({ isOpen: false, id: null, bookingId: null });
-    await fetch(`http://localhost:5000/api/bookings/${id}`, { method: 'DELETE' });
+    await fetch(`/api/bookings/${id}`, { method: 'DELETE' });
     flash('🗑️ Booking removed');
     fetchBookings();
   };
@@ -151,7 +151,7 @@ export default function BookingManagement() {
       const nights = b.checkInDate && b.checkOutDate
         ? Math.max(Math.ceil((new Date(b.checkOutDate) - new Date(b.checkInDate)) / 86400000), 1)
         : 1;
-      const res = await fetch('http://localhost:5000/api/resend-payment-link', {
+      const res = await fetch('/api/resend-payment-link', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
