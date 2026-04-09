@@ -11,5 +11,8 @@
     "start": "cd server && npm start",
     "install-client": "cd client && npm install",
     "install-server": "cd server && npm install"
+  },
+  "dependencies": {
+    "vercel": "^50.42.0"
   }
 }
