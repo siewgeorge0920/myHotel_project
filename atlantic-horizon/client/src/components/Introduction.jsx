@@ -16,17 +16,17 @@ export default function Introduction() {
         </div>
 
         {/* Main hotel name (large serif-style display) */}
-        <h1 className="font-courier text-4xl md:text-5xl tracking-[4px] font-normal mb-2 uppercase">
+        <h1 className="font-serif text-4xl md:text-5xl tracking-[4px] font-normal mb-2 uppercase">
           The Atlantic Horizon Manor
         </h1>
 
         {/* Tagline / location descriptor */}
-        <h2 className="font-courier text-2xl md:text-3xl text-manorTan mb-10 font-normal">
+        <h2 className="font-serif text-2xl md:text-3xl text-manorTan mb-10 font-normal">
           Royal Elegance on Ireland&apos;s Southwest Coast
         </h2>
 
         {/* Descriptive paragraphs about the hotel experience */}
-        <div className="space-y-6 text-lg md:text-xl text-gray-600 leading-relaxed font-courier">
+        <div className="space-y-6 text-lg md:text-xl text-gray-600 leading-relaxed font-sans">
           <p>
             Perched where the rugged beauty of the Southwest of Ireland meets
             the infinite blue, The Atlantic Horizon Manor offers a sanctuary of

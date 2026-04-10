@@ -38,10 +38,10 @@ export default function ExperienceSection() {
 
           {/* Text content column */}
           <div className="flex-1 p-5">
-            <h3 className="font-courier text-3xl text-[#1a1a1a] mb-4 tracking-wide">
+            <h3 className="font-serif text-3xl text-[#1a1a1a] mb-4 tracking-wide">
               {f.title}
             </h3>
-            <p className="font-courier text-lg leading-relaxed text-[#333]">
+            <p className="font-sans text-lg leading-relaxed text-[#333]">
               {f.text}
             </p>
           </div>

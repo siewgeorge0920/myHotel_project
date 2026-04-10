@@ -8,10 +8,10 @@ export default function Newsletter() {
         
         {/* Left column: heading and description */}
         <div className="flex-1">
-          <h2 className="font-georgia text-4xl text-manorGreen mb-4 font-normal">
+          <h2 className="font-serif text-4xl text-manorGreen mb-4 font-normal">
             Sign up to receive our latest news!
           </h2>
-          <p className="font-georgia text-lg text-[#666] leading-relaxed">
+          <p className="font-sans text-lg text-[#666] leading-relaxed">
             Sign up here to our Newsletter to receive special offers and news
             via email directly into your inbox.
           </p>
@@ -22,7 +22,7 @@ export default function Newsletter() {
           
           {/* First name input */}
           <div className="flex flex-col gap-2 text-left max-[850px]:text-center">
-            <label className="font-georgia text-sm text-[#333]">
+            <label className="font-sans text-sm text-[#333]">
               First Name <span className="text-[#c5a898]">*</span>
             </label>
             <input
@@ -34,7 +34,7 @@ export default function Newsletter() {
 
           {/* Email input */}
           <div className="flex flex-col gap-2 text-left max-[850px]:text-center">
-            <label className="font-georgia text-sm text-[#333]">
+            <label className="font-sans text-sm text-[#333]">
               Email Address <span className="text-[#c5a898]">*</span>
             </label>
             <input
