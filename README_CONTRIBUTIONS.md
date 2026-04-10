@@ -10,6 +10,8 @@ Work Are split evenly between 3 of us
 
 The staff log in button is located under the phone and email at the footer. it is invisible, and would appear on hover
 
+Stripe Payment is intentionally disabled. As the website is live on the internet.
+
 ## References
 
 - React documentation: https://react.dev/
