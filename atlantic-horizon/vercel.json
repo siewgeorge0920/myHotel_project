@@ -1,15 +1,16 @@
 {
   "version": 2,
-  "installCommand": "npm install",
   "builds": [
-    {
-      "src": "server/server.js",
-      "use": "@vercel/node"
-    },
     {
       "src": "client/package.json",
       "use": "@vercel/static-build",
-      "config": { "distDir": "dist" }
+      "config": {
+        "distDir": "dist"
+      }
+    },
+    {
+      "src": "server/server.js",
+      "use": "@vercel/node"
     }
   ],
   "routes": [
@@ -18,23 +19,8 @@
       "dest": "/server/server.js"
     },
     {
-      "src": "/assets/(.*)",
-      "dest": "/client/dist/assets/$1"
-    },
-    {
-      "src": "/images/(.*)",
-      "dest": "/client/dist/images/$1"
-    },
-    {
-      "src": "/vite.svg",
-      "dest": "/client/dist/vite.svg"
-    },
-    {
-      "handle": "filesystem"
-    },
-    {
       "src": "/(.*)",
-      "dest": "/client/dist/index.html"
+      "dest": "/client/dist/$1"
     }
   ]
 }

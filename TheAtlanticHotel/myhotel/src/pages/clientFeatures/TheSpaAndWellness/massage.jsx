@@ -1,0 +1,1 @@
+export default function Massage() { return <div>Massage Page</div>; }

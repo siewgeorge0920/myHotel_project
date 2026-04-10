@@ -1,0 +1,1 @@
+export default function Sauna() { return <div>Sauna Page</div>; }

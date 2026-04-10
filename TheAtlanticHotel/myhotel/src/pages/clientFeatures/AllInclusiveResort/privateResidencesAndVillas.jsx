@@ -1,0 +1,1 @@
+export default function PrivateResidencesAndVillas() { return <div>Private Residences and Villas Page</div>; }

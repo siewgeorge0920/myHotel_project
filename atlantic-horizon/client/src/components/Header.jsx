@@ -40,7 +40,7 @@ export default function Header() {
 
   return (
     <>
-      <header className="bg-manorGreen text-manorGold flex items-center justify-between px-6 lg:px-10 h-24 lg:h-36 sticky top-0 z-50 relative">
+      <header className="bg-manorGreen text-manorGold flex items-center justify-between px-6 lg:px-10 h-24 lg:h-36 sticky top-0 z-50">
         
         {/* ===== LEFT: Hamburger (mobile) + Desktop Nav ===== */}
         <div className="flex items-center gap-10 flex-1">
