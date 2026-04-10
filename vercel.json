@@ -1,0 +1,34 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "atlantic-horizon/client/package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "dist"
+      }
+    },
+    {
+      "src": "atlantic-horizon/server/server.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "atlantic-horizon/server/server.js"
+    },
+    {
+      "src": "/assets/(.*)",
+      "dest": "/atlantic-horizon/client/assets/$1"
+    },
+    {
+      "src": "/images/(.*)",
+      "dest": "/atlantic-horizon/client/public/images/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
+    }
+  ]
+}
