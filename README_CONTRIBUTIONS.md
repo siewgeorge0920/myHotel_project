@@ -5,7 +5,7 @@ Zhang Long Khai 3133272
 https://theatlantichorizion.com -- hosted no render at the moment. planning to deply on vercel
 https://github.com/siewgeorge0920/myHotel_project
 
-# Work Status
+# Contributions
 Work Are split evenly between 3 of us
 
 The staff log in button is located under the phone and email at the footer. it is invisible, and would appear on hover
