@@ -22,7 +22,7 @@ export default function Inventory() {
 
   return (
     <div className="flex min-h-screen" style={{ backgroundColor: COLORS.bgDeep }}>
-      {/* 🌟 左边导航栏，指引 Admin 和 Staff */}
+      {/* Left sidebar navigation for Admin and Staff */}
       <ManagementSidebar user={user} />
       
       <main className="flex-1 p-16 text-white">
@@ -49,7 +49,7 @@ export default function Inventory() {
               <div className="flex items-center space-x-8">
                 <button className="text-[10px] uppercase tracking-widest text-gray-400 hover:text-white transition-colors">Edit</button>
                 
-                {/* 🛡️ 核心权限逻辑 */}
+                {/* Core permission logic */}
                 {isAdmin ? (
                   <button className="text-[10px] uppercase tracking-widest text-red-500 hover:text-red-400 font-bold" onClick={() => showAlert('Permanently Deleting...')}>
                     Delete

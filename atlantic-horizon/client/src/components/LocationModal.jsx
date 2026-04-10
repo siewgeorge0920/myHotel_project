@@ -1,5 +1,5 @@
 import React from "react";
-
+// this would be used in the future if we have a Location Section
 export default function LocationModal({ isOpen, onClose }) {
   if (!isOpen) return null;
 

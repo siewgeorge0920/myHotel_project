@@ -5,7 +5,7 @@ export default function PrivateChauffer() {
   return (
     <div className="bg-[#111310] min-h-screen text-white font-lato selection:bg-amber-500/30 selection:text-amber-200">
 
-      {/* 🎬 MAIN HERO - MAYBACH */}
+      {/*MAIN HERO - MAYBACH */}
       <section className="relative aspect-[4/3] md:aspect-video min-h-[500px] md:min-h-0 w-full overflow-hidden flex items-center justify-center pt-20">
         <div className="absolute inset-0 z-0">
           <img src="/images/Lincoln/Chauffeur/maybach.png" className="w-full h-full object-cover opacity-60 scale-105" alt="Lincoln Maybach Fleet" />
@@ -37,7 +37,7 @@ export default function PrivateChauffer() {
         </div>
       </section>
 
-      {/* 🚗 THE FLEET: VINTAGE & MODERN (Rolls Royce & Services) */}
+      {/*THE FLEET: VINTAGE & MODERN (Rolls Royce & Services) */}
       <section className="py-24 md:py-32 px-6 md:px-16 lg:px-24 border-t border-white/5 relative bg-[#111310]">
         {/* Ambient Glow */}
         <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-amber-900/10 rounded-full blur-[150px] pointer-events-none"></div>
@@ -81,7 +81,7 @@ export default function PrivateChauffer() {
         </div>
       </section>
 
-      {/* 🚁 AVIATION & ARRIVALS (Helicopter & Greetings) */}
+      {/*AVIATION & ARRIVALS (Helicopter & Greetings) */}
       <section className="py-24 md:py-32 px-6 md:px-16 lg:px-24 bg-[#0a0c09] relative border-t border-white/5">
         <div className="max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-12 gap-16 lg:gap-24 items-center">

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import ManagementSidebar from '../components/managementSidebar';
 import { COLORS } from '../colors';
 
+// Optional action-to-color mapping for quick visual scanning in the table.
 const ACTION_COLOR = {
   STAFF_CREATED: 'text-green-400',
   STAFF_UPDATED: 'text-amber-400',
@@ -9,12 +10,16 @@ const ACTION_COLOR = {
 };
 
 export default function AdminLogs() {
+  // Session context for sidebar behavior.
   const user = JSON.parse(localStorage.getItem('user'));
   const isManagerMode = localStorage.getItem('managerMode') === 'true';
+
+  // Audit log data and page status state.
   const [logs, setLogs] = useState([]);
   const [lastRefreshed, setLastRefreshed] = useState('');
   const [loading, setLoading] = useState(true);
 
+  // Fetch audit logs and update refresh timestamp.
   const fetchLogs = () => {
     fetch('/api/logs')
       .then(r => r.json())
@@ -26,6 +31,7 @@ export default function AdminLogs() {
       .catch(() => setLoading(false));
   };
 
+  // Initial fetch + background polling every 10 seconds.
   useEffect(() => {
     fetchLogs();
     const interval = setInterval(fetchLogs, 10000);
@@ -50,6 +56,7 @@ export default function AdminLogs() {
           </button>
         </header>
 
+        {/* Render state: loading, empty state, or populated audit table. */}
         {loading ? (
           <p className="text-white/20 text-xs uppercase tracking-widest animate-pulse">Loading audit records...</p>
         ) : logs.length === 0 ? (

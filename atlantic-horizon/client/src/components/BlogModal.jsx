@@ -1,5 +1,5 @@
 import React from "react";
-
+// this would be used in the future when we have a blog section
 export default function BlogModal({ isOpen, onClose }) {
   if (!isOpen) return null;
 

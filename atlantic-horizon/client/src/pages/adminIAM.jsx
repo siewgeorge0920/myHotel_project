@@ -3,9 +3,13 @@ import ManagementSidebar from '../components/managementSidebar';
 import { COLORS } from '../colors';
 import CustomModal from '../components/CustomModal';
 
+// Default form shape for creating/editing staff accounts.
 const EMPTY = { _id: '', name: '', password: '', role: 'staff', status: 'Active', permissions: [] };
+// Allowed role options shown in role selector.
 const ROLES = ['staff', 'manager', 'admin'];
+// Allowed account statuses.
 const STATUSES = ['Active', 'Suspended'];
+// Permission catalog for optional tool access.
 const PERMISSION_OPTIONS = [
   { key: 'payment_edit', label: '💳 Process Payments', desc: 'Generate & resend payment links' },
   { key: 'booking_manage', label: '📋 Manage Bookings', desc: 'Edit, cancel, check-in/out' },
@@ -14,8 +18,11 @@ const PERMISSION_OPTIONS = [
 ];
 
 export default function AdminIAM() {
+  // Session context used by sidebar rendering.
   const user = JSON.parse(localStorage.getItem('user'));
   const isManagerMode = localStorage.getItem('managerMode') === 'true';
+
+  // Page data and interaction state.
   const [staffList, setStaffList] = useState([]);
   const [form, setForm] = useState(EMPTY);
   const [isEdit, setIsEdit] = useState(false);
@@ -23,20 +30,24 @@ export default function AdminIAM() {
   const [msg, setMsg] = useState(null);
   const [settings, setSettings] = useState({});
 
+  // Fetch all staff accounts.
   const fetchStaff = () => {
     fetch('/api/staff')
       .then(r => r.json())
       .then(setStaffList);
   };
   
+  // Fetch global hotel settings shown at the bottom panel.
   const fetchSettings = () => {
     fetch('/api/settings')
       .then(r => r.json())
       .then(setSettings);
   };
 
+  // Initial data load on first render.
   useEffect(() => { fetchStaff(); fetchSettings(); }, []);
   
+  // Optimistically update one setting and persist it to backend.
   const updateSetting = async (key, value) => {
     setSettings(prev => ({ ...prev, [key]: value }));
     try {
@@ -51,11 +62,13 @@ export default function AdminIAM() {
     }
   };
 
+  // Temporary toast-like message helper.
   const flash = (text, isErr = false) => {
     setMsg({ text, isErr });
     setTimeout(() => setMsg(null), 3500);
   };
 
+  // Create or update a staff account depending on edit mode.
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -78,12 +91,15 @@ export default function AdminIAM() {
     }
   };
 
+  // Delete confirmation modal state.
   const [deleteModal, setDeleteModal] = useState({ isOpen: false, id: null, name: null });
 
+  // Open delete confirmation for a selected account.
   const requestDelete = (id, name) => {
     setDeleteModal({ isOpen: true, id, name });
   };
 
+  // Execute delete after confirmation.
   const confirmDelete = async () => {
     const { id } = deleteModal;
     setDeleteModal({ isOpen: false, id: null, name: null });
@@ -92,6 +108,7 @@ export default function AdminIAM() {
     fetchStaff();
   };
 
+  // Toggle Active/Suspended status for a staff account.
   const toggleStatus = async (staff) => {
     const newStatus = staff.status === 'Active' ? 'Suspended' : 'Active';
     await fetch(`/api/staff/${staff._id}`, {
@@ -103,6 +120,7 @@ export default function AdminIAM() {
     fetchStaff();
   };
 
+  // Role-to-color mapping for table badges.
   const ROLE_COLOR = { admin: 'text-red-400', manager: 'text-amber-400', staff: 'text-blue-300' };
 
   return (
@@ -122,7 +140,7 @@ export default function AdminIAM() {
         )}
 
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-10">
-          {/* Form */}
+          {/* Account create/edit form */}
           <div className="p-8 border" style={{ backgroundColor: COLORS.bgSurface, borderColor: isEdit ? COLORS.amber : COLORS.border }}>
             <h2 className="text-lg font-serif italic mb-6">{isEdit ? '✏️ Edit Account' : '+ Register New Account'}</h2>
             <form onSubmit={handleSubmit} className="space-y-5">
@@ -167,7 +185,7 @@ export default function AdminIAM() {
                 </div>
               </div>
 
-              {/* Permissions / Tool Add-Ons */}
+              {/* Permissions and tool access toggles */}
               <div>
                 <label className="block text-[10px] uppercase tracking-widest text-amber-500 font-bold mb-2">Tool Add-Ons & Permissions</label>
                 <div className="space-y-2">
@@ -210,7 +228,7 @@ export default function AdminIAM() {
             </form>
           </div>
 
-          {/* Staff Table */}
+          {/* Staff account listing and quick actions */}
           <div className="xl:col-span-2 border overflow-hidden" style={{ backgroundColor: COLORS.bgSurface, borderColor: COLORS.border }}>
             <table className="w-full text-left">
               <thead className="bg-white/5 text-[10px] uppercase tracking-widest text-amber-500 font-black">
@@ -247,7 +265,7 @@ export default function AdminIAM() {
           </div>
         </div>
 
-        {/* Global Settings Block */}
+        {/* Global hotel defaults panel */}
         <div className="mt-10 p-8 border" style={{ backgroundColor: COLORS.bgSurface, borderColor: COLORS.amber }}>
           <h2 className="text-lg font-serif italic mb-6">⚙️ Global Hotel Settings</h2>
           <div className="flex flex-col md:flex-row gap-10">

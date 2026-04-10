@@ -5,7 +5,7 @@ export default function HoneymoonPackage() {
   return (
     <div className="bg-[#111310] min-h-screen text-white font-lato selection:bg-amber-500/30 selection:text-amber-200">
       
-      {/* 🥂 HERO SECTION */}
+      {/* HERO SECTION */}
       <section className="relative h-screen w-full overflow-hidden flex items-center justify-center pt-20">
         <div className="absolute inset-0 z-0">
            <img src="/images/Lincoln/Honeymoon/sunset.png" className="w-full h-full object-cover opacity-90 scale-105" alt="Lincoln Honeymoon Sunset" />
@@ -35,7 +35,7 @@ export default function HoneymoonPackage() {
         </div>
       </section>
 
-      {/* ✨ THE INCLUSIONS - EDITORIAL GRID */}
+      {/*THE INCLUSIONS - EDITORIAL GRID */}
       <section className="py-24 md:py-32 px-6 md:px-16 lg:px-24 max-w-[1400px] mx-auto relative bg-[#111310] border-t border-white/5">
          
          <div className="text-center mb-20 max-w-2xl mx-auto">
@@ -111,7 +111,7 @@ export default function HoneymoonPackage() {
          </div>
       </section>
 
-      {/* 🎬 GRAND FINALE - PRIVATE MOVIE SCREENING */}
+      {/* GRAND FINALE - PRIVATE MOVIE SCREENING */}
       <section className="py-24 px-6 md:px-16 lg:px-24 mb-12 max-w-7xl mx-auto border-t border-white/5">
          <div className="grid lg:grid-cols-2 gap-12 items-center bg-[#0a0c09] text-white rounded-sm overflow-hidden shadow-2xl relative border border-white/5">
             

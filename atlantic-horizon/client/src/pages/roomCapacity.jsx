@@ -3,11 +3,15 @@ import ManagementSidebar from '../components/managementSidebar';
 import { COLORS } from '../colors';
 
 export default function RoomCapacity() {
+  // Session context used by sidebar to show role-based navigation.
   const user = JSON.parse(localStorage.getItem('user'));
   const isManagerMode = localStorage.getItem('managerMode') === 'true';
+
+  // Room list and loading state for the capacity dashboard.
   const [rooms, setRooms] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // Fetch all room definitions with current capacity values.
   const fetchRooms = () => {
     fetch('http://localhost:5000/api/rooms')
       .then(res => res.json())
@@ -17,10 +21,12 @@ export default function RoomCapacity() {
       });
   };
 
+  // Initial load on first render.
   useEffect(() => {
     fetchRooms();
   }, []);
 
+  // Persist one room's capacity change, then refresh list.
   const updateCapacity = async (id, newCapacity) => {
     try {
       await fetch(`http://localhost:5000/api/rooms/${id}`, {
@@ -46,6 +52,7 @@ export default function RoomCapacity() {
           </p>
         </header>
 
+        {/* Render state: loading text or capacity cards grid. */}
         {loading ? (
           <p className="text-white/20 text-xs uppercase tracking-widest animate-pulse">Loading rooms...</p>
         ) : (
@@ -60,6 +67,7 @@ export default function RoomCapacity() {
                 <div className="space-y-4 border-t pt-4" style={{ borderColor: COLORS.border }}>
                   <div>
                     <label className="block text-[9px] uppercase tracking-widest text-white/40 mb-2">Total Capacity</label>
+                    {/* Stepper controls to decrease/increase capacity. */}
                     <div className="flex items-center gap-4">
                       <button onClick={() => updateCapacity(room._id, Math.max(1, (room.capacity || 1) - 1))} className="w-8 h-8 border border-white/20 hover:bg-white/10">-</button>
                       <span className="text-2xl font-serif">{room.capacity || 1}</span>

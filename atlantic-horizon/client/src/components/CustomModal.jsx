@@ -1,5 +1,5 @@
 import React from 'react';
-
+//this would be used in the future when we have a Custom section
 export default function CustomModal({ isOpen, title, message, onConfirm, onCancel, confirmText = 'Confirm', cancelText = 'Cancel', isAlert = false, isDestructive = false }) {
   if (!isOpen) return null;
 

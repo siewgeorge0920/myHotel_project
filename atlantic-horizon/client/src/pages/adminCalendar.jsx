@@ -3,12 +3,16 @@ import ManagementSidebar from '../components/managementSidebar';
 import { COLORS } from '../colors';
 
 export default function AdminCalendar() {
+  // Session/user context for sidebar role rendering.
   const user = JSON.parse(localStorage.getItem('user'));
   const isManagerMode = localStorage.getItem('managerMode') === 'true';
+
+  // Calendar data sources.
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [physicalRooms, setPhysicalRooms] = useState([]);
 
+  // Load booking records and physical-unit inventory in parallel on first render.
   useEffect(() => {
     Promise.all([
       fetch('/api/bookings'),
@@ -22,8 +26,11 @@ export default function AdminCalendar() {
       });
   }, []);
 
+  // Normalize "today" to midnight for consistent date-only comparisons.
   const today = new Date();
   today.setHours(0,0,0,0);
+
+  // Build a rolling 14-day window (today + next 13 days).
   const days = Array.from({length: 14}).map((_, i) => {
     const d = new Date(today);
     d.setDate(d.getDate() + i);
@@ -45,7 +52,7 @@ export default function AdminCalendar() {
         {loading ? <p className="animate-pulse text-white/30 text-xs tracking-widest">Loading calendar data...</p> : (
           <div className="overflow-x-auto w-full border" style={{ backgroundColor: COLORS.bgSurface, borderColor: COLORS.border }}>
             <div className="min-w-[1000px]">
-              {/* Header row */}
+              {/* Header row for day labels across the 14-day horizon. */}
               <div className="flex border-b" style={{ borderColor: COLORS.border }}>
                 <div className="w-48 p-4 font-serif text-amber-500 border-r" style={{ borderColor: COLORS.border }}>Room / Department</div>
                 {days.map((d, i) => (
@@ -57,7 +64,8 @@ export default function AdminCalendar() {
                   </div>
                 ))}
               </div>
-              {/* Body rows (Physical Units) */}
+
+              {/* Body rows: one row per physical unit, one cell per day. */}
               {physicalRooms.map(unit => (
                 <div key={unit._id} className="flex border-b hover:bg-white/[0.02]" style={{ borderColor: COLORS.border }}>
                    <div className="w-48 p-4 border-r" style={{ borderColor: COLORS.border }}>
@@ -65,9 +73,12 @@ export default function AdminCalendar() {
                      <p className="text-[10px] uppercase text-white/50 tracking-widest">{unit.department} - {unit.roomType}</p>
                    </div>
                    {days.map((d, i) => {
+                      // Find bookings that overlap this unit and day.
                       const dayBookings = bookings.filter(b => {
-                        // In calendar, we check if the physical room is already assigned
+                        // Booking must be assigned to this exact physical unit.
                         if (b.assignedUnit !== unit.roomName) return false;
+
+                        // Occupancy spans check-in day (inclusive) to check-out day (exclusive).
                         const start = new Date(b.checkInDate).setHours(0,0,0,0);
                         const end = new Date(b.checkOutDate).setHours(0,0,0,0);
                         return d.getTime() >= start && d.getTime() < end; 
@@ -93,7 +104,8 @@ export default function AdminCalendar() {
                    })}
                 </div>
               ))}
-              
+
+              {/* Empty-state guidance when no physical units are configured yet. */}
               {physicalRooms.length === 0 && (
                 <div className="p-8 text-center text-xs uppercase tracking-widest text-white/30 border-b" style={{ borderColor: COLORS.border }}>
                   No Physical Units Registered Yet. Please register units under Admin Control.

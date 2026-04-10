@@ -4,6 +4,7 @@ import { loadStripe } from '@stripe/stripe-js';
 import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import { COLORS } from '../colors';
 
+// Initialize Stripe once using the publishable key from Vite env.
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || 'pk_test_51O2x5uD8Uo1oVpA1z2B3c4D5E6F7G8H9I0J1K2L3M4N5O6P7Q8R9S0T1U2V3W4X5Y6Z7A8B9C0D1E2F3G4H5I6J7K8L9M0N');
 
 function CheckoutForm({ clientSecret, bookingId, totalPrice }) {
@@ -14,6 +15,7 @@ function CheckoutForm({ clientSecret, bookingId, totalPrice }) {
   const [processing, setProcessing] = useState(false);
   const [succeeded, setSucceeded] = useState(false);
 
+  // Confirm card payment with Stripe, then update backend booking payment status.
   const handleSubmit = async (ev) => {
     ev.preventDefault();
     if (!stripe || !elements) return;
@@ -84,8 +86,10 @@ export default function PaymentPage() {
   const [clientSecret, setClientSecret] = useState('');
   const [error, setError] = useState(null);
 
+  // Booking payload passed from previous route (calendar/booking flow).
   const { bookingId, selectedRoom, guestInfo, nights, totalPrice } = location.state || {};
 
+  // Create a payment intent on mount; redirect back if required context is missing.
   useEffect(() => {
     if (!bookingId || !totalPrice) {
       navigate('/calendar');

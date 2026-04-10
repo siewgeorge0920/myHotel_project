@@ -1,5 +1,5 @@
 import React from "react";
-
+// this wouyld be used in the future if we have a Parking Section
 export default function ParkingModal({ isOpen, onClose }) {
   if (!isOpen) return null;
 

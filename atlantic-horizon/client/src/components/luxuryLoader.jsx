@@ -1,11 +1,11 @@
 import React from 'react';
-import { COLORS } from '../colors'; // 跟着你的文件路径
+import { COLORS } from '../colors'; // Adjust this import path to match your project structure
 
 export default function LuxuryLoader({ message = "Verifying Identity..." }) {
   return (
     <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-black/80 backdrop-blur-md">
       <div className="w-64 h-[1px] bg-white/10 relative overflow-hidden">
-        {/* 金色扫描线 */}
+        {/* Gold scanning line */}
         <div 
           className="absolute inset-0 w-1/3 h-full animate-loadingLine"
           style={{ 

@@ -6,13 +6,19 @@ import "react-datepicker/dist/react-datepicker.css";
 import './datepicker-custom.css';
 
 export default function QuickBook() {
+  // Router navigation for pushing selected booking data to the calendar page.
   const navigate = useNavigate();
+  // Ref used to detect outside clicks for the guest dropdown.
   const dropdownRef = useRef(null);
+  // Date range defaults to today + 1 day.
   const [dateRange, setDateRange] = useState([new Date(), addDays(new Date(), 1)]);
   const [startDate, endDate] = dateRange;
+  // Controls guest dropdown visibility.
   const [isGuestOpen, setIsGuestOpen] = useState(false);
+  // Guest counters split by age category.
   const [guests, setGuests] = useState({ adults: 2, seniors: 0, infants: 0 });
 
+  // Close the guest dropdown when the user clicks outside of its container.
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -23,8 +29,10 @@ export default function QuickBook() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // Reserved for validation feedback; currently set in logic but not rendered in UI.
   const [alertObj, setAlertObj] = useState({ isOpen: false, text: '' });
 
+  // Increase/decrease a guest type while enforcing min/max bounds.
   const updateCount = (type, operation) => {
     setGuests(prev => {
       const newValue = operation === 'add' ? prev[type] + 1 : prev[type] - 1;
@@ -34,8 +42,10 @@ export default function QuickBook() {
     });
   };
 
+  // Derived total displayed in the guests trigger.
   const totalGuests = guests.adults + guests.seniors + guests.infants;
 
+  // Validate selection and navigate to calendar with booking details in route state.
   const handleCheckAvailability = () => {
     if (!startDate || !endDate) {
       setAlertObj({ isOpen: true, text: "Please select your intended arrival and departure dates." });
@@ -51,6 +61,7 @@ export default function QuickBook() {
     });
   };
 
+  // Reusable row for one guest category (label + plus/minus controls).
   const CounterRow = ({ label, subLabel, type, value }) => (
     <div className="flex items-center justify-between py-3 border-b border-white/5 last:border-0">
       <div>
@@ -67,6 +78,7 @@ export default function QuickBook() {
     </div>
   );
 
+  // Custom DatePicker trigger that displays linked Check-In and Check-Out values.
   const DualBoxTrigger = forwardRef(({ onClick }, ref) => (
     <div ref={ref} onClick={onClick} className="flex-1 flex items-center justify-center cursor-pointer group px-4 py-2 w-full md:w-auto">
 

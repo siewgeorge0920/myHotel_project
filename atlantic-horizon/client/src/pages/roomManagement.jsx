@@ -3,8 +3,10 @@ import ManagementSidebar from '../components/managementSidebar';
 import { COLORS } from '../colors';
 import CustomModal from '../components/CustomModal';
 
+// Department tabs shown at the top of the dashboard.
 const DEPARTMENTS = ['Private Lodge', 'Private Residences & Villas', 'Ultimate Exclusivity'];
 
+// Booking status badge styles.
 const STATUS_COLORS = {
   Confirmed: 'text-green-400 border-green-500/40',
   Cancelled: 'text-red-400 border-red-500/40',
@@ -14,17 +16,21 @@ const STATUS_COLORS = {
 };
 
 export default function RoomManagement() {
+  // Session context for sidebar role rendering.
   const user = JSON.parse(localStorage.getItem('user'));
   const isManagerMode = localStorage.getItem('managerMode') === 'true';
 
+  // Active department and fetched data state.
   const [department, setDepartment] = useState(DEPARTMENTS[0]);
   const [bookings, setBookings] = useState([]);
   const [physicalRooms, setPhysicalRooms] = useState([]);
   const [loading, setLoading] = useState(true);
   
+  // Check-in modal context and selected physical unit.
   const [checkInModal, setCheckInModal] = useState(null);
   const [assignedUnit, setAssignedUnit] = useState('');
 
+  // Fetch bookings and physical units in parallel.
   const fetchData = async () => {
     setLoading(true);
     try {
@@ -37,8 +43,10 @@ export default function RoomManagement() {
     } catch { } finally { setLoading(false); }
   };
 
+  // Initial data load on first render.
   useEffect(() => { fetchData(); }, []);
 
+  // Generic status update helper for bookings.
   const updateStatus = async (id, status) => {
     await fetch(`/api/bookings/${id}/status`, {
       method: 'PUT',
@@ -48,6 +56,7 @@ export default function RoomManagement() {
     fetchData();
   };
   
+  // Confirm check-in with required physical unit assignment.
   const handleCheckIn = async () => {
     if(!assignedUnit) return alert('Physical unit number required.');
     await fetch(`/api/bookings/${checkInModal._id}/status`, {
@@ -60,7 +69,9 @@ export default function RoomManagement() {
     fetchData();
   };
 
+  // Active bookings for current department (excluding completed/cancelled).
   const deptBookings = bookings.filter(b => b.department === department && b.bookingStatus !== 'Cancelled' && b.bookingStatus !== 'CheckedOut');
+  // Physical units for current department.
   const deptRooms = physicalRooms.filter(r => r.department === department);
 
   return (
@@ -73,6 +84,7 @@ export default function RoomManagement() {
           <p className="text-white/40 text-xs mt-2 uppercase tracking-widest">Unified booking and physical room command center.</p>
         </header>
 
+        {/* Department switcher tabs */}
         <div className="mb-8 flex gap-4 overflow-x-auto pb-2">
           {DEPARTMENTS.map(dep => (
              <button key={dep} onClick={() => setDepartment(dep)}
@@ -82,6 +94,7 @@ export default function RoomManagement() {
           ))}
         </div>
 
+        {/* Render state: loading text or two operational grids. */}
         {loading ? <p className="animate-pulse text-white/30 text-xs tracking-widest uppercase">Syncing operations...</p> : (
           <div className="grid grid-cols-1 xl:grid-cols-2 gap-12">
             
@@ -125,12 +138,14 @@ export default function RoomManagement() {
               <div className="grid grid-cols-2 gap-4">
                 {deptRooms.length === 0 && <p className="text-xs text-white/40 italic p-6 border border-dashed text-center col-span-2" style={{ borderColor: COLORS.border }}>No physical units registered.</p>}
                 {deptRooms.map(r => {
+                  // Map cleaning status to a color badge.
                   let statusColor = 'text-white/40';
                   if(r.cleaningStatus === 'Clean') statusColor = 'text-green-400 border-green-500/30';
                   if(r.cleaningStatus === 'Dirty') statusColor = 'text-red-400 border-red-500/30';
                   if(r.cleaningStatus === 'In Service') statusColor = 'text-blue-400 border-blue-500/30';
                   if(r.cleaningStatus === 'Maintenance') statusColor = 'text-amber-400 border-amber-500/30';
                   
+                  // Current checked-in guest occupying this unit, if any.
                   const occupier = bookings.find(b => b.assignedUnit === r.roomName && b.bookingStatus === 'CheckedIn');
 
                   return (

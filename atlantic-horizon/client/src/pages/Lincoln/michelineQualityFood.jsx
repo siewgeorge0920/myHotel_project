@@ -4,7 +4,7 @@ import { COLORS } from '../../colors';
 export default function MichelineQualityFood() {
   return (
     <div className="bg-[#1a1d17] min-h-screen text-white font-lato">
-      {/* 🎬 VIDEO HERO */}
+      {/* HERO */}
       <section className="relative h-screen w-full overflow-hidden">
         <video autoPlay loop muted playsInline className="absolute inset-0 w-full h-full object-cover opacity-60">
           <source src="/src/assets/videos/chef-cooking.mp4" type="video/mp4" />

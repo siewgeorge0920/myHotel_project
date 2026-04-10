@@ -3,11 +3,15 @@ import ManagementSidebar from '../components/managementSidebar';
 import { COLORS } from '../colors';
 
 export default function RoomService() {
+  // Session context used by sidebar navigation.
   const user = JSON.parse(localStorage.getItem('user'));
   const isManagerMode = localStorage.getItem('managerMode') === 'true';
+
+  // Physical unit service list and loading state.
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // Fetch all physical units with their current cleaning status.
   const fetchServices = () => {
     fetch('/api/physical-rooms')
       .then(res => res.json())
@@ -17,10 +21,12 @@ export default function RoomService() {
       });
   };
 
+  // Initial load on first render.
   useEffect(() => {
     fetchServices();
   }, []);
 
+  // Update one unit's cleaning status and refresh list.
   const updateCleaningStatus = async (id, status) => {
     try {
       await fetch(`/api/physical-rooms/${id}/status`, {
@@ -34,6 +40,7 @@ export default function RoomService() {
     }
   };
 
+  // Group headings derived from unique department names.
   const departments = Array.from(new Set(services.map(s => s.department)));
 
   return (
@@ -55,6 +62,7 @@ export default function RoomService() {
                  <h2 className="text-xl font-serif text-amber-500 mb-6 border-b pb-2 inline-block" style={{ borderColor: COLORS.border }}>{dept}</h2>
                  <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
                    {services.filter(s => s.department === dept).map(srv => {
+                     // Cleaning status to badge style mapping.
                      let statusColor = 'text-white/40';
                      if(srv.cleaningStatus === 'Clean') statusColor = 'text-green-400 bg-green-400/10 border-green-400/30';
                      if(srv.cleaningStatus === 'Dirty') statusColor = 'text-red-400 bg-red-400/10 border-red-400/30';
@@ -73,6 +81,7 @@ export default function RoomService() {
                            </span>
                          </div>
 
+                         {/* Show only valid next actions (hide current status action). */}
                          <div className="flex gap-2 flex-wrap mt-4">
                            {srv.cleaningStatus !== 'Clean' && (
                              <button onClick={() => updateCleaningStatus(srv._id, 'Clean')} className="px-3 py-1.5 text-[9px] uppercase font-black text-green-400 border border-white/10 hover:border-green-500/30 hover:bg-green-500/10">Mark Clean</button>
@@ -93,6 +102,8 @@ export default function RoomService() {
                  </div>
                </div>
             ))}
+
+            {/* Empty state when no physical units exist in the system yet. */}
             {services.length === 0 && (
               <div className="p-10 border border-dashed text-center text-white/30 uppercase tracking-widest text-xs" style={{ borderColor: COLORS.border }}>
                 No physical unit numbers have been assigned or created yet.

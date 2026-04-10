@@ -38,7 +38,7 @@ export default function Footer({
             <span>Phone: +353 00 000 0000</span> | <span>Email: info@atlantichorizon.ie</span>
           </div>
 
-          {/* 🌟 透明 Staff 按钮：平时隐藏，Hover 后显现 */}
+          {/* Invisible Staff Login Button */}
           <div className="mt-10">
             <Link 
               to="/login"

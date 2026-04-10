@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import GiftCard from './GiftCard'; 
-
+// nav bar with dropdowns for desktop and accordion style for mobile, also includes the Gift Card modal trigger
 const NAV_ITEMS = [
   {
     label: 'Experience',
@@ -42,9 +42,9 @@ export default function Header() {
     <>
       <header className="bg-manorGreen text-manorGold flex items-center justify-between px-6 lg:px-10 h-24 lg:h-36 sticky top-0 z-50">
         
-        {/* ===== LEFT: Hamburger (mobile) + Desktop Nav ===== */}
+        {/*LEFT: Hamburger (mobile) + Desktop Nav*/}
         <div className="flex items-center gap-10 flex-1">
-          {/* Hamburger — only on mobile */}
+          {/* Hamburger only on mobile */}
           <button
             className="lg:hidden flex flex-col gap-1.5 p-2"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -86,7 +86,7 @@ export default function Header() {
           </nav>
         </div>
 
-        {/* ===== CENTER: Logo (Absolute Center!) ===== */}
+        {/*CENTER: Logo*/}
         <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
           <Link to="/">
             <img
@@ -97,7 +97,7 @@ export default function Header() {
           </Link>
         </div>
 
-        {/* ===== RIGHT: Action Buttons ===== */}
+        {/*RIGHT: Action Buttons*/}
         <div className="flex gap-2 sm:gap-4 lg:gap-6 flex-1 justify-end items-center">
           
           <Link 
@@ -136,7 +136,7 @@ export default function Header() {
         {isGiftCardOpen && <GiftCard onClose={() => setIsGiftCardOpen(false)} />}
       </header>
 
-      {/* ===== MOBILE DROP-DOWN MENU (slides from below header) ===== */}
+      {/*MOBILE DROP-DOWN MENU (slides from below header)*/}
       {isMobileMenuOpen && (
         <div className="lg:hidden fixed top-24 left-0 right-0 bottom-0 z-[45] flex flex-col">
           {/* Backdrop */}

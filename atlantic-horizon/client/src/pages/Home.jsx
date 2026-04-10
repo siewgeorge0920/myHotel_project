@@ -10,13 +10,13 @@ export default function Home() {
     <main id="top" className="relative bg-[#0d0f0b]">
       <HeroSlider />
 
-      {/* Booking Bar 会根据 QuickBook 内部的 margin 自动定位 */}
+      {/* Booking bar is positioned automatically by QuickBook's internal margin settings */}
       <QuickBook />
 
       <Introduction />
       <ExperienceSection />
       
-      {/* 🌟 这里的 Staff Login Link 已经删掉，搬去 Footer 了 */}
+      {/* The Staff Login link was removed here and moved to the Footer */}
 
       <Newsletter />
     </main>

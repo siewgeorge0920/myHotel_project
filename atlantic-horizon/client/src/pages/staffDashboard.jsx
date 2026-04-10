@@ -8,7 +8,7 @@ export default function StaffDashboard() {
   const user = JSON.parse(localStorage.getItem('user'));
   const navigate = useNavigate();
 
-  // ====== Manager Mode State ======
+  // Manager Mode State 
   const [isManagerMode, setIsManagerMode] = useState(() => {
     if (user?.role === 'admin' || user?.role === 'manager') return true;
     return localStorage.getItem('managerMode') === 'true';
@@ -62,7 +62,7 @@ export default function StaffDashboard() {
             </h1>
           </div>
 
-          {/* === MANAGER MODE SWITCH === */}
+          {/*MANAGER MODE SWITCH */}
           {user?.role === 'staff' && (
             <div className="flex items-center gap-4 bg-white/5 border border-white/10 px-6 py-3 self-start sm:self-auto">
               <div>
@@ -85,7 +85,7 @@ export default function StaffDashboard() {
           )}
         </header>
 
-        {/* === MANAGER MODE CREDENTIAL PROMPT === */}
+        {/* MANAGER MODE CREDENTIAL PROMPT */}
         {showManagerPrompt && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm">
             <div className="bg-[#1e2219] border border-amber-600/40 shadow-2xl w-full max-w-sm mx-4 overflow-hidden">
@@ -139,7 +139,7 @@ export default function StaffDashboard() {
           </div>
         )}
 
-        {/* === STAFF CARDS (Basic) === */}
+        {/* STAFF CARDS (Basic)*/}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="p-10 border" style={{ backgroundColor: COLORS.bgSurface, borderColor: COLORS.border }}>
             <h3 className="text-xl font-serif mb-4 italic">Booking Management</h3>
@@ -157,7 +157,7 @@ export default function StaffDashboard() {
             </a>
           </div>
 
-          {/* === MANAGER-ONLY CARDS === */}
+          {/*MANAGER-ONLY CARDS */}
           {isManagerMode && (
             <>
                 <div className="p-10 border border-amber-600/30" style={{ backgroundColor: '#1e2219' }}>

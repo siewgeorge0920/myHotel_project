@@ -1,5 +1,5 @@
 import React from "react";
-
+// this would be used in the future if we have a Faq Section
 export default function FaqsModal({ isOpen, onClose }) {
   if (!isOpen) return null;
 

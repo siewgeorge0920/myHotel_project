@@ -5,7 +5,7 @@ export default function ContinentalBreakfast() {
   return (
     <div className="bg-[#faf9f6] min-h-screen text-[#343a2f] font-lato selection:bg-amber-900/20 selection:text-amber-900">
 
-      {/* 🎬 HERO SECTION */}
+      {/* HERO SECTION */}
       <section className="relative h-[85vh] w-full overflow-hidden flex items-end pb-32 pt-40 px-6 md:px-16 lg:px-24">
         {/* Abstract Background Elements */}
         <div className="absolute top-0 left-0 w-full h-[600px] bg-gradient-to-b from-[#e5e1d5]/40 to-transparent"></div>
@@ -28,7 +28,7 @@ export default function ContinentalBreakfast() {
         </div>
       </section>
 
-      {/* 🖼 THE BREAKFAST COLLECTION (Staggered Sticky Layout) */}
+      {/* THE BREAKFAST COLLECTION */}
       <section className="py-32 px-6 md:px-16 lg:px-24 relative bg-white">
         <div className="max-w-7xl mx-auto">
 

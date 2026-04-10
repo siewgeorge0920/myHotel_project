@@ -1,5 +1,5 @@
 import React from "react";
-
+// this woudl be used in the future when we have a careers section
 export default function CareersModal({ isOpen, onClose }) {
   if (!isOpen) return null;
 

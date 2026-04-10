@@ -1,6 +1,6 @@
 import React from 'react';
 import { X } from 'lucide-react'; // Or your preferred icon library
-
+// This component is a modal for displaying the privacy policy. It is designed to be reusable and can be triggered from any part of the application where the privacy policy needs to be shown.
 const PrivacyPolicyModal = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 

@@ -3,10 +3,14 @@ import axios from 'axios';
 import { COLORS } from '../colors';
 
 export default function SelfCheckIn() {
+  // Guest-entered check-in credentials.
   const [formData, setFormData] = useState({ bookingId: '', email: '' });
+  // Inline feedback banner state (success/error).
   const [status, setStatus] = useState({ type: '', msg: '' });
+  // Submit/loading state to prevent duplicate requests.
   const [isLoading, setIsLoading] = useState(false);
 
+  // Validate reservation details against backend self-check-in endpoint.
   const handleCheckIn = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -29,7 +33,7 @@ export default function SelfCheckIn() {
     <div className="min-h-screen flex items-center justify-center p-6 bg-[#1a1d17]">
       <div className="max-w-md w-full p-12 border shadow-2xl relative overflow-hidden animate-fadeIn" style={{ backgroundColor: COLORS.bgSurface, borderColor: COLORS.border }}>
         
-        {/* Background Accent */}
+        {/* Background accent glows for depth */}
         <div className="absolute top-0 right-0 w-32 h-32 bg-amber-600/5 blur-3xl" />
         <div className="absolute bottom-0 left-0 w-32 h-32 bg-amber-600/5 blur-3xl" />
 
@@ -41,6 +45,7 @@ export default function SelfCheckIn() {
           </p>
         </div>
 
+        {/* Result banner displayed after submit attempt */}
         {status.msg && (
           <div className={`mb-8 p-4 text-center border text-[11px] leading-relaxed uppercase tracking-widest font-black animate-slideUp z-10 relative ${
             status.type === 'success' ? 'bg-green-500/10 border-green-500/30 text-green-400' : 'bg-red-500/10 border-red-500/30 text-red-400'
@@ -49,6 +54,7 @@ export default function SelfCheckIn() {
           </div>
         )}
 
+        {/* Self check-in form */}
         <form onSubmit={handleCheckIn} className="space-y-6 relative z-10">
           <div>
             <label className="block text-[9px] uppercase tracking-widest text-amber-500 font-bold mb-2">Booking Reference Number</label>

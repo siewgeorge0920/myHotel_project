@@ -1,5 +1,5 @@
 import React from "react";
-
+// this would be used in the future if we have a Privacy Policy Section
 export default function PrivacyPolicyModal({ isOpen, onClose }) {
   if (!isOpen) return null;
 

@@ -1,5 +1,5 @@
 import React from "react";
-
+// this would be used in the future when we have a Contact Us section
 export default function ContactUsModal({ isOpen, onClose }) {
   if (!isOpen) return null;
 

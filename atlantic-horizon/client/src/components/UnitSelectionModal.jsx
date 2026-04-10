@@ -2,11 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { COLORS } from '../colors';
 
 export default function UnitSelectionModal({ isOpen, onClose, roomType, department, onComplete }) {
+  // List of physical room records returned by the backend for this department.
   const [physicalRooms, setPhysicalRooms] = useState([]);
+  // Names of units currently selected in the modal.
   const [selectedUnits, setSelectedUnits] = useState([]);
+  // Loading state while fetching available units.
   const [loading, setLoading] = useState(false);
+  // Saving state while submitting selected assignments.
   const [saving, setSaving] = useState(false);
 
+  // Fetch units when the modal opens or when department/roomType context changes.
   useEffect(() => {
     if (!isOpen) return;
     const fetchRooms = async () => {
@@ -14,9 +19,10 @@ export default function UnitSelectionModal({ isOpen, onClose, roomType, departme
       try {
         const res = await fetch('/api/physical-rooms');
         const data = await res.json();
+        // Keep only units that belong to the active department.
         const filtered = data.filter(r => r.department === department);
         setPhysicalRooms(filtered);
-        // Pre-select rooms already assigned to this roomType
+        // Pre-select units that are already linked to this room type.
         const preSelected = filtered
           .filter(r => r.roomType === roomType)
           .map(r => r.roomName);
@@ -30,6 +36,7 @@ export default function UnitSelectionModal({ isOpen, onClose, roomType, departme
     fetchRooms();
   }, [isOpen, department, roomType]);
 
+  // Toggle a unit in/out of selection.
   const toggleUnit = (roomName) => {
     setSelectedUnits(prev =>
       prev.includes(roomName)
@@ -38,6 +45,7 @@ export default function UnitSelectionModal({ isOpen, onClose, roomType, departme
     );
   };
 
+  // Submit selected unit names to backend and close modal on success.
   const handleSave = async () => {
     setSaving(true);
     try {
@@ -60,6 +68,7 @@ export default function UnitSelectionModal({ isOpen, onClose, roomType, departme
     }
   };
 
+  // Do not render the modal structure when closed.
   if (!isOpen) return null;
 
   return (
@@ -79,6 +88,7 @@ export default function UnitSelectionModal({ isOpen, onClose, roomType, departme
         <h2 className="text-2xl font-serif italic mb-1">{roomType}</h2>
         <p className="text-white/30 text-xs uppercase tracking-widest mb-6">{department}</p>
 
+        {/* Render state: loading, empty, or selectable grid. */}
         {loading ? (
           <p className="text-white/40 text-xs uppercase tracking-widest animate-pulse">Loading units...</p>
         ) : physicalRooms.length === 0 ? (
@@ -100,6 +110,7 @@ export default function UnitSelectionModal({ isOpen, onClose, roomType, departme
                   }`}
                 >
                   {unit.roomName}
+                  {/* Show existing assignment if this unit belongs to another room type. */}
                   {unit.roomType && unit.roomType !== roomType && (
                     <span className="block text-[8px] text-red-400/60 mt-1 normal-case font-normal">
                       {unit.roomType}
