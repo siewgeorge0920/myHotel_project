@@ -16,7 +16,7 @@
     },
     {
       "source": "/(.*)",
-      "destination": "/client/src/App.jsx"
+      "destination": "/index.html"
     }
   ]
 }
