@@ -16,19 +16,16 @@
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "atlantic-horizon/server/server.js"
-    },
-    {
-      "src": "/assets/(.*)",
-      "dest": "/atlantic-horizon/client/assets/$1"
-    },
-    {
-      "src": "/images/(.*)",
-      "dest": "/atlantic-horizon/client/public/images/$1"
+      "dest": "/atlantic-horizon/server/server.js"
     },
     {
       "src": "/(.*)",
-      "dest": "/index.html"
+      "dest": "/atlantic-horizon/client/dist/$1",
+      "continue": true
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/atlantic-horizon/client/dist/index.html"
     }
   ]
 }
