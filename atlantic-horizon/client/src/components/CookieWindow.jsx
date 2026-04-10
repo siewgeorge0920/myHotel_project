@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
-// Accept 'isOpen' (boolean) and 'onClose' (function) props passed down from App.jsx
-const CookieWindow = ({ isOpen, onClose }) => {
+// Accept 'isOpen' (boolean), 'onClose' (function), and optional 'onSavePreference' callback from App.jsx
+const CookieWindow = ({ isOpen, onClose, onSavePreference }) => {
   
   // Local state to manage which checkbox is currently selected.
   // We default 'acceptCookies' to true, as it is the recommended setting.
@@ -25,6 +25,10 @@ const CookieWindow = ({ isOpen, onClose }) => {
   const handleSubmit = (e) => {
     e.preventDefault(); // Prevents the default browser behavior of refreshing the page
     console.log("Cookies saved: ", acceptCookies ? "Accepted All" : "Declined Non-Essential");
+
+    if (onSavePreference) {
+      onSavePreference(acceptCookies ? 'accepted' : 'declined');
+    }
     
     // Call the onClose function passed from App.jsx to hide the modal
     onClose(); 

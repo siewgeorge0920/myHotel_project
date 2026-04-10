@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect } from 'react'; // 🌟 核心修正 1：记得 Import useEffect
+import React, { Suspense, useEffect, useState } from 'react'; // 🌟 核心修正 1：记得 Import useEffect
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 
 // Layout Components
@@ -48,6 +48,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 
 import SelfCheckIn from './pages/SelfCheckIn';
 import LuxuryLoader from './components/luxuryLoader';
+import CookieWindow from './components/CookieWindow';
 
 const AdminLogs = React.lazy(() => import('./pages/adminLogs'));
 
@@ -99,6 +100,28 @@ const LayoutWrapper = ({ children }) => {
 };
 
 export default function App() {
+  const [isCookieOpen, setIsCookieOpen] = useState(false);
+
+  useEffect(() => {
+    try {
+      const savedPreference = localStorage.getItem('ath_cookie_preference');
+      if (!savedPreference) {
+        setIsCookieOpen(true);
+      }
+    } catch (error) {
+      setIsCookieOpen(true);
+    }
+  }, []);
+
+  const handleCookieSave = (preference) => {
+    try {
+      localStorage.setItem('ath_cookie_preference', preference);
+    } catch (error) {
+      // Ignore storage errors and still close the modal.
+    }
+    setIsCookieOpen(false);
+  };
+
   return (
     
     <Router>
@@ -149,6 +172,12 @@ export default function App() {
         </Routes>
         </Suspense>
       </LayoutWrapper>
+
+      <CookieWindow
+        isOpen={isCookieOpen}
+        onClose={() => setIsCookieOpen(false)}
+        onSavePreference={handleCookieSave}
+      />
     </Router>
   );
 }
