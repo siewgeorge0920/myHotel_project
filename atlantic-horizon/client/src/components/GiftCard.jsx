@@ -96,7 +96,7 @@ const GiftCard = ({ onClose }) => {
             type="submit"
             className="w-full mt-10 border border-manorGold text-manorGold py-4 text-[10px] uppercase tracking-[0.4em] transition-all duration-500 hover:bg-manorGold hover:text-white"
           >
-            Purchase Invitation
+            Purchase Giftcard
           </button>
 
         </form>
