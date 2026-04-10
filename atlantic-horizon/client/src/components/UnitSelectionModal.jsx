@@ -2,155 +2,129 @@ import React, { useState, useEffect } from 'react';
 import { COLORS } from '../colors';
 
 export default function UnitSelectionModal({ isOpen, onClose, roomType, department, onComplete }) {
-  const [availableUnits, setAvailableUnits] = useState([]);
+  const [physicalRooms, setPhysicalRooms] = useState([]);
   const [selectedUnits, setSelectedUnits] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [fetching, setFetching] = useState(true);
-  const [error, setError] = useState(null);
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     if (!isOpen) return;
-
-    const fetchAllUnits = async () => {
-      setFetching(true);
-      setError(null);
+    const fetchRooms = async () => {
+      setLoading(true);
       try {
-        const res = await fetch('http://localhost:5000/api/physical-rooms');
+        const res = await fetch('/api/physical-rooms');
         const data = await res.json();
-        
-        // Filter to only this department
-        // Also: units are available if they are unassigned OR already assigned to THIS package
-        const relevantUnits = data.filter(u => u.department === department);
-        setAvailableUnits(relevantUnits);
-        
-        // Pre-select units already linked to this package
-        const currentLinks = relevantUnits.filter(u => u.roomType === roomType).map(u => u.roomName);
-        setSelectedUnits(currentLinks);
-      } catch (err) {
-        setError('Failed to fetch pool of units');
+        const filtered = data.filter(r => r.department === department);
+        setPhysicalRooms(filtered);
+        // Pre-select rooms already assigned to this roomType
+        const preSelected = filtered
+          .filter(r => r.roomType === roomType)
+          .map(r => r.roomName);
+        setSelectedUnits(preSelected);
+      } catch (e) {
+        console.error(e);
       } finally {
-        setFetching(false);
+        setLoading(false);
       }
     };
-
-    fetchAllUnits();
+    fetchRooms();
   }, [isOpen, department, roomType]);
 
-  if (!isOpen) return null;
-
-  const toggleUnit = (name) => {
-    setSelectedUnits(prev => 
-      prev.includes(name) ? prev.filter(u => u !== name) : [...prev, name]
+  const toggleUnit = (roomName) => {
+    setSelectedUnits(prev =>
+      prev.includes(roomName)
+        ? prev.filter(u => u !== roomName)
+        : [...prev, roomName]
     );
   };
 
-  const handleAssign = async () => {
-    setLoading(true);
-    setError(null);
-
+  const handleSave = async () => {
+    setSaving(true);
     try {
-      const res = await fetch('http://localhost:5000/api/physical-rooms/assign', {
+      const res = await fetch('/api/physical-rooms/assign', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          roomType,
-          unitNames: selectedUnits
-        })
+        body: JSON.stringify({ roomType, unitNames: selectedUnits }),
       });
-
       const data = await res.json();
       if (res.ok) {
-        onComplete(data.message);
+        onComplete && onComplete(data.message);
         onClose();
       } else {
-        setError(data.message);
+        alert(data.message || 'Assignment failed');
       }
-    } catch (err) {
-      setError('Assignment failed');
+    } catch (e) {
+      alert('Server error');
     } finally {
-      setLoading(false);
+      setSaving(false);
     }
   };
 
+  if (!isOpen) return null;
+
   return (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-      <div 
-        className="w-full max-w-xl border shadow-2xl relative overflow-hidden flex flex-col max-h-[85vh]" 
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
+      <div
+        className="w-full max-w-lg p-8 border shadow-2xl relative"
         style={{ backgroundColor: COLORS.bgSurface, borderColor: COLORS.border }}
       >
-        <div className="h-1 bg-amber-600 w-full"></div>
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 text-white/40 hover:text-white text-xl transition-colors"
+        >
+          ✕
+        </button>
 
-        <div className="p-8 pb-4">
-          <div className="mb-6">
-            <p className="text-amber-500 text-[10px] uppercase tracking-[0.4em] font-black mb-1">Unit Selection & Mapping</p>
-            <h2 className="text-2xl font-serif">Assign Units to {roomType}</h2>
-            <p className="text-white/40 text-[10px] uppercase tracking-widest mt-1">
-              Select which physical rooms represent this package in {department}
-            </p>
-          </div>
+        <p className="text-amber-500 uppercase tracking-[0.4em] text-[9px] font-black mb-1">Unit Assignment</p>
+        <h2 className="text-2xl font-serif italic mb-1">{roomType}</h2>
+        <p className="text-white/30 text-xs uppercase tracking-widest mb-6">{department}</p>
 
-          {error && (
-            <div className="bg-red-900/30 border border-red-500/50 text-red-200 text-[11px] p-3 mb-6 uppercase tracking-tight font-medium">
-              Aiya! {error}
-            </div>
-          )}
-        </div>
-
-        <div className="flex-1 overflow-y-auto px-8 py-2">
-          {fetching ? (
-            <p className="text-xs text-white/30 animate-pulse uppercase tracking-widest">Scanning wing for available units...</p>
-          ) : availableUnits.length === 0 ? (
-            <div className="py-12 border border-dashed border-white/5 text-center px-4">
-              <p className="text-white/30 text-sm italic mb-4">No unassigned units found in {department}.</p>
-              <p className="text-[10px] text-white/20 uppercase tracking-widest leading-loose">
-                Please go to <span className="text-amber-500 font-bold">Physical Room Units</span> page first <br/> 
-                to create new generic identifiers for this wing.
-              </p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pb-8">
-              {availableUnits.map(unit => (
-                <div 
+        {loading ? (
+          <p className="text-white/40 text-xs uppercase tracking-widest animate-pulse">Loading units...</p>
+        ) : physicalRooms.length === 0 ? (
+          <p className="text-white/30 text-xs italic text-center py-8 border border-dashed" style={{ borderColor: COLORS.border }}>
+            No physical units in this department yet.
+          </p>
+        ) : (
+          <div className="grid grid-cols-3 gap-3 max-h-64 overflow-y-auto pr-1 mb-6">
+            {physicalRooms.map(unit => {
+              const isSelected = selectedUnits.includes(unit.roomName);
+              return (
+                <button
                   key={unit._id}
                   onClick={() => toggleUnit(unit.roomName)}
-                  className={`p-4 border transition-all cursor-pointer relative group ${selectedUnits.includes(unit.roomName) ? 'border-amber-500 bg-amber-500/5' : 'border-white/5 bg-white/5 hover:border-white/20'}`}
+                  className={`p-3 border text-left transition-all text-xs uppercase tracking-widest font-black ${
+                    isSelected
+                      ? 'border-amber-500 text-amber-500 bg-amber-500/10'
+                      : 'border-white/10 text-white/50 hover:border-white/30 hover:text-white/70'
+                  }`}
                 >
-                  <div className={`absolute top-2 right-2 w-3 h-3 border rounded-sm transition-colors ${selectedUnits.includes(unit.roomName) ? 'bg-amber-500 border-amber-500' : 'border-white/20'}`}>
-                    {selectedUnits.includes(unit.roomName) && (
-                      <svg viewBox="0 0 24 24" className="w-full h-full text-white fill-current"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
-                    )}
-                  </div>
-                  <p className={`text-lg font-mono ${selectedUnits.includes(unit.roomName) ? 'text-amber-500' : 'text-white/60'}`}>{unit.roomName}</p>
-                  <p className="text-[8px] uppercase tracking-tighter mt-1 truncate">
-                    {unit.roomType === roomType ? (
-                      <span className="text-amber-500/60 font-medium">Currently Linked</span>
-                    ) : unit.roomType ? (
-                      <span className="text-white/20 italic">Mapped to: {unit.roomType}</span>
-                    ) : (
-                      <span className="text-white/10 italic">Unassigned Unit</span>
-                    )}
-                  </p>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+                  {unit.roomName}
+                  {unit.roomType && unit.roomType !== roomType && (
+                    <span className="block text-[8px] text-red-400/60 mt-1 normal-case font-normal">
+                      {unit.roomType}
+                    </span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        )}
 
-        <div className="p-8 pt-4 border-t border-white/5 flex gap-4 bg-black/20">
-          <button 
-            type="button" 
+        <div className="flex gap-3">
+          <button
+            onClick={handleSave}
+            disabled={saving}
+            className="flex-1 bg-amber-600 hover:bg-amber-500 text-white font-black text-[10px] uppercase tracking-[0.2em] py-3 transition-colors disabled:opacity-50"
+          >
+            {saving ? 'Saving...' : `Assign ${selectedUnits.length} Unit(s)`}
+          </button>
+          <button
             onClick={onClose}
-            className="flex-1 py-3 border border-white/10 text-white/40 hover:text-white uppercase text-[10px] font-black tracking-[0.2em] transition-all"
+            className="px-6 border text-white/50 hover:text-white text-[10px] uppercase tracking-[0.2em] font-black transition-colors"
+            style={{ borderColor: COLORS.border }}
           >
             Cancel
-          </button>
-          <button 
-            type="button" 
-            onClick={handleAssign}
-            disabled={loading || fetching}
-            className="flex-[2] py-3 bg-amber-600 hover:bg-amber-500 text-white uppercase text-[10px] font-black tracking-[0.2em] shadow-lg shadow-amber-900/20 transition-all disabled:opacity-50"
-          >
-            {loading ? 'Mapping Units...' : `Link ${selectedUnits.length} Selected Units`}
           </button>
         </div>
       </div>

@@ -8,8 +8,8 @@ const SESSION_TIMEOUT_MS = 60 * 60 * 1000; // 60 minutes
 const NAV_GROUPS = {
   staff: [
     { name: 'Dashboard', path: '/staffDashboard', icon: '⌂' },
+    { name: "Today's Arrivals", path: '/bookings?filter=CheckedIn', icon: '📅' },
     { name: 'Housekeeping', path: '/roomService', icon: '🧹' },
-    { name: 'Front Desk (Ops)', path: '/roomManagement', icon: '🛎️' },
   ],
   manager: [
     { name: 'Calendar', path: '/adminCalendar', icon: '📆' },
@@ -18,8 +18,8 @@ const NAV_GROUPS = {
     { name: 'Audit Logs', path: '/adminLogs', icon: '🕵' },
   ],
   admin: [
-    { name: 'Physical Rooms (Units)', path: '/physicalRooms', icon: '🔑' },
-    { name: 'Luxury Packages', path: '/roomPackage', icon: '🎁' },
+    { name: 'Capacity Control', path: '/roomCapacity', icon: '🚪' },
+    { name: 'Room Management', path: '/roomManagement', icon: '🏨' },
     { name: 'Staff & IAM', path: '/adminIam', icon: '👤' },
   ],
 };
