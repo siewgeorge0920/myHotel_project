@@ -11,12 +11,12 @@
   },
   "rewrites": [
     {
-      "source": "/api/:path*",
-      "destination": "/server/server.js"
+      "src": "/api/:path*",
+      "dest": "/server/server.js"
     },
     {
-      "source": "/(.*)",
-      "destination": "/index.html"
+      "src": "/(.*)",
+      "dest": "/client/dist/index.html"
     }
   ]
 }
