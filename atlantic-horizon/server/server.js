@@ -17,7 +17,12 @@ import PhysicalRoom from './models/physicalRoom.js';
 import CookieConsent from './models/cookieConsent.js';
 import RoomService from './models/roomService.js';
 import GiftCard from './models/giftCard.js';
+import KeyCard from './models/keyCard.js';
+import Menu from './models/menu.js';
+import Order from './models/order.js';
 import { sendGiftCardEmail } from './utils/mailer.js';
+import crypto from 'crypto';
+import { getSetting } from './utils/configHelper.js';
 
 dotenv.config();
 
@@ -615,6 +620,10 @@ app.post('/api/create-payment-intent', async (req, res) => {
 app.post('/api/create-checkout-session', async (req, res) => {
   const { roomName, amount, guestEmail, nights } = req.body;
   try {
+    const taxRate = parseFloat(await getSetting('tax_rate', '0'));
+    const serviceCharge = parseFloat(await getSetting('service_charge', '0'));
+    const baseUrl = await getSetting('base_url', process.env.CLIENT_URL || 'http://localhost:5173');
+
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       customer_email: guestEmail,
@@ -625,13 +634,13 @@ app.post('/api/create-checkout-session', async (req, res) => {
             name: `The Atlantic Horizon Manor - ${roomName}`,
             description: `Accommodation for ${nights} nights`,
           },
-          unit_amount: amount * 100,
+          unit_amount: Math.round((amount + (amount * taxRate) + serviceCharge) * 100),
         },
         quantity: 1,
       }],
       mode: 'payment',
-      success_url: `${process.env.CLIENT_URL || 'http://localhost:5173'}/calendar?status=success`,
-      cancel_url: `${process.env.CLIENT_URL || 'http://localhost:5173'}/calendar?status=cancel`,
+      success_url: `${baseUrl}/calendar?status=success`,
+      cancel_url: `${baseUrl}/calendar?status=cancel`,
     });
     res.json({ url: session.url });
   } catch (error) {
@@ -643,6 +652,10 @@ app.post('/api/create-checkout-session', async (req, res) => {
 app.post('/api/resend-payment-link', async (req, res) => {
   const { bookingId, roomName, amount, guestEmail, nights } = req.body;
   try {
+    const taxRate = parseFloat(await getSetting('tax_rate', '0'));
+    const serviceCharge = parseFloat(await getSetting('service_charge', '0'));
+    const baseUrl = await getSetting('base_url', process.env.CLIENT_URL || 'http://localhost:5173');
+
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       ...(guestEmail ? { customer_email: guestEmail } : {}),
@@ -653,13 +666,13 @@ app.post('/api/resend-payment-link', async (req, res) => {
             name: `The Atlantic Horizon Manor — ${roomName}`,
             description: `Booking: ${bookingId} | ${nights || 1} night(s)`,
           },
-          unit_amount: Math.round(amount * 100),
+          unit_amount: Math.round((amount + (amount * taxRate) + serviceCharge) * 100),
         },
         quantity: 1,
       }],
       mode: 'payment',
-      success_url: `${process.env.CLIENT_URL || 'http://localhost:5173'}/calendar?status=success`,
-      cancel_url: `${process.env.CLIENT_URL || 'http://localhost:5173'}/calendar?status=cancel`,
+      success_url: `${baseUrl}/calendar?status=success`,
+      cancel_url: `${baseUrl}/calendar?status=cancel`,
     });
     res.json({ url: session.url });
   } catch (error) {
@@ -701,8 +714,8 @@ app.post('/api/gift-cards/checkout', async (req, res) => {
         recipientEmail,
         notes: notes || ''
       },
-      success_url: `${process.env.CLIENT_URL || 'http://localhost:5173'}/gift-card-success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.CLIENT_URL || 'http://localhost:5173'}/gift-cards?status=cancel`,
+      success_url: `${baseUrl}/gift-card-success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${baseUrl}/gift-cards?status=cancel`,
     });
     
     res.json({ url: session.url });
@@ -823,25 +836,40 @@ app.post('/api/check-availability', async (req, res) => {
     const start = new Date(checkIn);
     const end = new Date(checkOut);
     
-    // 🧠 FIX 1: Strictly use checkInDate and checkOutDate
-    const bookings = await Booking.find({
+    // 1. Get all active bookings that overlap with requested range
+    const overlappingBookings = await Booking.find({
+      bookingStatus: { $ne: 'Cancelled' },
       $or: [
         { checkInDate: { $lt: end }, checkOutDate: { $gt: start } }
       ]
-    }).select('roomName -_id').lean();
-    
-    const bookingCounts = {};
-    bookings.forEach(b => {
-      bookingCounts[b.roomName] = (bookingCounts[b.roomName] || 0) + 1;
+    }).select('roomName roomType assignedUnit').lean();
+
+    // 2. Count occupied units per room category
+    const occupiedCounts = {};
+    overlappingBookings.forEach(b => {
+      // roomName in Booking schema is actually the category/type name (e.g. "Luxury Suite")
+      occupiedCounts[b.roomName] = (occupiedCounts[b.roomName] || 0) + 1;
     });
 
-    // 🧠 FIX 2: Check against inventoryQuantity instead of the old capacity
-    const allRooms = await Room.find().select('name inventoryQuantity').lean();
-    const soldOutRooms = allRooms
-      .filter(room => (bookingCounts[room.name] || 0) >= (room.inventoryQuantity || 1))
-      .map(room => room.name);
+    // 3. Get total physical rooms available per category (using roomType field)
+    const physicalRooms = await PhysicalRoom.find().lean();
+    const inventoryTotals = {};
+    physicalRooms.forEach(pr => {
+      // roomType in PhysicalRoom schema maps to the Room category name
+      const type = pr.roomType; 
+      inventoryTotals[type] = (inventoryTotals[type] || 0) + 1;
+    });
 
-    res.status(200).json({ bookedRooms: soldOutRooms });
+    // 4. Determine which rooms are sold out
+    const allCategories = await Room.find().select('name').lean();
+    const soldOutRooms = allCategories
+      .filter(cat => (occupiedCounts[cat.name] || 0) >= (inventoryTotals[cat.name] || 0))
+      .map(cat => cat.name);
+
+    res.status(200).json({ 
+      bookedRooms: soldOutRooms,
+      debug: { occupied: occupiedCounts, total: inventoryTotals }
+    });
   } catch (error) {
     res.status(500).json({ error: "Check availability failed", details: error.message });
   }
@@ -970,6 +998,188 @@ app.post('/api/cookies', async (req, res) => {
     res.json({ message: 'Consent saved successfully' });
   } catch (error) {
     res.status(500).json({ error: 'Server error saving consent' });
+  }
+});
+
+// ==========================================
+// Phase 2: IoT & Room Card System
+// ==========================================
+
+// 🔑 Generate KeyCard (INTERNAL UTILITY)
+const generateKeyCard = async (bookingId, roomId, checkIn, checkOut) => {
+  const token = crypto.randomBytes(32).toString('hex');
+  const keyCard = new KeyCard({
+    booking_id: bookingId,
+    room_id: roomId,
+    access_token: token, // In prod, encrypt this with a secret
+    start_time: checkIn,
+    end_time: checkOut
+  });
+  await keyCard.save();
+  return token;
+};
+
+// 💳 Stripe Webhook handler
+app.post('/api/webhook/stripe', express.raw({ type: 'application/json' }), async (req, res) => {
+  const sig = req.headers['stripe-signature'];
+  let event;
+  
+  try {
+    const endpointSecret = await getSetting('STRIPE_WEBHOOK_SECRET', process.env.STRIPE_WEBHOOK_SECRET);
+    event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
+  } catch (err) {
+    return res.status(400).send(`Webhook Error: ${err.message}`);
+  }
+
+  if (event.type === 'checkout.session.completed') {
+    const session = event.data.object;
+    const bookingId = session.metadata.bookingId;
+    
+    if (bookingId) {
+      const booking = await Booking.findById(bookingId);
+      if (booking) {
+        booking.bookingStatus = 'Confirmed';
+        booking.paymentStatus = 'Paid';
+        await booking.save();
+        
+        // Find assigned physical room if any
+        const physicalRoom = await PhysicalRoom.findOne({ roomName: booking.assignedUnit });
+        if (physicalRoom) {
+          await generateKeyCard(booking._id, physicalRoom._id, booking.checkInDate, booking.checkOutDate);
+        }
+      }
+    }
+  }
+  res.json({ received: true });
+});
+
+// 📱 Guest Key Retrieval
+app.get('/api/room-card/my-key', async (req, res) => {
+  const { bookingId } = req.query; // Usually from guest session/token
+  if (!bookingId) return res.status(400).json({ error: "Booking ID required" });
+
+  try {
+    const key = await KeyCard.findOne({ 
+      booking_id: bookingId, 
+      is_active: true,
+      end_time: { $gt: new Date() }
+    }).populate('room_id');
+
+    if (!key) return res.status(404).json({ error: "No active digital key found" });
+
+    res.status(200).json({
+      token: key.access_token,
+      roomName: key.room_id.roomName,
+      lockId: key.room_id.lock_device_id,
+      expires: key.end_time
+    });
+  } catch (error) {
+    res.status(500).json({ error: "Key retrieval failed", details: error.message });
+  }
+});
+
+// ==========================================
+// Phase 3: F&B Room Service Module
+// ==========================================
+
+// 🍔 Menu Management (CRUD)
+app.get('/api/menu', async (req, res) => {
+  try {
+    const items = await Menu.find({ isAvailable: true });
+    res.json(items);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/api/menu', async (req, res) => {
+  try {
+    const item = new Menu(req.body);
+    await item.save();
+    res.status(201).json(item);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+// 🍽️ Ordering Engine
+app.post('/api/room-service/order', async (req, res) => {
+  const { bookingId, roomName, items, paymentMethod, notes } = req.body;
+  
+  try {
+    let total = 0;
+    const orderItems = [];
+    
+    for (const item of items) {
+      const menuItem = await Menu.findById(item.menuId);
+      if (menuItem) {
+        total += menuItem.price * item.quantity;
+        orderItems.push({
+          menuId: menuItem._id,
+          name: menuItem.name,
+          price: menuItem.price,
+          quantity: item.quantity
+        });
+      }
+    }
+
+    const order = new Order({
+      bookingId,
+      roomName,
+      items: orderItems,
+      totalAmount: total,
+      paymentMethod,
+      notes,
+      paymentStatus: paymentMethod === 'Stripe' ? 'Pending' : 'Paid' // Folio is 'Paid' to room bill
+    });
+
+    await order.save();
+
+    // 🕵️ Log the order
+    const logEntry = new Log({
+      action: 'F&B Order Placed',
+      details: `Order #${order._id} for Room ${roomName} via ${paymentMethod}. Total: €${total}`,
+      user: bookingId ? 'Guest' : 'Staff'
+    });
+    await logEntry.save();
+
+    res.status(201).json({ 
+      message: 'Order received', 
+      orderId: order._id,
+      total: total 
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// 💳 F&B Stripe Checkout
+app.post('/api/room-service/checkout', async (req, res) => {
+  const { orderId } = req.body;
+  try {
+    const order = await Order.findById(orderId);
+    if (!order) return res.status(404).json({ error: "Order not found" });
+
+    const baseUrl = await getSetting('base_url', process.env.CLIENT_URL || 'http://localhost:5173');
+    
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ['card'],
+      line_items: order.items.map(item => ({
+        price_data: {
+          currency: 'eur',
+          product_data: { name: `F&B Order - ${item.name}` },
+          unit_amount: Math.round(item.price * 100),
+        },
+        quantity: item.quantity,
+      })),
+      mode: 'payment',
+      metadata: { orderId: order._id.toString() },
+      success_url: `${baseUrl}/room-service/order-success?order_id=${order._id}`,
+      cancel_url: `${baseUrl}/room-service?status=cancel`,
+    });
+    res.json({ url: session.url });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 });
 

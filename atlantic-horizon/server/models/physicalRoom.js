@@ -3,11 +3,12 @@ import mongoose from 'mongoose';
 const physicalRoomSchema = new mongoose.Schema({
   department: { type: String, required: true },
   roomType: { type: String, required: false }, 
-  roomName: { type: String, required: true, unique: true }, // The physical unit identifier, e.g. "PL-101"
-  cleaningStatus: { 
+  roomName: { type: String, required: true, unique: true }, // e.g. "PL-101"
+  lock_device_id: { type: String, default: null }, // IoT lock identifier
+  current_status: { 
     type: String, 
-    enum: ['Clean', 'Dirty', 'In Service', 'Maintenance'], 
-    default: 'Clean' 
+    enum: ['Ready', 'Maintenance', 'Occupied', 'Cleaning'], 
+    default: 'Ready' 
   }
 }, { timestamps: true });
 

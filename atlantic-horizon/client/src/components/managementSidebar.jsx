@@ -18,10 +18,10 @@ const NAV_GROUPS = {
     { name: 'Audit Logs', path: '/adminLogs', icon: '🕵' },
   ],
   admin: [
+    { name: 'System Settings', path: '/adminSettings', icon: '⚙' },
     { name: 'Capacity Control', path: '/roomCapacity', icon: '🚪' },
     { name: 'Room Management', path: '/roomManagement', icon: '🏨' },
     { name: 'Staff & IAM', path: '/adminIam', icon: '👤' },
-    { name: 'System Settings', path: '/adminSettings', icon: '⚙' },
   ],
 };
 
@@ -83,7 +83,7 @@ export default function ManagementSidebar({ user, isManagerMode }) {
       <Link to="/" className="flex items-center gap-3 px-6 py-5 border-b hover:bg-white/5 transition-all" style={{ borderColor: COLORS.border }}>
         <span className="text-manorGold text-lg">⊕</span>
         <div>
-          <p className="text-[9px] text-amber-500 uppercase tracking-[0.3em] font-black">The Atlantic Horizon (v2.1)</p>
+          <p className="text-[9px] text-amber-500 uppercase tracking-[0.3em] font-black">The Atlantic Horizon (v2.2-stable)</p>
           <p className="text-[10px] text-white/30 uppercase tracking-widest">← Guest Site</p>
         </div>
       </Link>
@@ -112,8 +112,8 @@ export default function ManagementSidebar({ user, isManagerMode }) {
           </>
         )}
 
-        {/* Admin section — Manager Mode + admin role */}
-        {isManagerMode && user?.role === 'admin' && (
+        {/* Admin section — Manager Mode + admin role (Case-Insensitive) */}
+        {isManagerMode && user?.role?.toLowerCase() === 'admin' && (
           <>
             <SectionLabel label="Admin" color="text-red-400/60" />
             {NAV_GROUPS.admin.map(item => (

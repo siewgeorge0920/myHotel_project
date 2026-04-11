@@ -60,6 +60,7 @@ export default function StaffDashboard() {
             <h1 className="text-4xl font-serif italic tracking-wide">
               Welcome, {user?.name || 'Sanctuary Member'}
             </h1>
+            <p className="text-[8px] text-white/20 uppercase tracking-[0.2em] mt-2">Environment: v2.2-stable | Role: {user?.role}</p>
           </div>
 
           {/*MANAGER MODE SWITCH */}
@@ -160,7 +161,18 @@ export default function StaffDashboard() {
           {/*MANAGER-ONLY CARDS */}
           {isManagerMode && (
             <>
-                <div className="p-10 border border-amber-600/30" style={{ backgroundColor: '#1e2219' }}>
+              {/* SYSTEM CONFIG (PRIORITIZED FOR ADMIN) */}
+              {user?.role?.toLowerCase() === 'admin' && (
+                <div className="p-10 border border-amber-600/30" style={{ backgroundColor: COLORS.bgSurface, borderColor: COLORS.gold }}>
+                  <h3 className="text-xl font-serif mb-4 italic text-amber-400">System Configuration</h3>
+                  <p className="text-gray-400 text-sm mb-8 leading-relaxed">Modify infrastructure settings, email SMTP, and global variables.</p>
+                  <a href="/adminSettings" className="inline-block py-3 px-8 text-[10px] uppercase font-black tracking-widest border border-amber-600 text-amber-500 hover:bg-amber-600 hover:text-white transition-all">
+                    Access Settings
+                  </a>
+                </div>
+              )}
+
+              <div className="p-10 border border-amber-600/30" style={{ backgroundColor: '#1e2219' }}>
                 <h3 className="text-xl font-serif mb-4 italic text-amber-400">Staff Management</h3>
                 <p className="text-gray-400 text-sm mb-8 leading-relaxed">Manage staff accounts, assign roles, and monitor activity.</p>
                 <a href="/adminIam" className="inline-block py-3 px-8 text-[10px] uppercase font-black tracking-widest border border-amber-600 text-amber-500 hover:bg-amber-600 hover:text-white transition-all">
@@ -174,16 +186,6 @@ export default function StaffDashboard() {
                   View Logs
                 </a>
               </div>
-
-              {user?.role === 'admin' && (
-                <div className="p-10 border border-amber-600/30" style={{ backgroundColor: '#1e2219' }}>
-                  <h3 className="text-xl font-serif mb-4 italic text-amber-400">System Configuration</h3>
-                  <p className="text-gray-400 text-sm mb-8 leading-relaxed">Modify infrastructure settings, email SMTP, and global variables.</p>
-                  <a href="/adminSettings" className="inline-block py-3 px-8 text-[10px] uppercase font-black tracking-widest border border-amber-600 text-amber-500 hover:bg-amber-600 hover:text-white transition-all">
-                    Access Settings
-                  </a>
-                </div>
-              )}
             </>
           )}
         </div>

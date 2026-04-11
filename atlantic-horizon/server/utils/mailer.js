@@ -1,18 +1,11 @@
 import nodemailer from 'nodemailer';
-import dotenv from 'dotenv';
-import Setting from '../models/setting.js';
-dotenv.config();
+import { getSetting } from './configHelper.js';
 
 const getTransporter = async () => {
-  // Try to get from DB first
-  const dbSettings = await Setting.find({ key: { $regex: /^email_/ } });
-  const settings = {};
-  dbSettings.forEach(s => settings[s.key] = s.value);
-
-  const user = settings.email_user || process.env.ZOHO_USER;
-  const pass = settings.email_pass || process.env.ZOHO_PASS;
-  const host = settings.email_host || process.env.ZOHO_HOST || 'smtp.zoho.com';
-  const port = parseInt(settings.email_port || process.env.ZOHO_PORT) || 465;
+  const user = await getSetting('email_user');
+  const pass = await getSetting('email_pass');
+  const host = await getSetting('email_host', 'smtp.zoho.com');
+  const port = parseInt(await getSetting('email_port', '465'));
 
   return nodemailer.createTransport({
     host,
@@ -26,9 +19,7 @@ export const sendGiftCardEmail = async (recipientEmail, giftCardDetails) => {
   const { code, amount, recipientName, purchaserName, isPurchaser } = giftCardDetails;
   const transporter = await getTransporter();
   
-  // Use the user from settings for the 'from' field
-  const config = await Setting.find({ key: { $regex: /^email_/ } });
-  const userSetting = config.find(c => c.key === 'email_user')?.value || process.env.ZOHO_USER;
+  const userSetting = await getSetting('email_user');
 
   const mailOptions = {
     from: `"The Atlantic Horizon Manor" <${userSetting}>`,
