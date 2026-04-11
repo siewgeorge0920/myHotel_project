@@ -508,6 +508,7 @@ export default function CalendarPage() {
         {bookingStep === 4 && (
           <div className="max-w-md mx-auto animate-pageTransition text-center">
              <h2 className="font-cinzel text-2xl mb-12 tracking-widest">FINAL REVIEW</h2>
+             
              <div className="bg-[#242820] p-10 mb-8 text-left space-y-4 border-t-4 border-amber-600">
                 <div className="flex justify-between border-b border-white/5 pb-4">
                    <span className="text-[10px] uppercase opacity-40">Stay</span>
@@ -523,7 +524,6 @@ export default function CalendarPage() {
                    <span className="text-[10px] uppercase font-black text-amber-500 tracking-widest">Total Amount</span>
                    <span className="text-3xl font-georgia italic">€{calculateTotal()}</span>
                 </div>
-             </div>
              </div>
 
              {/* Gift Card Input */}
