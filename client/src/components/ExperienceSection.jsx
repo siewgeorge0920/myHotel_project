@@ -42,6 +42,8 @@ export default function ExperienceSection() {
               <img
                 src={f.img}
                 alt={`${f.title} - Exclusive guest experience at The Atlantic Horizon Manor`}
+                width="800"
+                height="400"
                 className="w-full h-[300px] md:h-[400px] object-cover block grayscale-[20%] group-hover:grayscale-0 transition-all duration-700"
                 loading="lazy"
               />

@@ -92,7 +92,9 @@ export default function Header() {
             <img
               src="/images/Logo.png"
               alt="The Atlantic Horizon Manor Logo"
-              className="h-20 lg:h-32 w-auto transition-transform duration-300 hover:scale-105"
+              width="128"
+              height="128"
+              className="h-14 lg:h-32 w-auto transition-transform duration-300 hover:scale-105"
             />
           </Link>
         </div>

@@ -1,10 +1,10 @@
 export default function Newsletter() {
   return (
     // Newsletter section with light background and decorative illustration
-    <section className="newsletter-section bg-[#f5f5f5] py-20 px-[10%] relative overflow-hidden">
+    <section className="newsletter-section bg-[#f5f5f5] py-12 lg:py-24 px-[6%] lg:px-[10%] relative overflow-hidden">
       
       {/* Main content container (responsive layout) */}
-      <div className="max-w-5xl mx-auto flex justify-between items-start gap-12 relative z-10 max-[850px]:flex-col max-[850px]:text-center">
+      <div className="max-w-5xl mx-auto flex justify-between items-start gap-8 lg:gap-16 relative z-10 max-[850px]:flex-col max-[850px]:text-center">
         
         {/* Left column: heading and description */}
         <div className="flex-1">

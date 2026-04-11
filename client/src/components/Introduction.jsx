@@ -17,7 +17,13 @@ export default function Introduction() {
 
         {/* Hotel crest */}
         <div className="mb-8">
-          <img src="/images/Logo.png" alt="The Atlantic Horizon Manor official seal" className="h-20 w-auto mx-auto opacity-60 filter brightness-150" />
+          <img 
+            src="/images/Logo.png" 
+            alt="The Atlantic Horizon Manor official seal" 
+            width="80" 
+            height="80" 
+            className="h-20 w-auto mx-auto opacity-60 filter brightness-150" 
+          />
         </div>
 
         {/* Thin gold divider */}

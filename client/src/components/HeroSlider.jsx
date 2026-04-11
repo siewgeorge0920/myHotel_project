@@ -50,6 +50,8 @@ export default function HeroSlider() {
               <img 
                 src={src} 
                 alt="The Atlantic Horizon Manor" 
+                width="1920"
+                height="1080"
                 className="hidden" 
                 fetchpriority="high" 
               />
