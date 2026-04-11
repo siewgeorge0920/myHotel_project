@@ -41,7 +41,11 @@ app.use(session({
 }));
 
 const PORT = process.env.PORT || 5000;
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+
+export const getStripe = async () => {
+  const secret = await getSetting('STRIPE_SECRET_KEY', process.env.STRIPE_SECRET_KEY);
+  return new Stripe(secret);
+};
 
 // 🚀 MongoDB
 mongoose.connect(process.env.MONGO_URI)
@@ -604,6 +608,7 @@ app.get('/api/logs', async (req, res) => {
 app.post('/api/create-payment-intent', async (req, res) => {
   const { amount, guestEmail, roomName } = req.body;
   try {
+    const stripe = await getStripe();
     const paymentIntent = await stripe.paymentIntents.create({
       amount: Math.round(amount * 100), // cents
       currency: 'eur',
@@ -616,32 +621,58 @@ app.post('/api/create-payment-intent', async (req, res) => {
   }
 });
 
-// Keep checkout session for backward compat
+// Unified checkout session for both Room Bookings & F&B Orders (Phase 5)
 app.post('/api/create-checkout-session', async (req, res) => {
-  const { roomName, amount, guestEmail, nights } = req.body;
+  const { orderType, roomName, amount, guestEmail, nights, orderId } = req.body;
   try {
-    const taxRate = parseFloat(await getSetting('tax_rate', '0'));
-    const serviceCharge = parseFloat(await getSetting('service_charge', '0'));
     const baseUrl = await getSetting('base_url', process.env.CLIENT_URL || 'http://localhost:5173');
+    const stripe = await getStripe();
+    let sessionConfig = {};
 
-    const session = await stripe.checkout.sessions.create({
-      payment_method_types: ['card'],
-      customer_email: guestEmail,
-      line_items: [{
-        price_data: {
-          currency: 'eur',
-          product_data: {
-            name: `The Atlantic Horizon Manor - ${roomName}`,
-            description: `Accommodation for ${nights} nights`,
+    if (orderType === 'fb') {
+      const order = await Order.findById(orderId);
+      if (!order) return res.status(404).json({ error: "Order not found" });
+      
+      sessionConfig = {
+        payment_method_types: ['card'],
+        line_items: order.items.map(item => ({
+          price_data: {
+            currency: 'eur',
+            product_data: { name: `F&B Order - ${item.name}` },
+            unit_amount: Math.round(item.price * 100),
           },
-          unit_amount: Math.round((amount + (amount * taxRate) + serviceCharge) * 100),
-        },
-        quantity: 1,
-      }],
-      mode: 'payment',
-      success_url: `${baseUrl}/calendar?status=success`,
-      cancel_url: `${baseUrl}/calendar?status=cancel`,
-    });
+          quantity: item.quantity,
+        })),
+        mode: 'payment',
+        metadata: { orderId: order._id.toString() },
+        success_url: `${baseUrl}/room-service/order-success?order_id=${order._id}`,
+        cancel_url: `${baseUrl}/room-service?status=cancel`,
+      };
+    } else {
+      // Default: Room Booking
+      const taxRate = parseFloat(await getSetting('tax_rate', '0'));
+      const serviceCharge = parseFloat(await getSetting('service_charge', '0'));
+      sessionConfig = {
+        payment_method_types: ['card'],
+        customer_email: guestEmail,
+        line_items: [{
+          price_data: {
+            currency: 'eur',
+            product_data: {
+              name: `The Atlantic Horizon Manor - ${roomName}`,
+              description: `Accommodation for ${nights || 1} nights`,
+            },
+            unit_amount: Math.round((amount + (amount * taxRate) + serviceCharge) * 100),
+          },
+          quantity: 1,
+        }],
+        mode: 'payment',
+        success_url: `${baseUrl}/calendar?status=success`,
+        cancel_url: `${baseUrl}/calendar?status=cancel`,
+      };
+    }
+
+    const session = await stripe.checkout.sessions.create(sessionConfig);
     res.json({ url: session.url });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -656,6 +687,7 @@ app.post('/api/resend-payment-link', async (req, res) => {
     const serviceCharge = parseFloat(await getSetting('service_charge', '0'));
     const baseUrl = await getSetting('base_url', process.env.CLIENT_URL || 'http://localhost:5173');
 
+    const stripe = await getStripe();
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       ...(guestEmail ? { customer_email: guestEmail } : {}),
@@ -690,6 +722,7 @@ app.post('/api/gift-cards/checkout', async (req, res) => {
   const { amount, purchaserEmail, purchaserName, recipientEmail, recipientName, notes } = req.body;
   
   try {
+    const stripe = await getStripe();
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       customer_email: purchaserEmail,
@@ -734,6 +767,7 @@ app.post('/api/gift-cards/verify-purchase', async (req, res) => {
     const existing = await GiftCard.findOne({ stripeSessionId: sessionId });
     if (existing) return res.json({ message: 'Already processed', code: existing.code });
 
+    const stripe = await getStripe();
     const session = await stripe.checkout.sessions.retrieve(sessionId);
     if (session.payment_status !== 'paid') {
       return res.status(400).json({ error: 'Payment not completed' });
@@ -1026,6 +1060,7 @@ app.post('/api/webhook/stripe', express.raw({ type: 'application/json' }), async
   
   try {
     const endpointSecret = await getSetting('STRIPE_WEBHOOK_SECRET', process.env.STRIPE_WEBHOOK_SECRET);
+    const stripe = await getStripe();
     event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
   } catch (err) {
     return res.status(400).send(`Webhook Error: ${err.message}`);
@@ -1102,11 +1137,55 @@ app.post('/api/menu', async (req, res) => {
   }
 });
 
+app.put('/api/menu/:id', async (req, res) => {
+  try {
+    const item = await Menu.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!item) return res.status(404).json({ error: "Menu item not found" });
+    res.json(item);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+app.delete('/api/menu/:id', async (req, res) => {
+  try {
+    const item = await Menu.findByIdAndDelete(req.params.id);
+    if (!item) return res.status(404).json({ error: "Menu item not found" });
+    res.json({ message: "Menu item deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // 🍽️ Ordering Engine
 app.post('/api/room-service/order', async (req, res) => {
   const { bookingId, roomName, items, paymentMethod, notes } = req.body;
   
   try {
+    // 🕒 Check Service Hours
+    const serviceHours = await getSetting('fb_service_hours', '07:00-23:00');
+    if (serviceHours && serviceHours.includes('-')) {
+      const [startStr, endStr] = serviceHours.split('-');
+      const now = new Date();
+      const currentHours = now.getHours();
+      const currentMins = now.getMinutes();
+      const currentTime = currentHours + (currentMins/60);
+      
+      const [startH, startM] = startStr.split(':').map(Number);
+      const startTime = startH + (startM/60);
+      
+      const [endH, endM] = endStr.split(':').map(Number);
+      let endTime = endH + (endM/60);
+      if (endTime < startTime) endTime += 24; 
+      
+      let checkTime = currentTime;
+      if (endTime > 24 && checkTime < startTime) checkTime += 24;
+      
+      if (checkTime < startTime || checkTime > endTime) {
+        return res.status(400).json({ error: `Room service is closed. Operating hours: ${serviceHours}` });
+      }
+    }
+
     let total = 0;
     const orderItems = [];
     
@@ -1153,35 +1232,27 @@ app.post('/api/room-service/order', async (req, res) => {
   }
 });
 
-// 💳 F&B Stripe Checkout
-app.post('/api/room-service/checkout', async (req, res) => {
-  const { orderId } = req.body;
+// 🚚 Update Order Status
+app.put('/api/room-service/order/:id', async (req, res) => {
   try {
-    const order = await Order.findById(orderId);
+    const { status } = req.body;
+    const order = await Order.findByIdAndUpdate(req.params.id, { paymentStatus: status }, { new: true });
     if (!order) return res.status(404).json({ error: "Order not found" });
 
-    const baseUrl = await getSetting('base_url', process.env.CLIENT_URL || 'http://localhost:5173');
-    
-    const session = await stripe.checkout.sessions.create({
-      payment_method_types: ['card'],
-      line_items: order.items.map(item => ({
-        price_data: {
-          currency: 'eur',
-          product_data: { name: `F&B Order - ${item.name}` },
-          unit_amount: Math.round(item.price * 100),
-        },
-        quantity: item.quantity,
-      })),
-      mode: 'payment',
-      metadata: { orderId: order._id.toString() },
-      success_url: `${baseUrl}/room-service/order-success?order_id=${order._id}`,
-      cancel_url: `${baseUrl}/room-service?status=cancel`,
+    // 🕵️ Log the status transition
+    const logEntry = new Log({
+      action: 'F&B Order Status Updated',
+      details: `Order #${order._id} status changed to: ${status}`,
+      user: 'Staff'
     });
-    res.json({ url: session.url });
+    await logEntry.save();
+
+    res.json(order);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
+
 
 // START SERVER
 if (process.env.NODE_ENV !== 'production') {
