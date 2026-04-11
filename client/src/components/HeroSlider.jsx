@@ -45,6 +45,15 @@ export default function HeroSlider() {
             className="w-full h-full bg-center bg-no-repeat bg-contain relative"
             style={{ backgroundImage: `url(${src})` }}
           >
+            {/* 🚀 LCP Optimization: Real img tag for the first slide to help browser discovery */}
+            {i === 0 && (
+              <img 
+                src={src} 
+                alt="The Atlantic Horizon Manor" 
+                className="hidden" 
+                fetchpriority="high" 
+              />
+            )}
             {/* Blurred background layer for cinematic effect */}
             <div
               className="absolute inset-0 bg-cover blur-2xl brightness-50 -z-10"

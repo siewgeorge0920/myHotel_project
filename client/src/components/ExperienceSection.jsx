@@ -41,8 +41,9 @@ export default function ExperienceSection() {
               <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-amber-600/60 z-10 translate-x-2 translate-y-2" />
               <img
                 src={f.img}
-                alt={f.title}
+                alt={`${f.title} - Exclusive guest experience at The Atlantic Horizon Manor`}
                 className="w-full h-[300px] md:h-[400px] object-cover block grayscale-[20%] group-hover:grayscale-0 transition-all duration-700"
+                loading="lazy"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent pointer-events-none" />
             </div>

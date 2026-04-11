@@ -14,13 +14,27 @@ export default function Footer({
 
       <div className="relative z-10">
         <div className="scroll-top-area mb-10">
-          <a href="#top" className="scroll-btn inline-flex items-center justify-center w-12 h-12 bg-manorRose text-manorGreen rounded-full text-2xl mb-2 transition hover:-translate-y-1 hover:bg-white">↑</a>
+          <a href="#top" className="scroll-btn inline-flex items-center justify-center w-12 h-12 bg-manorRose text-manorGreen rounded-full text-2xl mb-2 transition hover:-translate-y-1 hover:bg-white" aria-label="Return to top of page">↑</a>
           <p className="text-[12px] uppercase tracking-[1px]">Return To Top</p>
+          <div className="flex gap-4 mt-6 max-w-xs mx-auto">
+            <input
+              type="email"
+              placeholder="YOUR EMAIL"
+              aria-label="Email address for newsletter subscription"
+              className="bg-white/5 border border-manorGold/20 px-4 py-2 text-xs focus:border-manorGold outline-none w-full"
+            />
+            <button 
+              className="bg-manorGold text-manorGreen px-6 py-2 text-[10px] font-bold tracking-widest hover:bg-manorGold/90 transition-colors uppercase"
+              aria-label="Subscribe to the Manor newsletter"
+            >
+              Join
+            </button>
+          </div>
         </div>
 
         <nav className="footer-nav flex flex-wrap justify-center gap-5 my-10 border-y border-manorGold/20 py-5">
           {links.map((link) => (
-            <button key={link} className="text-manorRose text-sm tracking-wide hover:text-white transition">{link}</button>
+            <button key={link} className="text-manorRose text-sm tracking-wide hover:text-white transition" aria-label={`Navigate to ${link}`}>{link}</button>
           ))}
         </nav>
 
@@ -29,9 +43,15 @@ export default function Footer({
           <p className="font-georgia mb-4 text-manorGold/80">Wild Atlantic Way, Southwest Ireland</p>
 
           <div className="social-icons flex justify-center gap-8 my-6 text-2xl">
-            <a href="#" className="text-white hover:text-manorRose transition"><i className="fa-brands fa-instagram"></i></a>
-            <a href="#" className="text-white hover:text-manorRose transition"><i className="fa-brands fa-facebook-f"></i></a>
-            <a href="#" className="text-white hover:text-manorRose transition"><i className="fa-brands fa-tiktok"></i></a>
+            {[
+              { icon: 'fa-instagram', label: 'Follow our Instagram' },
+              { icon: 'fa-facebook-f', label: 'Follow our Facebook' },
+              { icon: 'fa-tiktok', label: 'Follow our TikTok' }
+            ].map((social, i) => (
+              <a key={i} href="#" className="text-white hover:text-manorRose transition" aria-label={social.label}>
+                <i className={`fa-brands ${social.icon}`}></i>
+              </a>
+            ))}
           </div>
 
           <div className="contact-line text-[13px] mt-4 opacity-80">
