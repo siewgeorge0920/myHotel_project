@@ -579,8 +579,8 @@ app.post('/api/create-checkout-session', async (req, res) => {
         quantity: 1,
       }],
       mode: 'payment',
-      success_url: `http://localhost:5173/calendar?status=success`,
-      cancel_url: `http://localhost:5173/calendar?status=cancel`,
+      success_url: `${process.env.CLIENT_URL || 'http://localhost:5173'}/calendar?status=success`,
+      cancel_url: `${process.env.CLIENT_URL || 'http://localhost:5173'}/calendar?status=cancel`,
     });
     res.json({ url: session.url });
   } catch (error) {
@@ -607,8 +607,8 @@ app.post('/api/resend-payment-link', async (req, res) => {
         quantity: 1,
       }],
       mode: 'payment',
-      success_url: `http://localhost:5173/calendar?status=success`,
-      cancel_url: `http://localhost:5173/calendar?status=cancel`,
+      success_url: `${process.env.CLIENT_URL || 'http://localhost:5173'}/calendar?status=success`,
+      cancel_url: `${process.env.CLIENT_URL || 'http://localhost:5173'}/calendar?status=cancel`,
     });
     res.json({ url: session.url });
   } catch (error) {
