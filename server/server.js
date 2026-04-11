@@ -23,6 +23,19 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
+
+// 🏠 Backend Home Route (Avoid 404 on Root)
+app.get('/', (req, res) => {
+  res.send(`
+    <body style="background: #1a1d17; color: #d4af37; font-family: sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; text-align: center;">
+      <div>
+        <h1 style="letter-spacing: 0.2em; font-weight: 300;">THE ATLANTIC HORIZON MANOR</h1>
+        <p style="color: #6a6a6a; font-size: 0.8rem; letter-spacing: 0.1em; margin-top: 10px;">CORE API SYSTEM IS RUNNING</p>
+      </div>
+    </body>
+  `);
+});
+
 app.use(session({
   secret: process.env.SESSION_SECRET || 'manor-secret-key', // Secret used to sign the session ID
   resave: false, // Don't save session if unmodified
