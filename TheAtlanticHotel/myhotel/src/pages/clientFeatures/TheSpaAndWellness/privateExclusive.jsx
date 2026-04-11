@@ -1,1 +1,0 @@
-export default function PrivateExclusive() { return <div>Private Exclusive Page</div>; }

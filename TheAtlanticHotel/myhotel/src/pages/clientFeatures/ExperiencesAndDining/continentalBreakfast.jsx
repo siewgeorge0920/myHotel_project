@@ -1,1 +1,0 @@
-export default function ContinentalBreakfast() { return <div>Continental Breakfast Page</div>; }

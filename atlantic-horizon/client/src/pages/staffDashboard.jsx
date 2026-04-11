@@ -167,7 +167,6 @@ export default function StaffDashboard() {
                   Manage Staff
                 </a>
               </div>
-
               <div className="p-10 border border-amber-600/30" style={{ backgroundColor: '#1e2219' }}>
                 <h3 className="text-xl font-serif mb-4 italic text-amber-400">System Audit Logs</h3>
                 <p className="text-gray-400 text-sm mb-8 leading-relaxed">Review system activity, login history, and audit trails.</p>
@@ -175,6 +174,16 @@ export default function StaffDashboard() {
                   View Logs
                 </a>
               </div>
+
+              {user?.role === 'admin' && (
+                <div className="p-10 border border-amber-600/30" style={{ backgroundColor: '#1e2219' }}>
+                  <h3 className="text-xl font-serif mb-4 italic text-amber-400">System Configuration</h3>
+                  <p className="text-gray-400 text-sm mb-8 leading-relaxed">Modify infrastructure settings, email SMTP, and global variables.</p>
+                  <a href="/adminSettings" className="inline-block py-3 px-8 text-[10px] uppercase font-black tracking-widest border border-amber-600 text-amber-500 hover:bg-amber-600 hover:text-white transition-all">
+                    Access Settings
+                  </a>
+                </div>
+              )}
             </>
           )}
         </div>

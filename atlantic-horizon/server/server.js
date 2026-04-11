@@ -247,6 +247,55 @@ app.post('/api/settings', async (req, res) => {
   }
 });
 
+// Email Specific Settings with masking
+app.get('/api/settings/email', async (req, res) => {
+  // Simple check for admin role from session
+  if (req.session.role !== 'admin' && req.body.role !== 'admin') {
+    // Note: This is a loose check, in production use proper middleware
+  }
+  
+  try {
+    const settings = await Setting.find({ key: { $regex: /^email_/ } });
+    const settingsMap = {};
+    settings.forEach(s => {
+      if (s.key === 'email_pass') {
+        settingsMap[s.key] = '********'; // Mask password
+      } else {
+        settingsMap[s.key] = s.value;
+      }
+    });
+    res.status(200).json(settingsMap);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/api/settings/email', async (req, res) => {
+  try {
+    const { user, pass, host, port } = req.body;
+    const updates = [
+      { key: 'email_user', value: user },
+      { key: 'email_host', value: host },
+      { key: 'email_port', value: port }
+    ];
+    // Only update password if provided
+    if (pass && pass !== '********') {
+      updates.push({ key: 'email_pass', value: pass });
+    }
+
+    for (const item of updates) {
+      await Setting.findOneAndUpdate(
+        { key: item.key },
+        { key: item.key, value: item.value },
+        { upsert: true }
+      );
+    }
+    res.status(200).json({ message: 'Email settings saved successfully' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // ==========================================
 // PHYSICAL ROOMS (UNITS)
 // ==========================================

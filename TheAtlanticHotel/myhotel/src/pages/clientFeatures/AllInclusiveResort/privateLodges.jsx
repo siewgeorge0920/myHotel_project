@@ -1,1 +1,0 @@
-export default function PrivateLodges() { return <div>Private Lodges Page</div>; }

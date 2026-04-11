@@ -12,6 +12,7 @@ import CalendarPage from './pages/calendarPage';
 import Login from './pages/login';
 import GiftCards from './pages/GiftCards';
 import GiftCardSuccess from './pages/GiftCardSuccess';
+import AdminSettings from './pages/adminSettings';
 
 // 🌟 Lincoln's Pages (Experience)
 import ContinentalBreakfast from './pages/Lincoln/continentalBreakfast';
@@ -168,6 +169,7 @@ export default function App() {
           <Route path="/check-in" element={<SelfCheckIn />} />
           <Route path="/gift-cards" element={<GiftCards />} />
           <Route path="/gift-card-success" element={<GiftCardSuccess />} />
+          <Route path="/adminSettings" element={<AdminSettings />} />
           
           {/* Lincoln's Routes */}
           <Route path="/continentalBreakfast" element={<ContinentalBreakfast />} />

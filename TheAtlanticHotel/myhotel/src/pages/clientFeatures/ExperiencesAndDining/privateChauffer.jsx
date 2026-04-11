@@ -1,1 +1,0 @@
-export default function PrivateChauffer() { return <div>Private Chauffer Page</div>; }

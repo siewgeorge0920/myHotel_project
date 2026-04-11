@@ -21,6 +21,7 @@ const NAV_GROUPS = {
     { name: 'Capacity Control', path: '/roomCapacity', icon: '🚪' },
     { name: 'Room Management', path: '/roomManagement', icon: '🏨' },
     { name: 'Staff & IAM', path: '/adminIam', icon: '👤' },
+    { name: 'System Settings', path: '/adminSettings', icon: '⚙' },
   ],
 };
 
@@ -82,7 +83,7 @@ export default function ManagementSidebar({ user, isManagerMode }) {
       <Link to="/" className="flex items-center gap-3 px-6 py-5 border-b hover:bg-white/5 transition-all" style={{ borderColor: COLORS.border }}>
         <span className="text-manorGold text-lg">⊕</span>
         <div>
-          <p className="text-[9px] text-amber-500 uppercase tracking-[0.3em] font-black">The Atlantic Horizon</p>
+          <p className="text-[9px] text-amber-500 uppercase tracking-[0.3em] font-black">The Atlantic Horizon (v2.1)</p>
           <p className="text-[10px] text-white/30 uppercase tracking-widest">← Guest Site</p>
         </div>
       </Link>

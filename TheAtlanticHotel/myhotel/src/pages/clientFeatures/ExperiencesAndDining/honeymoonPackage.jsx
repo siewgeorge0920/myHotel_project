@@ -1,1 +1,0 @@
-export default function HoneymoonPackage() { return <div>Honeymoon Package Page</div>; }
