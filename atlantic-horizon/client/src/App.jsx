@@ -1,5 +1,6 @@
 import React, { Suspense, useEffect, useState } from 'react'; // 🌟 核心修正 1：记得 Import useEffect
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import Lenis from 'lenis';
 
 // Layout Components
 import Header from './components/Header';
@@ -101,6 +102,33 @@ const LayoutWrapper = ({ children }) => {
 
 export default function App() {
   const [isCookieOpen, setIsCookieOpen] = useState(false);
+
+  useEffect(() => {
+    // 🌀 Initialize Lenis Smooth Scroll
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // Custom easing for premium feel
+      orientation: 'vertical',
+      gestureOrientation: 'vertical',
+      smoothWheel: true,
+      wheelMultiplier: 1,
+      smoothTouch: false,
+      touchMultiplier: 2,
+      infinite: false,
+    });
+
+    function raf(time) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+
+    requestAnimationFrame(raf);
+
+    // Cleanup on unmount
+    return () => {
+      lenis.destroy();
+    };
+  }, []);
 
   useEffect(() => {
     try {
