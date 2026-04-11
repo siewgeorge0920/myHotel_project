@@ -125,12 +125,12 @@ export default function Header() {
             </div>
           </Link>
 
-          <button 
-            onClick={() => setIsGiftCardOpen(true)}
+          <Link 
+            to="/gift-cards"
             className="hidden sm:block border border-manorGold text-manorGold px-3 py-2 text-[10px] lg:px-4 uppercase tracking-wider transition-all duration-300 hover:bg-manorGold hover:text-manorGreen hover:-translate-y-0.5 hover:shadow-lg"
           >
             Gift Card
-          </button>
+          </Link>
         </div>
 
         {isGiftCardOpen && <GiftCard onClose={() => setIsGiftCardOpen(false)} />}
@@ -173,12 +173,13 @@ export default function Header() {
               ))}
 
               <div className="pt-6 pb-4 space-y-3">
-                <button 
-                  onClick={() => { setIsGiftCardOpen(true); setIsMobileMenuOpen(false); }}
-                  className="w-full border border-manorGold text-manorGold py-3 text-[10px] uppercase tracking-wider hover:bg-manorGold hover:text-manorGreen transition-all"
+                <Link 
+                  to="/gift-cards"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="block w-full border border-manorGold text-manorGold py-3 text-[10px] uppercase tracking-wider text-center hover:bg-manorGold hover:text-manorGreen transition-all"
                 >
                   Gift Card
-                </button>
+                </Link>
               </div>
             </nav>
           </div>

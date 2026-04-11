@@ -16,6 +16,8 @@ import Stripe from 'stripe';
 import PhysicalRoom from './models/physicalRoom.js';
 import CookieConsent from './models/cookieConsent.js';
 import RoomService from './models/roomService.js';
+import GiftCard from './models/giftCard.js';
+import { sendGiftCardEmail } from './utils/mailer.js';
 
 dotenv.config();
 
@@ -618,6 +620,150 @@ app.post('/api/resend-payment-link', async (req, res) => {
 
 
 // ==========================================
+// GIFT CARDS — Purchase & Redemption
+// ==========================================
+
+// 1. Create Stripe Checkout Session for Gift Card
+app.post('/api/gift-cards/checkout', async (req, res) => {
+  const { amount, purchaserEmail, purchaserName, recipientEmail, recipientName, notes } = req.body;
+  
+  try {
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ['card'],
+      customer_email: purchaserEmail,
+      line_items: [{
+        price_data: {
+          currency: 'eur',
+          product_data: {
+            name: `Atlantic Horizon Manor - €${amount} Gift Voucher`,
+            description: `A luxury gift for ${recipientName || 'a loved one'}`,
+          },
+          unit_amount: amount * 100,
+        },
+        quantity: 1,
+      }],
+      mode: 'payment',
+      metadata: {
+        type: 'gift_card',
+        amount: amount.toString(),
+        purchaserName,
+        purchaserEmail,
+        recipientName,
+        recipientEmail,
+        notes: notes || ''
+      },
+      success_url: `${process.env.CLIENT_URL || 'http://localhost:5173'}/gift-card-success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.CLIENT_URL || 'http://localhost:5173'}/gift-cards?status=cancel`,
+    });
+    
+    res.json({ url: session.url });
+  } catch (error) {
+    console.error("Stripe GC Error:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// 2. Verify Purchase & Generate Code (Called from Success Page)
+app.post('/api/gift-cards/verify-purchase', async (req, res) => {
+  const { sessionId } = req.body;
+  
+  try {
+    // Check if session already processed
+    const existing = await GiftCard.findOne({ stripeSessionId: sessionId });
+    if (existing) return res.json({ message: 'Already processed', code: existing.code });
+
+    const session = await stripe.checkout.sessions.retrieve(sessionId);
+    if (session.payment_status !== 'paid') {
+      return res.status(400).json({ error: 'Payment not completed' });
+    }
+
+    const { amount, purchaserName, purchaserEmail, recipientName, recipientEmail, notes } = session.metadata;
+    
+    // Generate Unique Code: ATH-XXXX-XXXX
+    const generateCode = () => {
+      const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // No O, I, 1, 0 for clarity
+      let result = 'ATH-';
+      for (let i = 0; i < 8; i++) {
+        if (i === 4) result += '-';
+        result += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      return result;
+    };
+
+    let code = generateCode();
+    // Ensure uniqueness (simple retry)
+    while (await GiftCard.findOne({ code })) {
+      code = generateCode();
+    }
+
+    const giftCard = new GiftCard({
+      code,
+      initialAmount: parseFloat(amount),
+      balance: parseFloat(amount),
+      purchaserName,
+      purchaserEmail,
+      recipientName,
+      recipientEmail,
+      notes,
+      stripeSessionId: sessionId,
+      status: 'Active'
+    });
+
+    await giftCard.save();
+
+    // 📧 Send Email via Zoho
+    try {
+      await sendGiftCardEmail(recipientEmail, {
+        code,
+        amount: parseFloat(amount),
+        recipientName,
+        purchaserName
+      });
+      
+      // Also notify purchaser
+      await sendGiftCardEmail(purchaserEmail, {
+        code,
+        amount: parseFloat(amount),
+        recipientName,
+        purchaserName,
+        isPurchaser: true
+      });
+    } catch (e) {
+      console.error("Email sending failed:", e);
+    }
+
+    await Log.create({
+      action: `Sold Gift Card: ${code} (€${amount})`,
+      performedBy: 'System',
+      targetId: code
+    });
+
+    res.json({ success: true, code });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// 3. Validate Code
+app.post('/api/gift-cards/validate', async (req, res) => {
+  const { code } = req.body;
+  try {
+    const card = await GiftCard.findOne({ code: code.toUpperCase(), status: 'Active' });
+    if (!card) return res.status(404).json({ error: 'Invalid or Inactive Code' });
+    if (card.balance <= 0) return res.status(400).json({ error: 'Card balance is €0' });
+    
+    res.json({ 
+      valid: true, 
+      balance: card.balance,
+      message: `Gift card matches! Balance: €${card.balance}` 
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
+// ==========================================
 // AVAILABILITY CHECK (Upgraded for Luxury Packages)
 // ==========================================
 app.post('/api/check-availability', async (req, res) => {
@@ -681,6 +827,23 @@ app.post('/api/bookings/create', async (req, res) => {
 
     if (overlappingBookings.length >= maxHouses) {
       return res.status(400).json({ error: 'Alamak, Bilik ini telah penuh pada tarikh tersebut! All physical houses are booked.' });
+    }
+
+    const { giftCardCode } = req.body;
+    if (giftCardCode) {
+      const card = await GiftCard.findOne({ code: giftCardCode.toUpperCase(), status: 'Active' });
+      if (card && card.balance > 0) {
+        const deduction = Math.min(card.balance, price || 0);
+        card.balance -= deduction;
+        if (card.balance <= 0) card.status = 'Used';
+        await card.save();
+
+        await Log.create({
+          action: `Redeemed Gift Card ${giftCardCode} for booking. Amount: €${deduction}`,
+          performedBy: 'System',
+          targetId: giftCardCode
+        });
+      }
     }
 
     const availableStaffs = await Staff.find({ status: 'Active', role: { $in: ['staff', 'admin'] } });

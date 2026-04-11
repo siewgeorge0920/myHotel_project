@@ -33,6 +33,9 @@ export default function CalendarPage() {
     requests: ''
   });
   const [bookingError, setBookingError] = useState(null);
+  const [giftCardInfo, setGiftCardInfo] = useState({ code: '', balance: 0, applied: false });
+  const [gcLoading, setGcLoading] = useState(false);
+  const [gcMsg, setGcMsg] = useState('');
 
   // Helper: advance step AND scroll to top
   const goToStep = (step) => {
@@ -83,7 +86,38 @@ export default function CalendarPage() {
     let total = selectedItem ? selectedItem.price * nights : 0;
     if (addons.breakfast) total += (25 * nights * (guestDetails.adults + guestDetails.seniors));
     if (addons.spa) total += 150;
+    
+    // Apply Gift Card Deduction
+    if (giftCardInfo.applied) {
+      total = Math.max(0, total - giftCardInfo.balance);
+    }
+    
     return total;
+  };
+
+  const handleApplyGiftCard = async () => {
+    if (!giftCardInfo.code) return;
+    setGcLoading(true);
+    setGcMsg('');
+    try {
+      const res = await fetch('/api/gift-cards/validate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: giftCardInfo.code })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setGiftCardInfo(p => ({ ...p, balance: data.balance, applied: true }));
+        setGcMsg(data.message);
+      } else {
+        setGcMsg(data.error);
+        setGiftCardInfo(p => ({ ...p, applied: false }));
+      }
+    } catch (e) {
+      setGcMsg('System error validating code');
+    } finally {
+      setGcLoading(false);
+    }
   };
 
   // --- 查空房逻辑 ---
@@ -144,23 +178,28 @@ export default function CalendarPage() {
           guestFirstName: guestInfo.firstName,
           guestLastName: guestInfo.lastName,
           price: calculateTotal(),
-          paymentStatus: 'Pending'
+          paymentStatus: calculateTotal() <= 0 ? 'Paid' : 'Pending',
+          giftCardCode: giftCardInfo.applied ? giftCardInfo.code : null
         })
       });
       
       const bookingData = await bookingRes.json();
       if (!bookingRes.ok) throw new Error(bookingData.error || 'Booking failed');
 
-      // Step 2: Navigate to custom Payment Page with booking data
-      navigate('/secure-payment', {
-        state: {
-          bookingId: bookingData.bookingId,
-          selectedRoom: selectedItem,
-          totalPrice: calculateTotal(),
-          guestInfo,
-          nights
-        }
-      });
+      // Step 2: Navigate to payment or show success
+      if (calculateTotal() <= 0) {
+        goToStep(5);
+      } else {
+        navigate('/secure-payment', {
+          state: {
+            bookingId: bookingData.bookingId,
+            selectedRoom: selectedItem,
+            totalPrice: calculateTotal(),
+            guestInfo,
+            nights
+          }
+        });
+      }
 
     } catch (err) {
       setBookingError(err.message);
@@ -485,12 +524,41 @@ export default function CalendarPage() {
                    <span className="text-3xl font-georgia italic">€{calculateTotal()}</span>
                 </div>
              </div>
+             </div>
+
+             {/* Gift Card Input */}
+             <div className="bg-white/5 border border-white/10 p-6 mb-8 text-left rounded-xl">
+                <p className="text-[10px] uppercase font-black tracking-widest text-amber-500 mb-3">Gift Card / Promo Code</p>
+                <div className="flex gap-2">
+                   <input 
+                     type="text" 
+                     placeholder="ATH-XXXX-XXXX"
+                     value={giftCardInfo.code}
+                     onChange={(e) => setGiftCardInfo({...giftCardInfo, code: e.target.value})}
+                     className="flex-1 bg-black/20 border border-white/10 px-4 py-3 rounded-lg text-xs outline-none focus:border-amber-500 uppercase tracking-widest"
+                   />
+                   <button 
+                     onClick={handleApplyGiftCard}
+                     type="button"
+                     disabled={gcLoading}
+                     className="bg-amber-600 hover:bg-amber-700 px-4 py-2 text-[10px] font-black uppercase tracking-widest rounded-lg disabled:opacity-50"
+                   >
+                     {gcLoading ? '...' : giftCardInfo.applied ? 'Applied' : 'Apply'}
+                   </button>
+                </div>
+                {gcMsg && (
+                  <p className={`mt-2 text-[10px] uppercase tracking-widest font-black ${giftCardInfo.applied ? 'text-emerald-500' : 'text-red-500'}`}>
+                    {gcMsg}
+                  </p>
+                )}
+             </div>
+
              <button 
                 onClick={handleBookingSubmit}
                 disabled={isSubmitting}
-                className="w-full bg-[#6772e5] disabled:opacity-60 disabled:cursor-not-allowed py-5 text-[11px] font-black uppercase tracking-[0.4em] flex items-center justify-center gap-3 shadow-2xl hover:bg-indigo-600 transition-colors"
+                className={`w-full ${calculateTotal() <= 0 ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-[#6772e5] hover:bg-indigo-600'} disabled:opacity-60 disabled:cursor-not-allowed py-5 text-[11px] font-black uppercase tracking-[0.4em] flex items-center justify-center gap-3 shadow-2xl transition-all`}
              >
-                {isSubmitting ? '↻ Redirecting to Stripe...' : '💳 Pay Securely with Stripe'}
+                {isSubmitting ? '↻ Processing...' : calculateTotal() <= 0 ? '✓ Complete Booking Free' : '💳 Pay Securely with Stripe'}
              </button>
              {bookingError && (
                 <div className="mt-6 p-4 border border-red-500/50 bg-red-500/10 text-red-500 text-sm font-bold uppercase tracking-widest">
