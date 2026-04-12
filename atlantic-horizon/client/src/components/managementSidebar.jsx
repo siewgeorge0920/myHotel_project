@@ -9,7 +9,7 @@ const NAV_GROUPS = {
   staff: [
     { name: 'Dashboard', path: '/staffDashboard', icon: '⌂' },
     { name: "Today's Arrivals", path: '/bookings?filter=CheckedIn', icon: '📅' },
-    { name: 'Housekeeping', path: '/roomService', icon: '🧹' },
+    { name: 'Sanctuary Operations', path: '/roomService', icon: '🧹' },
   ],
   manager: [
     { name: 'Calendar', path: '/adminCalendar', icon: '📆' },
@@ -19,7 +19,7 @@ const NAV_GROUPS = {
   ],
   admin: [
     { name: 'System Settings', path: '/adminSettings', icon: '⚙' },
-    { name: 'Capacity Control', path: '/roomCapacity', icon: '🚪' },
+    { name: 'Capacity Control', path: '/inventory', icon: '🚪' },
     { name: 'Room Management', path: '/roomManagement', icon: '🏨' },
     { name: 'Staff & IAM', path: '/adminIam', icon: '👤' },
   ],
@@ -78,13 +78,17 @@ export default function ManagementSidebar({ user, isManagerMode }) {
   };
 
   return (
-    <aside className="w-64 h-screen sticky top-0 border-r flex flex-col shrink-0 overflow-y-auto" style={{ backgroundColor: COLORS.bgSurface, borderColor: COLORS.border }}>
+    <aside data-lenis-prevent="true" className="w-72 h-screen sticky top-0 border-r flex flex-col shrink-0 overflow-y-auto backdrop-blur-xl" style={{ backgroundColor: 'rgba(21, 24, 18, 0.95)', borderColor: 'rgba(255, 255, 255, 0.08)' }}>
+
       {/* Logo / Home Link */}
       <Link to="/" className="flex items-center gap-3 px-6 py-5 border-b hover:bg-white/5 transition-all" style={{ borderColor: COLORS.border }}>
         <span className="text-manorGold text-lg">⊕</span>
         <div>
-          <p className="text-[9px] text-amber-500 uppercase tracking-[0.3em] font-black">The Atlantic Horizon (v2.2-stable)</p>
-          <p className="text-[10px] text-white/30 uppercase tracking-widest">← Guest Site</p>
+          <p className="text-[10px] text-amber-500 uppercase tracking-[0.4em] font-black">Manor Control (V3.0-Arise)</p>
+          <p className="text-[10px] text-white/30 uppercase tracking-widest flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
+            CSM System Active
+          </p>
         </div>
       </Link>
 
@@ -95,7 +99,7 @@ export default function ManagementSidebar({ user, isManagerMode }) {
         )}
       </div>
       
-      <nav className="flex-1 space-y-0 overflow-y-auto">
+      <nav data-lenis-prevent="true" className="flex-1 space-y-0 overflow-y-auto">
         {/* Staff section — always visible */}
         <SectionLabel label="Staff" />
         {NAV_GROUPS.staff.map(item => (

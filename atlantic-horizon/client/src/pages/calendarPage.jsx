@@ -211,8 +211,36 @@ export default function CalendarPage() {
     <div className="bg-[#1a1d17] min-h-screen pt-32 pb-20 px-6 text-white font-lato">
       <div className="max-w-6xl mx-auto">
 
+        {/* 🌟 Navigation Controls (Top Bar) */}
+        <div className="flex justify-between items-center mb-8 border-b border-white/5 pb-4">
+           <button 
+             onClick={() => setBookingStep(Math.max(0, bookingStep - 1))}
+             disabled={bookingStep === 0 || bookingStep === 5}
+             className={`text-[10px] uppercase tracking-[0.3em] font-black flex items-center gap-2 transition-all ${
+               bookingStep > 0 && bookingStep < 5 ? 'text-white/40 hover:text-white cursor-pointer' : 'text-white/5 cursor-default'
+             }`}
+           >
+             <span className="text-lg">←</span> Back
+           </button>
+
+           <div className="hidden md:flex items-center gap-2">
+              <span className="text-[9px] uppercase tracking-[0.4em] text-white/20">Phase</span>
+              <span className="text-amber-500 font-serif italic text-lg">{bookingStep + 1} / 5</span>
+           </div>
+
+           <button 
+             onClick={() => setBookingStep(Math.min(4, bookingStep + 1))}
+             disabled={bookingStep >= 4 || (bookingStep === 1 && !selectedItem) || (bookingStep === 3 && (!guestInfo.email || !guestInfo.firstName))}
+             className={`text-[10px] uppercase tracking-[0.3em] font-black flex items-center gap-2 transition-all ${
+               bookingStep < 4 ? 'text-amber-500/60 hover:text-amber-500 cursor-pointer' : 'text-white/5 cursor-default'
+             }`}
+           >
+             Continue <span className="text-lg">→</span>
+           </button>
+        </div>
+
         {/* 🌟 Progress Stepper — Icon Slider */}
-        <div className="flex items-center justify-between mb-10 px-1">
+        <div className="flex items-center justify-between mb-16 px-1">
           {[
             { icon: '🏠', label: 'Service', step: 0 },
             { icon: '🛎', label: 'Selection', step: 1 },
@@ -222,24 +250,29 @@ export default function CalendarPage() {
           ].map((s, i, arr) => {
             const isDone = bookingStep > s.step;
             const isActive = bookingStep === s.step;
+            const isClickable = bookingStep > s.step; // Only allow jumping back to completed steps
+
             return (
               <React.Fragment key={s.label}>
-                <div className="flex flex-col items-center gap-1.5 flex-shrink-0">
-                  <div className={`w-9 h-9 rounded-full border-2 flex items-center justify-center text-sm transition-all duration-500 ${
-                    isDone ? 'bg-amber-600 border-amber-600 text-white' :
-                    isActive ? 'bg-amber-600/20 border-amber-500 text-amber-400' :
+                <div 
+                  onClick={() => isClickable && setBookingStep(s.step)}
+                  className={`flex flex-col items-center gap-1.5 flex-shrink-0 transition-all ${isClickable ? 'cursor-pointer group' : 'cursor-default'}`}
+                >
+                  <div className={`w-10 h-10 rounded-full border-2 flex items-center justify-center text-sm transition-all duration-500 ${
+                    isDone ? 'bg-amber-600 border-amber-600 text-white group-hover:bg-amber-500 group-hover:scale-110 shadow-[0_0_15px_rgba(217,119,6,0.2)]' :
+                    isActive ? 'bg-amber-600/20 border-amber-500 text-amber-400 shadow-[0_0_20px_rgba(245,158,11,0.3)] scale-110' :
                     'bg-white/5 border-white/15 text-white/30'
                   }`}>
                     {isDone ? '✓' : s.icon}
                   </div>
                   <span className={`hidden sm:block text-[9px] uppercase tracking-widest font-black transition-colors ${
-                    isDone ? 'text-amber-500' : isActive ? 'text-amber-400' : 'text-white/20'
+                    isDone ? 'text-amber-500/60 group-hover:text-amber-500' : isActive ? 'text-amber-400' : 'text-white/10'
                   }`}>{s.label}</span>
                 </div>
                 {/* Connector line */}
                 {i < arr.length - 1 && (
-                  <div className="flex-1 h-px mx-2 relative">
-                    <div className="absolute inset-0 bg-white/10" />
+                  <div className="flex-1 h-[2px] mx-4 relative">
+                    <div className="absolute inset-0 bg-white/5" />
                     <div className={`absolute inset-0 bg-amber-600 transition-all duration-700 origin-left ${
                       bookingStep > s.step ? 'scale-x-100' : 'scale-x-0'
                     }`} />

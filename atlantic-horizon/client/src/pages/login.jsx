@@ -37,7 +37,7 @@ export default function Login() {
     setError('');
     setIsLoading(true);
     try {
-      const res = await axios.post('/api/login', formData);
+      const res = await axios.post('/api/v3/auth/login', formData);
       const userData = res.data;
       
       // Save data + timestamp

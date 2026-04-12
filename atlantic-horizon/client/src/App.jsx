@@ -8,6 +8,7 @@ import Footer from './components/Footer';
 
 // Guest Pages
 import Home from './pages/Home';
+import InventoryManagement from './pages/inventoryManagement';
 import CalendarPage from './pages/calendarPage';
 import Login from './pages/login';
 import GiftCards from './pages/GiftCards';
@@ -192,7 +193,7 @@ export default function App() {
 
           {/* Management Portal */}
           <Route path="/staffDashboard" element={<ProtectedRoute><StaffDashboard /></ProtectedRoute>} />
-          <Route path="/inventory" element={<ProtectedRoute><Inventory /></ProtectedRoute>} />
+          <Route path="/inventory" element={<ProtectedRoute><InventoryManagement /></ProtectedRoute>} />
           <Route path="/adminIam" element={<ProtectedRoute><AdminIAM /></ProtectedRoute>} />
           <Route path="/adminLogs" element={<ProtectedRoute><AdminLogs /></ProtectedRoute>} />
           <Route path="/roomManagement" element={<ProtectedRoute><RoomManagement /></ProtectedRoute>} />
