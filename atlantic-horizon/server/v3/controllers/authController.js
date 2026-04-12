@@ -11,17 +11,27 @@ class AuthController {
       const user = await Staff.findOne({ username });
       if (!user) return res.status(401).json({ error: "Invalid credentials." });
 
-      // Compare hashed passwords (V3 Standard)
       const match = await bcrypt.compare(password, user.password);
       if (!match) return res.status(401).json({ error: "Invalid credentials." });
 
       if (user.status !== 'Active') return res.status(403).json({ error: "Account deactivated." });
 
+      // Build a 24-hour session identifier
+      const token = `v3-session-${user._id}-${Date.now()}`;
+      
+      // Set a 24-hour cookie for the session
+      res.cookie('sessionToken', token, { 
+        maxAge: 24 * 60 * 60 * 1000, 
+        httpOnly: false, // Frontend reads it for basic checks
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax'
+      });
+
       res.status(200).json({
         id: user._id,
         name: user.name,
         role: user.role,
-        token: 'v3-temp-token' // In production, generate a real JWT here
+        token: token
       });
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -29,37 +39,46 @@ class AuthController {
   }
 
   /**
-   * 🛠️ Seed Admin (Initial Setup Helper)
-   * Supports ?force=true to reset credentials from .env
+   * 🛠️ Seed Admin, Manager, and Staff (Initial Setup Helper)
+   * Supports ?force=true to reset credentials
    */
   async seed(req, res) {
     const { force } = req.query;
-    const username = process.env.ADMIN_USERNAME || 'admin';
-    const plainPassword = process.env.ADMIN_PASSWORD || 'admin123';
+
+    const testAccounts = [
+      { name: 'The Boss', username: 'boss', password: '123', role: 'admin' },
+      { name: 'Hotel Manager', username: 'manager', password: '123', role: 'manager' },
+      { name: 'Standard Staff', username: 'staff', password: '123', role: 'staff' }
+    ];
 
     try {
-      const existing = await Staff.findOne({ username });
+      const existing = await Staff.findOne({ username: 'boss' });
       
       if (existing && force !== 'true') {
-        return res.status(400).json({ error: "Admin already seeded. Use ?force=true to reset." });
+        return res.status(400).json({ error: "Accounts already seeded. Use ?force=true to reset." });
       }
 
-      if (existing && force === 'true') {
-        await Staff.deleteOne({ username });
+      if (force === 'true') {
+        await Staff.deleteMany({ username: { $in: ['boss', 'manager', 'staff'] } });
       }
 
-      const hashedPassword = await bcrypt.hash(plainPassword, 10);
-      const admin = new Staff({
-        staff_id: `STAFF-${Math.floor(Math.random() * 900 + 100)}`,
-        name: 'The Boss',
-        username: username,
-        password: hashedPassword,
-        role: 'admin'
-      });
-      await admin.save();
+      const generated = [];
+      for (const acc of testAccounts) {
+        const hashedPassword = await bcrypt.hash(acc.password, 10);
+        const newStaff = new Staff({
+          staff_id: `STAFF-${Math.floor(Math.random() * 900 + 100)}`,
+          name: acc.name,
+          username: acc.username,
+          password: hashedPassword,
+          role: acc.role
+        });
+        await newStaff.save();
+        generated.push({ username: acc.username, role: acc.role, password: '(123)' });
+      }
+
       res.status(201).json({ 
-        message: "Admin seeded successfully.", 
-        credentials: { username, password: '(From .env)' } 
+        message: "Manor hierarchy seeded successfully.", 
+        accounts: generated
       });
     } catch (error) {
       res.status(500).json({ error: error.message });

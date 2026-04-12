@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { COLORS } from '../colors';
 import CustomModal from './CustomModal';
 
-const SESSION_TIMEOUT_MS = 60 * 60 * 1000; // 60 minutes
+const SESSION_TIMEOUT_MS = 24 * 60 * 60 * 1000; // Match 24h backend session
 
 const NAV_GROUPS = {
   staff: [
@@ -25,46 +25,37 @@ const NAV_GROUPS = {
   ],
 };
 
-export default function ManagementSidebar({ user, isManagerMode }) {
+export default function ManagementSidebar({ user }) {
   const navigate = useNavigate();
   const location = typeof window !== 'undefined' ? window.location.pathname : '/';
 
   const [isLogoutModalOpen, setIsLogoutModalOpen] = React.useState(false);
 
+  // Determine clearance levels once
+  const isManager = user?.role === 'manager' || user?.role === 'admin';
+  const isAdmin = user?.role === 'admin';
+
   // ===== SESSION TIMEOUT =====
   const logout = useCallback(() => {
     localStorage.removeItem('user');
-    localStorage.setItem('managerMode', 'false');
+    localStorage.removeItem('loginTimestamp');
     navigate('/login');
   }, [navigate]);
 
   useEffect(() => {
-    // Refresh timeout on any user activity
-    let timer = setTimeout(logout, SESSION_TIMEOUT_MS);
-
-    const resetTimer = () => {
-      clearTimeout(timer);
-      timer = setTimeout(logout, SESSION_TIMEOUT_MS);
-      localStorage.setItem('lastActivity', Date.now().toString());
+    // Basic interval check for 24h expiration
+    const checkExpiration = () => {
+      const timestamp = localStorage.getItem('loginTimestamp');
+      if (timestamp) {
+        const age = Date.now() - parseInt(timestamp);
+        if (age > SESSION_TIMEOUT_MS) logout();
+      } else {
+        logout();
+      }
     };
 
-    // Store last activity on load
-    localStorage.setItem('lastActivity', Date.now().toString());
-
-    // Check if already expired from a previous session
-    const lastActivity = parseInt(localStorage.getItem('lastActivity') || '0');
-    if (Date.now() - lastActivity > SESSION_TIMEOUT_MS) {
-      logout();
-      return;
-    }
-
-    const events = ['mousedown', 'keydown', 'scroll', 'touchstart'];
-    events.forEach(e => window.addEventListener(e, resetTimer));
-
-    return () => {
-      clearTimeout(timer);
-      events.forEach(e => window.removeEventListener(e, resetTimer));
-    };
+    const interval = setInterval(checkExpiration, 60000); // Check every minute
+    return () => clearInterval(interval);
   }, [logout]);
   // ===========================
 
@@ -93,33 +84,30 @@ export default function ManagementSidebar({ user, isManagerMode }) {
       </Link>
 
       <div className="px-6 py-4">
-        <h2 className="text-white font-serif text-sm italic tracking-wide">Portal</h2>
-        {isManagerMode && (
-          <span className="text-[9px] text-amber-500 uppercase tracking-widest font-black">🔐 Manager Mode Active</span>
-        )}
+        <h2 className="text-white font-serif text-sm italic tracking-wide">Portal Navigation</h2>
       </div>
       
       <nav data-lenis-prevent="true" className="flex-1 space-y-0 overflow-y-auto">
         {/* Staff section — always visible */}
-        <SectionLabel label="Staff" />
+        <SectionLabel label="Operations" />
         {NAV_GROUPS.staff.map(item => (
           <NavItem key={item.path} item={item} location={location} />
         ))}
 
-        {/* Manager section — only when Manager Mode on */}
-        {isManagerMode && (
+        {/* Manager section */}
+        {isManager && (
           <>
-            <SectionLabel label="Manager" color="text-amber-500/60" />
+            <SectionLabel label="Management" color="text-amber-500/60" />
             {NAV_GROUPS.manager.map(item => (
               <NavItem key={item.path} item={item} location={location} />
             ))}
           </>
         )}
 
-        {/* Admin section — Manager Mode + admin role (Case-Insensitive) */}
-        {isManagerMode && user?.role?.toLowerCase() === 'admin' && (
+        {/* Admin section */}
+        {isAdmin && (
           <>
-            <SectionLabel label="Admin" color="text-red-400/60" />
+            <SectionLabel label="Kernel" color="text-red-400/60" />
             {NAV_GROUPS.admin.map(item => (
               <NavItem key={item.path} item={item} location={location} />
             ))}
@@ -130,24 +118,24 @@ export default function ManagementSidebar({ user, isManagerMode }) {
       {/* Bottom: User info + Logout */}
       <div className="border-t" style={{ borderColor: COLORS.border }}>
         <div className="px-6 py-4">
-          <p className="text-[9px] text-gray-600 uppercase mb-0.5">Logged In As</p>
-          <p className="text-white text-xs font-bold uppercase">{user?.name}</p>
-          <span style={{ color: COLORS.gold }} className="text-[9px] uppercase font-black italic">{user?.role}</span>
+          <p className="text-[9px] text-gray-600 uppercase mb-0.5 tracking-widest">Identified As</p>
+          <p className="text-white text-xs font-bold uppercase tracking-wide">{user?.name}</p>
+          <span className={`text-[9px] uppercase font-black italic ${isAdmin ? 'text-red-400' : 'text-amber-500'}`}>{user?.role}</span>
         </div>
         <button
           onClick={handleLogout}
-          className="w-full flex items-center gap-3 px-6 py-3 text-[10px] uppercase tracking-widest font-black text-red-400/70 hover:text-red-400 hover:bg-red-500/5 transition-all border-t"
+          className="w-full flex items-center gap-3 px-6 py-4 text-[10px] uppercase tracking-widest font-black text-white/30 hover:text-red-400 hover:bg-red-500/5 transition-all border-t"
           style={{ borderColor: COLORS.border }}
         >
           <span>⏻</span>
-          <span>Logout</span>
+          <span>Terminate Session</span>
         </button>
       </div>
       <CustomModal 
         isOpen={isLogoutModalOpen}
-        title="Confirm Logout"
-        message="Are you sure you want to end your secure session?"
-        confirmText="Logout"
+        title="Confirm Termination"
+        message="Are you sure you want to end your secure management session?"
+        confirmText="Terminate"
         cancelText="Cancel"
         onConfirm={confirmLogout}
         onCancel={() => setIsLogoutModalOpen(false)}
@@ -162,19 +150,19 @@ function SectionLabel({ label, color = 'text-white/20' }) {
 }
 
 function NavItem({ item, location }) {
-  const path = item.path.split('?')[0]; // strip query params for active check
-  const isActive = location === path || location.startsWith(path) && path !== '/';
+  const path = item.path.split('?')[0]; 
+  const isActive = location === path || (location.startsWith(path) && path !== '/');
   return (
     <Link 
       to={item.path}
       className="flex items-center space-x-3 px-6 py-3 text-[10px] uppercase tracking-[0.2em] transition-all"
       style={{ 
-        color: isActive ? COLORS.gold : COLORS.textGray,
+        color: isActive ? COLORS.gold : 'rgba(255,255,255,0.3)',
         backgroundColor: isActive ? 'rgba(255,255,255,0.03)' : 'transparent',
         borderLeft: isActive ? `3px solid ${COLORS.gold}` : '3px solid transparent'
       }}
     >
-      <span className="text-sm">{item.icon}</span>
+      <span className="text-sm opacity-50">{item.icon}</span>
       <span>{item.name}</span>
     </Link>
   );

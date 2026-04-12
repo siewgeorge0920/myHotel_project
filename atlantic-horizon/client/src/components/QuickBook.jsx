@@ -1,24 +1,78 @@
 import React, { useState, forwardRef, useRef, useEffect } from 'react';
-import DatePicker from 'react-datepicker';
+import DatePickerModule from 'react-datepicker';
 import { format, addDays } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
 import "react-datepicker/dist/react-datepicker.css";
 import './datepicker-custom.css';
 
+// 🌟 VITE INTEROP: Handle cases where react-datepicker is an object with a .default property
+const DatePicker = DatePickerModule.default || DatePickerModule;
+
+/**
+ * 🌟 CounterRow: Manages independent guest category increments
+ */
+function CounterRow({ label, subLabel, type, value, onUpdate }) {
+  return (
+    <div className="flex items-center justify-between py-3 border-b border-white/5 last:border-0 w-full">
+      <div className="flex-1 text-left">
+        <p className="text-white text-[10px] font-bold uppercase tracking-widest leading-none">{label}</p>
+        <p className="text-[9px] text-amber-500/50 uppercase tracking-widest mt-1">{subLabel}</p>
+      </div>
+      <div className="flex items-center gap-3">
+        <button 
+          type="button" 
+          onClick={(e) => { e.preventDefault(); e.stopPropagation(); onUpdate(type, 'minus'); }}
+          className="w-6 h-6 rounded-full border border-white/20 flex items-center justify-center text-white/70 hover:text-amber-500 hover:border-amber-500 transition-all text-xs"
+        >-</button>
+        <span className="text-white font-cinzel text-sm min-w-[20px] text-center">{value}</span>
+        <button 
+          type="button" 
+          onClick={(e) => { e.preventDefault(); e.stopPropagation(); onUpdate(type, 'add'); }}
+          className="w-6 h-6 rounded-full border border-white/20 flex items-center justify-center text-white/70 hover:text-amber-500 hover:border-amber-500 transition-all text-xs"
+        >+</button>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * 🌟 CustomDateInput: The visual trigger for the DatePicker
+ * Passes ref and onClick from DatePicker to our custom layout
+ */
+const CustomDateInput = forwardRef(({ value, onClick, startDate, endDate }, ref) => (
+  <button 
+    ref={ref} 
+    onClick={onClick} 
+    type="button"
+    className="flex-1 flex items-center justify-center cursor-pointer group px-4 py-2 w-full md:w-auto hover:bg-white/[0.02] rounded-xl transition-all border-none outline-none appearance-none"
+  >
+    <div className="flex flex-col items-center md:items-start text-center md:text-left flex-1 md:flex-none">
+      <label className="block text-[8px] uppercase tracking-[0.3em] text-amber-600 font-bold mb-1 pointer-events-none">Check-In</label>
+      <div className="text-white/90 text-sm md:text-base font-cinzel tracking-wider group-hover:text-white transition-colors">
+        {startDate instanceof Date ? format(startDate, 'dd MMM yyyy') : "Stay Start"}
+      </div>
+    </div>
+    <div className="mx-6 text-amber-600/30 font-light text-xl pointer-events-none">―</div>
+    <div className="flex flex-col items-center md:items-start text-center md:text-left flex-1 md:flex-none">
+      <label className="block text-[8px] uppercase tracking-[0.3em] text-amber-600 font-bold mb-1 pointer-events-none">Check-Out</label>
+      <div className="text-white/90 text-sm md:text-base font-cinzel tracking-wider group-hover:text-white transition-colors">
+        {endDate instanceof Date ? format(endDate, 'dd MMM yyyy') : "Stay End"}
+      </div>
+    </div>
+  </button>
+));
+
 export default function QuickBook() {
-  // Router navigation for pushing selected booking data to the calendar page.
   const navigate = useNavigate();
-  // Ref used to detect outside clicks for the guest dropdown.
   const dropdownRef = useRef(null);
-  // Date range defaults to today + 1 day.
+  
+  // States
   const [dateRange, setDateRange] = useState([new Date(), addDays(new Date(), 1)]);
   const [startDate, endDate] = dateRange;
-  // Controls guest dropdown visibility.
   const [isGuestOpen, setIsGuestOpen] = useState(false);
-  // Guest counters split by age category.
   const [guests, setGuests] = useState({ adults: 2, seniors: 0, infants: 0 });
 
-  // Close the guest dropdown when the user clicks outside of its container.
+  // Handle outside clicks for guest dropdown
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -29,10 +83,6 @@ export default function QuickBook() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Reserved for validation feedback; currently set in logic but not rendered in UI.
-  const [alertObj, setAlertObj] = useState({ isOpen: false, text: '' });
-
-  // Increase/decrease a guest type while enforcing min/max bounds.
   const updateCount = (type, operation) => {
     setGuests(prev => {
       const newValue = operation === 'add' ? prev[type] + 1 : prev[type] - 1;
@@ -42,15 +92,10 @@ export default function QuickBook() {
     });
   };
 
-  // Derived total displayed in the guests trigger.
   const totalGuests = guests.adults + guests.seniors + guests.infants;
 
-  // Validate selection and navigate to calendar with booking details in route state.
   const handleCheckAvailability = () => {
-    if (!startDate || !endDate) {
-      setAlertObj({ isOpen: true, text: "Please select your intended arrival and departure dates." });
-      return;
-    }
+    if (!startDate || !endDate) return;
     navigate('/calendar', {
       state: {
         startDate: startDate.toISOString(),
@@ -61,55 +106,16 @@ export default function QuickBook() {
     });
   };
 
-  // Reusable row for one guest category (label + plus/minus controls).
-  const CounterRow = ({ label, subLabel, type, value }) => (
-    <div className="flex items-center justify-between py-3 border-b border-white/5 last:border-0">
-      <div>
-        <p className="text-white text-[10px] font-bold uppercase tracking-widest">{label}</p>
-        <p className="text-[9px] text-amber-500/50 uppercase tracking-widest">{subLabel}</p>
-      </div>
-      <div className="flex items-center gap-3">
-        <button onClick={() => updateCount(type, 'minus')}
-          className="w-6 h-6 rounded-full border border-white/20 flex items-center justify-center text-white/70 hover:text-amber-500 hover:border-amber-500 transition-all text-xs">-</button>
-        <span className="text-white font-cinzel text-sm min-w-[16px] text-center">{value}</span>
-        <button onClick={() => updateCount(type, 'add')}
-          className="w-6 h-6 rounded-full border border-white/20 flex items-center justify-center text-white/70 hover:text-amber-500 hover:border-amber-500 transition-all text-xs">+</button>
-      </div>
-    </div>
-  );
-
-  // Custom DatePicker trigger that displays linked Check-In and Check-Out values.
-  const DualBoxTrigger = forwardRef(({ onClick }, ref) => (
-    <div ref={ref} onClick={onClick} className="flex-1 flex items-center justify-center cursor-pointer group px-4 py-2 w-full md:w-auto">
-
-      {/* Check In */}
-      <div className="flex flex-col items-center md:items-start text-center md:text-left flex-1 md:flex-none">
-        <label className="block text-[8px] uppercase tracking-[0.3em] text-amber-600 font-bold mb-1 cursor-pointer">Check-In</label>
-        <div className="text-white/90 text-sm md:text-base font-cinzel tracking-wider group-hover:text-white transition-colors">
-          {startDate ? format(startDate, 'dd MMM yyyy') : "Select Date"}
-        </div>
-      </div>
-
-      {/* Divider Icon */}
-      <div className="mx-6 text-amber-600/30 font-light text-xl">―</div>
-
-      {/* Check Out */}
-      <div className="flex flex-col items-center md:items-start text-center md:text-left flex-1 md:flex-none">
-        <label className="block text-[8px] uppercase tracking-[0.3em] text-amber-600 font-bold mb-1 cursor-pointer">Check-Out</label>
-        <div className="text-white/90 text-sm md:text-base font-cinzel tracking-wider group-hover:text-white transition-colors">
-          {endDate ? format(endDate, 'dd MMM yyyy') : "Select Date"}
-        </div>
-      </div>
-    </div>
-  ));
+  // 🌟 Type Guard for Rendering
+  if (typeof DatePicker !== 'function' && typeof DatePicker !== 'object') {
+     return <div className="text-white text-xs text-center p-4">Component initialization error. Check console.</div>;
+  }
 
   return (
     <section className="relative z-40 -mt-12 md:-mt-16 px-4">
       <div className="max-w-4xl mx-auto">
-
-        {/* Sleek Floating Pill Container */}
-        <div className="bg-[#0f110c]/80 backdrop-blur-2xl border border-white/10 md:rounded-full rounded-3xl p-2 md:p-3 shadow-[0_20px_40px_rgba(0,0,0,0.8)] flex flex-col md:flex-row items-center gap-2 md:gap-4 w-full">
-
+        <div className="bg-[#0f110c]/90 backdrop-blur-3xl border border-white/10 md:rounded-full rounded-3xl p-2 md:p-3 shadow-[0_30px_60px_rgba(0,0,0,0.9)] flex flex-col md:flex-row items-center gap-2 md:gap-4 w-full overflow-visible">
+          
           {/* Calendar Picker Section */}
           <div className="flex-1 w-full md:w-auto flex justify-center text-center">
             <DatePicker
@@ -117,7 +123,8 @@ export default function QuickBook() {
               startDate={startDate}
               endDate={endDate}
               onChange={(update) => setDateRange(update)}
-              customInput={<DualBoxTrigger />}
+              // Passing CustomDateInput as a COMPONENT reference or properly handled element
+              customInput={<CustomDateInput startDate={startDate} endDate={endDate} />}
               minDate={new Date()}
             />
           </div>
@@ -125,30 +132,34 @@ export default function QuickBook() {
           <div className="w-full h-px md:w-px md:h-10 bg-white/10 md:mx-4" />
 
           {/* Guest Selector Section */}
-          <div className="relative px-4 py-2 cursor-pointer group flex flex-col items-center md:items-start w-full md:w-auto" ref={dropdownRef} onClick={() => setIsGuestOpen(!isGuestOpen)}>
-            <label className="block text-[8px] uppercase tracking-[0.3em] text-amber-600 font-bold mb-1 cursor-pointer">Guests</label>
+          <div 
+            className="relative px-6 py-2 cursor-pointer group flex flex-col items-center md:items-start w-full md:w-auto" 
+            ref={dropdownRef} 
+            onClick={() => setIsGuestOpen(!isGuestOpen)}
+          >
+            <p className="block text-[8px] uppercase tracking-[0.3em] text-amber-600 font-bold mb-1 pointer-events-none">Travelers</p>
             <div className="text-white/90 text-sm md:text-base font-cinzel tracking-wider flex items-center justify-center gap-2 group-hover:text-white transition-colors">
-              <span>{totalGuests} <span className="opacity-50 ml-1 text-[10px] font-sans">Travelers</span></span>
-              <span className={`text-[8px] text-amber-500/50 transition-transform duration-300 ${isGuestOpen ? 'rotate-180' : ''}`}>▼</span>
+              <span>{totalGuests} <span className="opacity-50 ml-1 text-[10px] font-sans">Total</span></span>
+              <span className={`text-[8px] text-amber-500 transition-transform duration-300 ${isGuestOpen ? 'rotate-180' : ''}`}>▼</span>
             </div>
 
             {isGuestOpen && (
-              <div className="absolute top-full right-0 md:right-auto md:left-1/2 md:-translate-x-1/2 mt-6 w-[280px] p-6 bg-[#0f110c]/95 backdrop-blur-3xl border border-white/10 rounded-2xl shadow-2xl z-[100] animate-fadeIn">
-                <CounterRow label="Adults" subLabel="Ages 18+" type="adults" value={guests.adults} />
-                <CounterRow label="Seniors" subLabel="Ages 65+" type="seniors" value={guests.seniors} />
-                <CounterRow label="Infants" subLabel="Under 2" type="infants" value={guests.infants} />
+              <div className="absolute top-full right-0 md:right-auto md:left-1/2 md:-translate-x-1/2 mt-6 w-[300px] p-6 bg-[#0f110c]/98 backdrop-blur-3xl border border-white/10 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.8)] z-[100] animate-fadeIn">
+                <CounterRow label="Adults" subLabel="Ages 18+" type="adults" value={guests.adults} onUpdate={updateCount} />
+                <CounterRow label="Seniors" subLabel="Ages 65+" type="seniors" value={guests.seniors} onUpdate={updateCount} />
+                <CounterRow label="Infants" subLabel="Under 2" type="infants" value={guests.infants} onUpdate={updateCount} />
               </div>
             )}
           </div>
 
           {/* Action Button */}
           <button
+            type="button"
             onClick={handleCheckAvailability}
-            className="w-full md:w-auto bg-amber-600 text-white md:rounded-full rounded-2xl px-10 py-4 md:py-4 text-[10px] uppercase tracking-[0.3em] font-black transition-all hover:bg-amber-500 hover:shadow-[0_0_20px_rgba(217,119,6,0.4)] md:ml-2 mt-2 md:mt-0"
+            className="w-full md:w-auto bg-amber-600 text-white md:rounded-full rounded-2xl px-12 py-4 md:py-4 text-[11px] uppercase tracking-[0.4em] font-black transition-all hover:bg-amber-500 hover:scale-[1.02] hover:shadow-[0_0_30px_rgba(217,119,6,0.3)] md:ml-2 mt-2 md:mt-0"
           >
-            Check Availability
+            Explore
           </button>
-
         </div>
       </div>
     </section>
