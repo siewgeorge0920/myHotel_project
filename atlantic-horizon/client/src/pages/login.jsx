@@ -41,7 +41,8 @@ export default function Login() {
       const res = await axios.post('/api/v3/auth/login', formData, {
          withCredentials: true
       });
-      const userData = res.data;
+      // Logic: Extract from data.data due to standardized V3 wrapper
+      const userData = res.data.data;
       localStorage.setItem('user', JSON.stringify(userData));
       localStorage.setItem('loginTimestamp', Date.now().toString());
       navigate('/staffDashboard');

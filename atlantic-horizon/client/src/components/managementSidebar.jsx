@@ -45,8 +45,8 @@ export default function ManagementSidebar({ user }) {
 
       <div className="pt-8 border-t border-white/5">
         <div className="mb-6">
-          <p className="text-[9px] text-white/20 uppercase font-black tracking-widest mb-1">{user.role}</p>
-          <p className="text-xs text-white/60 font-medium truncate">{user.name}</p>
+          <p className="text-[9px] text-white/20 uppercase font-black tracking-widest mb-1">{user?.role || 'Staff'}</p>
+          <p className="text-xs text-white/60 font-medium truncate">{user?.name || 'Operator'}</p>
         </div>
         <button 
           onClick={handleLogout}

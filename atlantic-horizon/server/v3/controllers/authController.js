@@ -1,5 +1,6 @@
 import Staff from '../models/Staff.js';
 import bcrypt from 'bcrypt';
+import { sendSuccess } from '../utils/responseHandler.js';
 
 class AuthController {
   /**
@@ -27,12 +28,12 @@ class AuthController {
         sameSite: 'lax'
       });
 
-      res.status(200).json({
+      sendSuccess(res, {
         id: user._id,
         name: user.name,
         role: user.role,
         token: token
-      });
+      }, "Identity verified. Welcome back.");
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
