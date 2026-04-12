@@ -10,9 +10,9 @@ export default function Inventory() {
   const user = JSON.parse(localStorage.getItem('user'));
 
   useEffect(() => {
-    fetch('/api/rooms')
+    fetch('/api/v3/inventory/room-types')
       .then(res => res.json())
-      .then(data => { setRooms(data); setLoading(false); });
+      .then(data => { setRooms(data.data || []); setLoading(false); });
   }, []);
 
   const isAdmin = user?.role === 'admin';

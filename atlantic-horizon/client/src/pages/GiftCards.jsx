@@ -19,9 +19,9 @@ export default function GiftCards() {
     e.preventDefault();
     setLoading(true);
     try {
-      const { data } = await axios.post('/api/gift-cards/checkout', formData);
-      if (data.url) {
-        window.location.href = data.url;
+      const { data } = await axios.post('/api/v3/gift-cards/checkout', formData);
+      if (data.data?.url) {
+        window.location.href = data.data.url;
       }
     } catch (error) {
       console.error("Purchase failed:", error);

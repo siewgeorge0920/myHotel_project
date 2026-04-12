@@ -17,9 +17,9 @@ export default function Transactions() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('/api/transactions')
+    fetch('/api/v3/transactions')
       .then(r => r.json())
-      .then(data => { setTxns(data); setLoading(false); })
+      .then(data => { setTxns(data.data || []); setLoading(false); })
       .catch(() => setLoading(false));
   }, []);
 

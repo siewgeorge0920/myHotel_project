@@ -13,10 +13,10 @@ export default function RoomCapacity() {
 
   // Fetch all room definitions with current capacity values.
   const fetchRooms = () => {
-    fetch('http://localhost:5000/api/rooms')
+    fetch('/api/v3/rooms')
       .then(res => res.json())
       .then(data => {
-        setRooms(data);
+        setRooms(data.data || []);
         setLoading(false);
       });
   };
@@ -29,7 +29,7 @@ export default function RoomCapacity() {
   // Persist one room's capacity change, then refresh list.
   const updateCapacity = async (id, newCapacity) => {
     try {
-      await fetch(`http://localhost:5000/api/rooms/${id}`, {
+      await fetch(`/api/v3/rooms/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ capacity: newCapacity })

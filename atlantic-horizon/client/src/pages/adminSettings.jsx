@@ -22,7 +22,7 @@ export default function AdminSettings() {
   useEffect(() => {
     const fetchSettings = async () => {
       try {
-        const { data } = await axios.get('/api/settings/email');
+        const { data } = await axios.get('/api/v3/settings/email');
         setEmailConfig({
           user: data.email_user || '',
           pass: data.email_pass || '',
@@ -43,7 +43,7 @@ export default function AdminSettings() {
     setSaving(true);
     setMessage({ text: '', type: '' });
     try {
-      await axios.post('/api/settings/email', emailConfig);
+      await axios.post('/api/v3/settings/email', emailConfig);
       setMessage({ text: 'Configuration saved successfully! ✅', type: 'success' });
       // Clear password field to masked state if user wants, but masked state is handled by backend on next load
     } catch (err) {

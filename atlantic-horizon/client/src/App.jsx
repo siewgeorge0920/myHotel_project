@@ -15,6 +15,7 @@ import GiftCards from './pages/GiftCards';
 import GiftCardSuccess from './pages/GiftCardSuccess';
 import AdminSettings from './pages/adminSettings';
 import SelfCheckIn from './pages/SelfCheckIn';
+import BookingSuccess from './pages/BookingSuccess';
 
 // 🌟 Lincoln's Pages (Experience)
 import ContinentalBreakfast from './pages/Lincoln/continentalBreakfast';
@@ -47,9 +48,9 @@ import Transactions from './pages/transactions';
 import AdminCalendar from './pages/adminCalendar';
 import RoomService from './pages/roomService';
 import PhysicalRoomManager from './pages/physicalRoomManager';
+import CrmManagement from './pages/crmManagement';
 
 import PaymentPage from './pages/PaymentPage';
-
 import ProtectedRoute from './components/ProtectedRoute';
 
 import LuxuryLoader from './components/luxuryLoader';
@@ -80,7 +81,7 @@ const LayoutWrapper = ({ children }) => {
   const isManagement = [
     '/staffdashboard', '/adminiam', '/inventory', '/adminlogs', 
     '/roommanagement', '/roompackage', '/physicalrooms', '/bookings', '/transactions', 
-    '/admincalendar', '/roomservice'
+    '/admincalendar', '/roomservice', '/crm'
   ].some(p => location.pathname.toLowerCase().startsWith(p));
 
   if (isManagement) {
@@ -171,6 +172,7 @@ export default function App() {
           <Route path="/gift-cards" element={<GiftCards />} />
           <Route path="/gift-card-success" element={<GiftCardSuccess />} />
           <Route path="/adminSettings" element={<AdminSettings />} />
+          <Route path="/booking-success" element={<BookingSuccess />} />
           
           {/* Lincoln's Routes */}
           <Route path="/continentalBreakfast" element={<ContinentalBreakfast />} />
@@ -205,6 +207,7 @@ export default function App() {
           <Route path="/physicalRooms" element={<ProtectedRoute><PhysicalRoomManager /></ProtectedRoute>} />
           <Route path="/self-check-in" element={<SelfCheckIn />} />
           <Route path="/booking-management" element={<ProtectedRoute><BookingManagement /></ProtectedRoute>} />
+          <Route path="/crm" element={<ProtectedRoute><CrmManagement /></ProtectedRoute>} />
 
         </Routes>
         </Suspense>

@@ -102,7 +102,7 @@ export default function CalendarPage() {
     setGcLoading(true);
     setGcMsg('');
     try {
-      const res = await fetch('/api/gift-cards/validate', {
+      const res = await fetch('/api/v3/gift-cards/validate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ code: giftCardInfo.code })
@@ -131,7 +131,7 @@ export default function CalendarPage() {
       
       setIsChecking(true);
       
-      fetch('/api/check-availability', {
+      fetch('/api/v3/check-availability', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ checkIn, checkOut }),
@@ -143,7 +143,7 @@ export default function CalendarPage() {
       })
       .then(data => { 
         if (!controller.signal.aborted) {
-          setSoldOutItems(data.bookedRooms || []); 
+          setSoldOutItems(data.data?.bookedRooms || []); 
           setIsChecking(false); 
         }
       })
@@ -168,7 +168,7 @@ export default function CalendarPage() {
       const realDepartment = deptMap[category] || category;
 
       // Step 1: Create the Booking record in our DB (status = Pending)
-      const bookingRes = await fetch('/api/bookings/create', {
+      const bookingRes = await fetch('/api/v3/bookings/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -182,13 +182,13 @@ export default function CalendarPage() {
           guestPhone: guestInfo.phone,
           guestAddress: guestInfo.address,
           price: calculateTotal(),
-          paymentStatus: calculateTotal() <= 0 ? 'Paid' : 'Pending',
+          paymentStatus: calculateTotal() <= 0 ? 'Paid' : 'Unpaid',
           giftCardCode: giftCardInfo.applied ? giftCardInfo.code : null
         })
       });
       
       const bookingData = await bookingRes.json();
-      if (!bookingRes.ok) throw new Error(bookingData.error || 'Booking failed');
+      if (!bookingRes.ok) throw new Error(bookingData.message || 'Booking failed');
 
       // Step 2: Navigate to payment or show success
       if (calculateTotal() <= 0) {
@@ -196,7 +196,7 @@ export default function CalendarPage() {
       } else {
         navigate('/secure-payment', {
           state: {
-            bookingId: bookingData.bookingId,
+            bookingId: bookingData.data._id,
             selectedRoom: selectedItem,
             totalPrice: calculateTotal(),
             guestInfo,

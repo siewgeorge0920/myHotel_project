@@ -23,7 +23,7 @@ export default function InventoryManagement() {
   const fetchRooms = async (initial = false) => {
     try {
       if (initial) setLoading(true);
-      const res = await axios.get('/api/physical-rooms');
+      const res = await axios.get('/api/v3/physical-rooms');
       setRooms(res.data);
     } catch (err) {
       setError('Failed to fetch inventory.');
@@ -57,9 +57,9 @@ export default function InventoryManagement() {
   const handleSubmit = async () => {
     try {
       if (isEditing) {
-        await axios.put(`/api/physical-rooms/${editingId}`, formData);
+        await axios.put(`/api/v3/physical-rooms/${editingId}`, formData);
       } else {
-        await axios.post('/api/physical-rooms', formData);
+        await axios.post('/api/v3/physical-rooms', formData);
       }
       setShowModal(false);
       fetchRooms();
@@ -71,7 +71,7 @@ export default function InventoryManagement() {
   const handleDelete = async (id) => {
     if (!window.confirm("Sanctify decommission? This unit will be removed from the Manor's core registry.")) return;
     try {
-      await axios.delete(`/api/physical-rooms/${id}`);
+      await axios.delete(`/api/v3/physical-rooms/${id}`);
       fetchRooms();
     } catch (err) {
       alert('Deactivation failed.');
@@ -80,7 +80,7 @@ export default function InventoryManagement() {
 
   const updateQuickStatus = async (id, status) => {
     try {
-      await axios.put(`/api/physical-rooms/${id}`, { current_status: status });
+      await axios.put(`/api/v3/physical-rooms/${id}`, { current_status: status });
       fetchRooms();
     } catch (err) {
       alert('Status update failed.');

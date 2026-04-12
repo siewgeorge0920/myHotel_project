@@ -32,16 +32,16 @@ export default function AdminIAM() {
 
   // Fetch all staff accounts.
   const fetchStaff = () => {
-    fetch('/api/staff')
+    fetch('/api/v3/staff')
       .then(r => r.json())
-      .then(setStaffList);
+      .then(json => setStaffList(json.data || []));
   };
   
   // Fetch global hotel settings shown at the bottom panel.
   const fetchSettings = () => {
-    fetch('/api/settings')
+    fetch('/api/v3/settings')
       .then(r => r.json())
-      .then(setSettings);
+      .then(json => setSettings(json.data || {}));
   };
 
   // Initial data load on first render.
@@ -51,7 +51,7 @@ export default function AdminIAM() {
   const updateSetting = async (key, value) => {
     setSettings(prev => ({ ...prev, [key]: value }));
     try {
-      await fetch('/api/settings', {
+      await fetch('/api/v3/settings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ [key]: value })
@@ -72,7 +72,7 @@ export default function AdminIAM() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    const url = isEdit ? `/api/staff/${form._id}` : '/api/staff';
+    const url = isEdit ? `/api/v3/staff/${form._id}` : '/api/v3/staff';
     const method = isEdit ? 'PUT' : 'POST';
     const payload = { ...form };
     if (!isEdit) delete payload._id;
@@ -103,7 +103,7 @@ export default function AdminIAM() {
   const confirmDelete = async () => {
     const { id } = deleteModal;
     setDeleteModal({ isOpen: false, id: null, name: null });
-    await fetch(`/api/staff/${id}`, { method: 'DELETE' });
+    await fetch(`/api/v3/staff/${id}`, { method: 'DELETE' });
     flash('🗑️ Account removed');
     fetchStaff();
   };
@@ -111,7 +111,7 @@ export default function AdminIAM() {
   // Toggle Active/Suspended status for a staff account.
   const toggleStatus = async (staff) => {
     const newStatus = staff.status === 'Active' ? 'Suspended' : 'Active';
-    await fetch(`/api/staff/${staff._id}`, {
+    await fetch(`/api/v3/staff/${staff._id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ status: newStatus })

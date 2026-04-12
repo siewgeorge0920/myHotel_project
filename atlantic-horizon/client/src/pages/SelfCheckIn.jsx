@@ -17,7 +17,7 @@ export default function SelfCheckIn() {
     setStatus({ type: '', msg: '' });
 
     try {
-      const res = await axios.post('/api/bookings/self-check-in', formData);
+      const res = await axios.post('/api/v3/bookings/self-check-in', formData);
       setStatus({ type: 'success', msg: `Welcome! ${res.data.message}` });
     } catch (err) {
       setStatus({ 

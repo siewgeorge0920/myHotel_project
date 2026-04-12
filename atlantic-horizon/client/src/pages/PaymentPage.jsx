@@ -28,22 +28,25 @@ function CheckoutForm({ clientSecret, bookingId, totalPrice }) {
     });
 
     if (payload.error) {
-      setError(`Payment failed: ${payload.error.message}`);
+      setError(`Payment failed: ${payload.error.message}. Redirecting to calendar to try again...`);
       setProcessing(false);
+      
+      // Redirect to try again if payment failed
+      setTimeout(() => navigate('/calendar'), 4000);
     } else {
       setError(null);
       setProcessing(false);
       setSucceeded(true);
       
-      // Update booking status
-      await fetch(`/api/bookings/${bookingId}/status`, {
+      // Update payment status (Public endpoint)
+      await fetch(`/api/v3/bookings/${bookingId}/payment-status`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ paymentStatus: 'Paid' })
+        body: JSON.stringify({ status: 'Paid' })
       });
 
-      // Redirect to success or calendar
-      setTimeout(() => navigate('/calendar?success=1'), 3000);
+      // Redirect to dedicated success page and pass booking reference
+      setTimeout(() => navigate('/booking-success', { state: { bookingId } }), 3000);
     }
   };
 
@@ -96,7 +99,7 @@ export default function PaymentPage() {
       return;
     }
 
-    fetch('/api/create-payment-intent', {
+    fetch('/api/v3/create-payment-intent', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -107,10 +110,10 @@ export default function PaymentPage() {
     })
     .then(res => res.json())
     .then(data => {
-      if (data.clientSecret) {
-        setClientSecret(data.clientSecret);
+      if (data.data && data.data.clientSecret) {
+        setClientSecret(data.data.clientSecret);
       } else {
-        setError(data.error || 'Failed to initialize payment gateway. Please check Stripe API keys.');
+        setError(data.message || 'Failed to initialize payment gateway. Please check Stripe API keys.');
       }
     })
     .catch(err => setError(err.message));

@@ -1,216 +1,176 @@
 import Booking from '../models/Booking.js';
 import PhysicalRoom from '../models/PhysicalRoom.js';
 import Client from '../models/Client.js';
-import Staff from '../models/Staff.js';
 import Log from '../models/Log.js';
-import giftCardService from './giftCardService.js';
-import { getStripe } from '../config/stripe.js';
-import configHelper from '../utils/configHelper.js';
+import inventoryService from './inventoryService.js';
+import crmService from './crmService.js';
 
 class BookingService {
-  /**
-   * 🧠 Logic for real-time inventory calculation
-   */
-  async checkAvailability(checkIn, checkOut, roomCategory) {
-    const start = new Date(checkIn);
-    const end = new Date(checkOut);
-
-    // 1. Get overlapping bookings
-    const overlap = await Booking.find({
-      room_type: roomCategory,
-      status: { $nin: ['Cancelled', 'CheckedOut'] },
-      $or: [
-        { check_in: { $lt: end }, check_out: { $gt: start } }
-      ]
-    }).countDocuments();
-
-    // 2. Get total physical rooms for this category
-    const totalRooms = await PhysicalRoom.countDocuments({
-      room_type_category: roomCategory
-    });
-
-    return {
-      isAvailable: overlap < totalRooms,
-      remainingRatio: totalRooms > 0 ? (totalRooms - overlap) / totalRooms : 0,
-      overlapCount: overlap,
-      maxCapacity: totalRooms
-    };
-  }
-
-  /**
-   * 🏗️ Create Booking (Multi-Step Logic)
-   */
   async createBooking(data) {
-    const { 
-      checkIn, 
-      checkOut, 
-      roomName, 
-      guestEmail, 
-      guestFirstName, 
-      guestLastName, 
-      price, 
-      paymentStatus,
-      giftCardCode 
-    } = data;
-
-    // 1. Validation
-    if (!checkIn || !checkOut || !roomName || !guestEmail) {
-      throw new Error("Missing required booking details (V3 Validation).");
-    }
-
-    const start = new Date(checkIn);
-    const end = new Date(checkOut);
-
-    // 2. Strict Inventory Protection
-    const availability = await this.checkAvailability(start, end, roomName);
-    if (!availability.isAvailable) {
-      throw new Error(`The ${roomName} is fully booked for these dates. Inventory mismatch.`);
-    }
-
-    // 3. Gift Card Redemption
-    let finalAmount = parseFloat(price);
-    if (giftCardCode) {
-      try {
-        const card = await giftCardService.validate(giftCardCode);
-        const deduction = Math.min(card.balance, finalAmount);
-        card.balance -= deduction;
-        if (card.balance <= 0) card.status = 'Used';
-        await card.save();
-        
-        finalAmount -= deduction;
-        
-        await Log.create({
-          action: `Redeemed Gift Card ${giftCardCode} for booking. Deduction: €${deduction}`,
-          performedBy: 'System (Client Flow)',
-          targetId: giftCardCode
-        });
-      } catch (err) {
-        console.warn(`[V3 Booking] Gift Card ${giftCardCode} ignored: ${err.message}`);
-      }
-    }
-
-    // 4. Client Auto-Resolution (CRM)
-    let client = await Client.findOne({ email: guestEmail });
-    if (!client) {
-      client = new Client({
-        client_id: 'CUST-' + Math.floor(Math.random() * 90000 + 10000),
-        name: `${guestFirstName} ${guestLastName}`.trim(),
-        email: guestEmail,
-        phone: data.guestPhone,
-        address: data.guestAddress
+    const email = data.guest_email || data.guestEmail;
+    let guest = await Client.findOne({ email });
+    if (!guest) {
+      guest = new Client({
+        client_id: `CUST-${Math.floor(10000 + Math.random() * 90000)}`,
+        name: data.guest_name || `${data.guestFirstName} ${data.guestLastName}`,
+        email: email,
+        phone: data.guest_phone || data.guestPhone
       });
-      await client.save();
+      await guest.save();
     }
 
-    // 5. Automated Staff Assignment
-    const availableStaff = await Staff.find({ status: 'Active', role: { $in: ['staff', 'admin'] } });
-    const assignedStaffName = availableStaff.length > 0 
-      ? availableStaff[Math.floor(Math.random() * availableStaff.length)].name 
-      : 'System Administrator';
+    const bookingId = `ATL-${Math.floor(100000 + Math.random() * 900000)}`;
 
-    // 6. Persistence
     const booking = new Booking({
-      booking_id: `BKG-${Math.floor(Math.random() * 900000 + 100000)}`,
-      guest_name: `${guestFirstName} ${guestLastName}`.trim(),
-      guest_email: guestEmail,
-      guest_phone: data.guestPhone,
-      guest_address: data.guestAddress,
-      client_id: client.client_id,
-      room_type: roomName,
-      check_in: start,
-      check_out: end,
-      total_amount: finalAmount,
-      payment_status: paymentStatus === 'Paid' || finalAmount <= 0 ? 'Paid' : 'Unpaid',
-      status: 'Pending',
-      notes: `Managed by: ${assignedStaffName}. Gift Card: ${giftCardCode || 'None'}`
+      booking_id: bookingId,
+      client_id: guest.client_id,
+      guest_name: guest.name,
+      guest_email: guest.email,
+      room_type: data.room_type || data.roomName,
+      check_in: new Date(data.check_in || data.checkIn),
+      check_out: new Date(data.check_out || data.checkOut),
+      total_amount: data.total_amount || data.price,
+      payment_status: data.paymentStatus || 'Paid',
+      status: data.status || 'Confirmed'
     });
 
     await booking.save();
-
-    // 7. Success Audit
-    await Log.create({
-      action: `New Booking Created: ${booking.booking_id} (${roomName})`,
-      performedBy: 'System (Guest Checkout)',
-      targetId: booking.booking_id
-    });
+    
+    guest.total_spend += parseFloat(data.price);
+    await guest.save();
 
     return booking;
   }
 
-  /**
-   * 🛡️ Strict State Machine Transitions
-   */
-  async transitionStatus(bookingId, newStatus) {
+  async forceReceptionCheckIn(bookingId) {
     const booking = await Booking.findOne({ booking_id: bookingId });
-    if (!booking) throw new Error('Booking not found');
+    if (!booking) throw new Error("Booking record not found");
 
-    const validTransitions = {
-      'Pending': ['Confirmed', 'Cancelled'],
-      'Confirmed': ['CheckedIn', 'Cancelled'],
-      'CheckedIn': ['CheckedOut'],
-      'CheckedOut': [],
-      'Cancelled': []
-    };
+    const readyRoom = await PhysicalRoom.findOne({
+      room_type_category: booking.room_type,
+      current_status: 'Ready'
+    });
 
-    if (!validTransitions[booking.status].includes(newStatus)) {
-      throw new Error(`Invalid status transition: ${booking.status} -> ${newStatus}`);
+    if (!readyRoom) {
+      throw new Error(`No 'Ready' rooms in ${booking.room_type}. Notify Housekeeping!`);
     }
 
-    booking.status = newStatus;
+    readyRoom.current_status = 'Occupied';
+    readyRoom.active_booking = booking._id;
+    await readyRoom.save();
+
+    booking.status = 'CheckedIn';
+    booking.assigned_room = readyRoom.room_name;
+    booking.check_in_time = new Date();
     await booking.save();
+
+    await Log.create({
+      action: `RECEPTION CHECK-IN: Guest ${booking.guest_name} assigned to ${readyRoom.room_name}`,
+      performedBy: 'Reception Staff',
+      targetId: bookingId
+    });
+
     return booking;
   }
 
-  /**
-   * 📋 Admin Utility: Fetch sorted bookings
-   */
   async getAllOrdered() {
     return await Booking.find().sort({ createdAt: -1 });
   }
 
-  /**
-   * 💳 Generate Payment Link for existing booking
-   */
-  async generatePaymentLink(data) {
-    const { bookingId, roomName, amount, guestEmail, nights } = data;
-    
-    const taxRate = parseFloat(await configHelper.getSetting('tax_rate', '0'));
-    const serviceCharge = parseFloat(await configHelper.getSetting('service_charge', '0'));
-    const baseUrl = await configHelper.getSetting('base_url', 'http://localhost:5173');
-
-    const stripe = await getStripe();
-    return await stripe.checkout.sessions.create({
-      payment_method_types: ['card'],
-      ...(guestEmail ? { customer_email: guestEmail } : {}),
-      line_items: [{
-        price_data: {
-          currency: 'eur',
-          product_data: {
-            name: `The Atlantic Horizon Manor — ${roomName}`,
-            description: `Booking: ${bookingId} | ${nights || 1} night(s)`,
-          },
-          unit_amount: Math.round((parseFloat(amount) + (parseFloat(amount) * taxRate) + serviceCharge) * 100),
-        },
-        quantity: 1,
-      }],
-      mode: 'payment',
-      success_url: `${baseUrl}/self-check-in?booking_id=${bookingId}&status=success`,
-      cancel_url: `${baseUrl}/calendar?status=cancel`,
-    });
+  async transitionStatus(id, status) {
+    const booking = await Booking.findById(id);
+    if (!booking) throw new Error("Booking not found");
+    booking.status = status;
+    await booking.save();
+    return booking;
   }
 
-  /**
-   * 🗑️ Purge record
-   */
-  async delete(id) {
-    return await Booking.findByIdAndDelete(id);
+  async updatePaymentStatus(id, status) {
+    const booking = await Booking.findById(id);
+    if (!booking) throw new Error("Booking not found");
+    booking.payment_status = status;
+    if (status === 'Paid') booking.status = 'Confirmed';
+    await booking.save();
+    return booking;
   }
 
-  /**
-   * ✏️ Generic Update
-   */
   async update(id, data) {
-    return await Booking.findByIdAndUpdate(id, data, { new: true });
+    const existing = await Booking.findById(id);
+    if (!existing) throw new Error("Booking not found");
+    if (existing.status === 'CheckedOut') throw new Error("This stay is finalized and cannot be modified.");
+
+    const updateData = { ...data };
+    
+    // Safety mapping for updates
+    if (data.guestEmail) updateData.guest_email = data.guestEmail;
+    if (data.checkIn) updateData.check_in = data.checkIn;
+    if (data.checkOut) updateData.check_out = data.checkOut;
+    if (data.price) updateData.total_amount = data.price;
+    if (data.roomName) updateData.room_type = data.roomName;
+
+    const booking = await Booking.findByIdAndUpdate(id, updateData, { new: true, runValidators: true });
+    if (!booking) throw new Error("Booking not found");
+    return booking;
+  }
+
+  async delete(id) {
+    const booking = await Booking.findByIdAndDelete(id);
+    if (!booking) throw new Error("Booking not found");
+    return booking;
+  }
+
+  async adminCreate(data) {
+    const bookingId = `ATL-${Math.floor(100000 + Math.random() * 900000)}`;
+    const booking = new Booking({
+      booking_id: data.booking_id || bookingId,
+      guest_name: data.guest_name,
+      guest_email: data.guestEmail || data.guest_email || 'guest@example.com',
+      room_type: data.room_type,
+      check_in: new Date(data.check_in),
+      check_out: new Date(data.check_out),
+      total_amount: data.total_amount,
+      status: data.status || 'Confirmed'
+    });
+    await booking.save();
+    return booking;
+  async selfCheckIn(bookingId, email) {
+    // Logic: Support both internal MongoDB ID and the public ATL-XXXXXX code
+    const query = bookingId.length > 20 
+      ? { _id: bookingId, guest_email: email }
+      : { booking_id: bookingId, guest_email: email };
+
+    const booking = await Booking.findOne(query);
+
+    if (!booking) {
+      throw new Error("We couldn't find a reservation with those details. Please check your Booking ID and Email.");
+    }
+
+    if (booking.status === 'CheckedIn') {
+      throw new Error("You are already checked in! Welcome to the Manor.");
+    }
+
+    if (booking.status === 'CheckedOut' || booking.status === 'Cancelled') {
+      throw new Error(`This reservation is currently ${booking.status.toLowerCase()}. Please see reception for help.`);
+    }
+
+    // Optional: Only allow check-in on the actual day
+    // const today = new Date().toISOString().split('T')[0];
+    // if (new Date(booking.check_in).toISOString().split('T')[0] !== today) {
+    //   throw new Error("Self Check-in is only available on your day of arrival.");
+    // }
+
+    booking.status = 'CheckedIn';
+    await booking.save();
+
+    // Log the event
+    await Log.create({
+      action: 'SELF_CHECK_IN',
+      performedBy: 'GUEST',
+      targetId: booking.booking_id,
+      timestamp: new Date()
+    });
+
+    return booking;
   }
 }
 

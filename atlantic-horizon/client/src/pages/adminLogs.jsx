@@ -21,10 +21,10 @@ export default function AdminLogs() {
 
   // Fetch audit logs and update refresh timestamp.
   const fetchLogs = () => {
-    fetch('/api/logs')
+    fetch('/api/v3/logs')
       .then(r => r.json())
       .then(data => {
-        setLogs(data);
+        setLogs(data.data || []);
         setLastRefreshed(new Date().toLocaleTimeString());
         setLoading(false);
       })

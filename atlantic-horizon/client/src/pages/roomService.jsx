@@ -16,11 +16,11 @@ export default function SanctuaryOperations() {
     try {
       if (initial) setLoading(true);
       const [resUnits, resOrders] = await Promise.all([
-        axios.get('/api/physical-rooms'),
-        axios.get('/api/room-service/all-orders')
+        axios.get('/api/v3/physical-rooms'),
+        axios.get('/api/v3/room-service/all-orders')
       ]);
-      setUnits(resUnits.data);
-      setOrders(resOrders.data);
+      setUnits(resUnits.data.data || []);
+      setOrders(resOrders.data.data || []);
     } catch (err) {
       console.error('Data sync failed:', err);
     } finally {
@@ -36,7 +36,7 @@ export default function SanctuaryOperations() {
 
   const updateCleaningStatus = async (id, status) => {
     try {
-      await axios.put(`/api/physical-rooms/${id}`, { current_status: status });
+      await axios.put(`/api/v3/physical-rooms/${id}`, { current_status: status });
       fetchData();
     } catch (err) {
       alert('Status update failed.');
@@ -45,7 +45,7 @@ export default function SanctuaryOperations() {
 
   const updateOrderStatus = async (id, status) => {
     try {
-      await axios.put(`/api/room-service/order/${id}`, { status });
+      await axios.put(`/api/v3/room-service/order/${id}`, { status });
       fetchData();
     } catch (err) {
       alert('Order update failed.');
@@ -89,6 +89,12 @@ export default function SanctuaryOperations() {
           </div>
           
           <div className="flex bg-white/5 p-1">
+            <button 
+              onClick={() => setManualMode(true)}
+              className="bg-amber-600/20 border border-amber-500/50 text-amber-500 px-6 py-3 rounded-full text-[10px] font-black tracking-widest hover:bg-amber-500 hover:text-white transition-all"
+            >
+              CREATE MANUAL ORDER (CONCIERGE)
+            </button>
              <button 
                onClick={() => setActiveTab('Cleanliness')}
                className={`px-8 py-4 text-[10px] uppercase font-black tracking-[0.4em] transition-all ${activeTab === 'Cleanliness' ? 'bg-amber-600 text-white' : 'text-white/30 hover:text-white/60'}`}

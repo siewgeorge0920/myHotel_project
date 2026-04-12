@@ -4,42 +4,38 @@ import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 import connectDB from './config/db.js';
 import v3Router from './routes/index.js';
+import { AppError } from './utils/responseHandler.js';
 
 dotenv.config();
-
 const app = express();
 
-// 🚀 Initialize Core
+// 🚀 Core Initialization
 connectDB();
 
-// 🛠️ Middlewares
 app.use(cors());
 app.use(cookieParser());
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
-// 🛰️ Mount V3 API
-// Mounted at /api to maintain compatibility with existing frontend axios calls
-app.use('/api', v3Router);
-app.use('/api/v3', v3Router); // Alias for versioned requests
+// 🛰️ Strategic API Mounting
+app.use('/api/v3', v3Router);
 
-// Fallback for versioning awareness
-app.get('/api/status', (req, res) => {
-  res.json({ 
-    version: '3.0.0-stable',
-    architecture: 'Controller-Service-Model',
-    status: 'Operational'
-  });
+// 🔍 Handle Undefined Routes (Anti-Ghosting)
+app.use((req, res, next) => {
+  next(new AppError(`Can't find ${req.originalUrl} on this manor's server!`, 404));
 });
 
 /**
- * 🛰️ Global Error Handler (V3 Standard)
+ * 🛡️ Visionary Global Error Handler
+ * Replaces the basic one in the old system
  */
 app.use((err, req, res, next) => {
-  console.error('[V3 System Error]', err.stack);
-  res.status(500).json({ 
-    error: 'Internal Server Error',
-    message: err.message 
+  err.statusCode = err.statusCode || 500;
+  
+  // Logic: In production, we don't show "scary" stack traces to guests
+  res.status(err.statusCode).json({
+    success: false,
+    message: err.message,
+    stack: process.env.NODE_ENV === 'development' ? err.stack : undefined
   });
 });
 
