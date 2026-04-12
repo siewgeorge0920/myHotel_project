@@ -8,10 +8,5 @@
       "source": "/(.*)",
       "destination": "/index.html"
     }
-  ],
-  "build": {
-    "env": {
-      "ROLLUP_NATIVE": "0"
-    }
-  }
+  ]
 }

@@ -12,7 +12,22 @@ const app = express();
 // 🚀 Core Initialization
 connectDB();
 
-app.use(cors());
+const allowedOrigins = [
+  'http://localhost:5173',
+  'https://my-hotel-project-siewgeorge0920.vercel.app',
+  'https://my-hotel-project-git-main-siewgeorge0920-8403s-projects.vercel.app'
+];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true
+}));
 app.use(cookieParser());
 app.use(express.json());
 
