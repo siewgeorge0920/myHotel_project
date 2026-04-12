@@ -15,7 +15,8 @@ connectDB();
 const allowedOrigins = [
   'http://localhost:5173',
   'https://my-hotel-project-siewgeorge0920.vercel.app',
-  'https://my-hotel-project-git-main-siewgeorge0920-8403s-projects.vercel.app'
+  'https://www.theatlantichorizion.com',
+  'https://theatlantichorizion.com'
 ];
 
 app.use(cors({
