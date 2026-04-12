@@ -133,6 +133,7 @@ class BookingService {
     });
     await booking.save();
     return booking;
+  }
   async selfCheckIn(bookingId, email) {
     // Logic: Support both internal MongoDB ID and the public ATL-XXXXXX code
     const query = bookingId.length > 20 
