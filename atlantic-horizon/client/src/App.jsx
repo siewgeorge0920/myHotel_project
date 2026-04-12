@@ -204,6 +204,7 @@ export default function App() {
           <Route path="/roomService" element={<ProtectedRoute><RoomService /></ProtectedRoute>} />
           <Route path="/physicalRooms" element={<ProtectedRoute><PhysicalRoomManager /></ProtectedRoute>} />
           <Route path="/self-check-in" element={<SelfCheckIn />} />
+          <Route path="/booking-management" element={<ProtectedRoute><BookingManagement /></ProtectedRoute>} />
 
         </Routes>
         </Suspense>
