@@ -14,6 +14,7 @@ import Login from './pages/login';
 import GiftCards from './pages/GiftCards';
 import GiftCardSuccess from './pages/GiftCardSuccess';
 import AdminSettings from './pages/adminSettings';
+import SelfCheckIn from './pages/SelfCheckIn';
 
 // 🌟 Lincoln's Pages (Experience)
 import ContinentalBreakfast from './pages/Lincoln/continentalBreakfast';
@@ -51,7 +52,6 @@ import PaymentPage from './pages/PaymentPage';
 
 import ProtectedRoute from './components/ProtectedRoute';
 
-import SelfCheckIn from './pages/SelfCheckIn';
 import LuxuryLoader from './components/luxuryLoader';
 import CookieWindow from './components/CookieWindow';
 
@@ -203,6 +203,7 @@ export default function App() {
           <Route path="/adminCalendar" element={<ProtectedRoute><AdminCalendar /></ProtectedRoute>} />
           <Route path="/roomService" element={<ProtectedRoute><RoomService /></ProtectedRoute>} />
           <Route path="/physicalRooms" element={<ProtectedRoute><PhysicalRoomManager /></ProtectedRoute>} />
+          <Route path="/self-check-in" element={<SelfCheckIn />} />
 
         </Routes>
         </Suspense>

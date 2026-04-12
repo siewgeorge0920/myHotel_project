@@ -278,16 +278,14 @@ export default function BookingManagement() {
                         )}
                         {checkTimeStatus(b)}
                       </h4>
-                      {b.clientId && (
-                        <div className="flex items-center gap-4 mt-3">
-                           <span className="w-6 h-px bg-white/10" />
-                           <p className="text-xs text-white/60 font-light tracking-wide">
-                              Presiding Guest: <span className="font-bold text-white uppercase">{b.clientId.firstName} {b.clientId.lastName}</span>
-                              <span className="mx-4 text-white/10">|</span>
-                              <span className="text-white/30 italic">{b.clientId.email}</span>
-                           </p>
+                      <div className="flex flex-col">
+                        <h4 className="text-xl font-serif text-white/80 italic">{b.guest_name || b.guestName}</h4>
+                        <div className="flex flex-wrap gap-4 mt-2">
+                           <p className="text-[10px] text-white/30 uppercase tracking-widest">{b.guest_email || b.guestEmail}</p>
+                           {(b.guest_phone || b.guestPhone) && <p className="text-[10px] text-amber-500/50 uppercase tracking-widest font-black">📞 {b.guest_phone || b.guestPhone}</p>}
+                           {(b.client_id || b.clientId) && <p className="text-[10px] text-white/20 uppercase tracking-widest font-black">ID: {typeof b.client_id === 'string' ? b.client_id : (b.client_id?.client_id || b.clientId?.client_id || 'CRM-LINKED')}</p>}
                         </div>
-                      )}
+                      </div>
                     </div>
 
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-8 pt-4">

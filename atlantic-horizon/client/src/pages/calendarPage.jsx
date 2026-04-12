@@ -30,6 +30,8 @@ export default function CalendarPage() {
     firstName: '',
     lastName: '',
     email: '',
+    phone: '',
+    address: '',
     requests: ''
   });
   const [bookingError, setBookingError] = useState(null);
@@ -177,6 +179,8 @@ export default function CalendarPage() {
           guestEmail: guestInfo.email,
           guestFirstName: guestInfo.firstName,
           guestLastName: guestInfo.lastName,
+          guestPhone: guestInfo.phone,
+          guestAddress: guestInfo.address,
           price: calculateTotal(),
           paymentStatus: calculateTotal() <= 0 ? 'Paid' : 'Pending',
           giftCardCode: giftCardInfo.applied ? giftCardInfo.code : null
@@ -518,8 +522,22 @@ export default function CalendarPage() {
                   onChange={(e) => setGuestInfo({...guestInfo, email: e.target.value})}
                   type="email"
                   placeholder="EMAIL ADDRESS" 
-                  className="w-full bg-transparent border-b border-white/20 p-4 text-xs outline-none focus:border-amber-500 transition-all" 
+                  className="w-full bg-transparent border-b border-white/20 p-4 text-xs outline-none focus:border-amber-500 transition-all font-light" 
                 />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                   <input 
+                     value={guestInfo.phone}
+                     onChange={(e) => setGuestInfo({...guestInfo, phone: e.target.value})}
+                     placeholder="PHONE NUMBER" 
+                     className="bg-transparent border-b border-white/20 p-4 text-xs outline-none focus:border-amber-500 transition-all font-light" 
+                   />
+                   <input 
+                     value={guestInfo.address}
+                     onChange={(e) => setGuestInfo({...guestInfo, address: e.target.value})}
+                     placeholder="CONTACT ADDRESS (OPTIONAL)" 
+                     className="bg-transparent border-b border-white/20 p-4 text-xs outline-none focus:border-amber-500 transition-all font-light" 
+                   />
+                </div>
                 <textarea 
                   value={guestInfo.requests}
                   onChange={(e) => setGuestInfo({...guestInfo, requests: e.target.value})}
@@ -527,7 +545,7 @@ export default function CalendarPage() {
                   className="w-full bg-transparent border border-white/10 p-4 text-xs h-32 outline-none focus:border-amber-500 transition-all mt-4"
                 ></textarea>
                 <button 
-                  disabled={!guestInfo.firstName || !guestInfo.lastName || !guestInfo.email}
+                  disabled={!guestInfo.firstName || !guestInfo.lastName || !guestInfo.email || !guestInfo.phone}
                   onClick={() => goToStep(4)} 
                   className="w-full bg-amber-600 disabled:bg-gray-700 py-5 text-[11px] font-black uppercase tracking-[0.4em] mt-8 transition-colors"
                 >

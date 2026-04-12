@@ -93,9 +93,11 @@ class BookingService {
     let client = await Client.findOne({ email: guestEmail });
     if (!client) {
       client = new Client({
-        clientId: 'CUST-' + Math.floor(Math.random() * 90000 + 10000),
+        client_id: 'CUST-' + Math.floor(Math.random() * 90000 + 10000),
         name: `${guestFirstName} ${guestLastName}`.trim(),
-        email: guestEmail
+        email: guestEmail,
+        phone: data.guestPhone,
+        address: data.guestAddress
       });
       await client.save();
     }
@@ -111,6 +113,9 @@ class BookingService {
       booking_id: `BKG-${Math.floor(Math.random() * 900000 + 100000)}`,
       guest_name: `${guestFirstName} ${guestLastName}`.trim(),
       guest_email: guestEmail,
+      guest_phone: data.guestPhone,
+      guest_address: data.guestAddress,
+      client_id: client.client_id,
       room_type: roomName,
       check_in: start,
       check_out: end,
@@ -189,7 +194,7 @@ class BookingService {
         quantity: 1,
       }],
       mode: 'payment',
-      success_url: `${baseUrl}/calendar?status=success`,
+      success_url: `${baseUrl}/self-check-in?booking_id=${bookingId}&status=success`,
       cancel_url: `${baseUrl}/calendar?status=cancel`,
     });
   }
