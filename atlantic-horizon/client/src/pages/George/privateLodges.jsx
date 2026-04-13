@@ -76,8 +76,8 @@ export default function PrivateLodges() {
         {/* SECTION 4: THE SPA EXPERIENCE */}
         <div className="bg-[#343a2f] text-white p-20 rounded-sm grid md:grid-cols-2 gap-20 items-center mb-40">
           <div className="grid grid-cols-2 gap-4">
-             <img src={deluxeImages[5]} className="w-full h-64 object-cover rounded-sm grayscale hover:grayscale-0 transition-all duration-700" alt="Bath 1" />
-             <img src={deluxeImages[6]} className="w-full h-64 object-cover rounded-sm grayscale hover:grayscale-0 transition-all duration-700" alt="Bath 2" />
+             <img src={deluxeImages[5]} className="w-full h-64 object-cover rounded-sm transition-all duration-700" alt="Bath 1" />
+             <img src={deluxeImages[6]} className="w-full h-64 object-cover rounded-sm transition-all duration-700" alt="Bath 2" />
           </div>
           <div className="space-y-8">
             <h3 className="font-cinzel text-3xl tracking-widest">Private Thermal Sanctuary</h3>

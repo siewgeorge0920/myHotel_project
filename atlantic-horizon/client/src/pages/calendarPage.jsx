@@ -476,7 +476,7 @@ export default function CalendarPage() {
                   { id: 'chauffer', label: 'Lincoln\'s Chauffeur', price: 'On Request', img: '/images/main3.jpg' }
                 ].map(opt => (
                   <div key={opt.id} onClick={() => setAddons(p => ({...p, [opt.id]: !p[opt.id]}))} className={`relative p-6 border transition-all cursor-pointer ${addons[opt.id] ? 'border-amber-600 bg-amber-600/5' : 'border-white/10 bg-white/5 hover:border-white/30'}`}>
-                     <img src={opt.img} className="w-full h-32 object-cover mb-4 grayscale group-hover:grayscale-0" alt={opt.label} />
+                     <img src={opt.img} className="w-full h-32 object-cover mb-4" alt={opt.label} />
                      <h4 className="font-cinzel text-lg uppercase mb-2">{opt.label}</h4>
                      <p className="text-xs text-amber-500 font-bold">{opt.price}</p>
                      {addons[opt.id] && <div className="absolute top-4 right-4 text-amber-500 text-xl font-black">✓</div>}

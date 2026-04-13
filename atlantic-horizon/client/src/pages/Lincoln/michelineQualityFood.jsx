@@ -73,7 +73,7 @@ export default function MichelineQualityFood() {
             <div className="absolute -top-[300px] -left-[300px] w-[600px] h-[600px] bg-amber-900/10 rounded-full blur-[100px] pointer-events-none mix-blend-screen opacity-50"></div>
 
             <div className="relative z-10 flex flex-col items-center text-center">
-              <img src="/images/food.jpg" alt="Breakfast" className="w-24 h-24 rounded-full object-cover mb-12 border border-amber-500/30 grayscale hover:grayscale-0 transition-all duration-1000 shadow-[0_0_30px_rgba(217,119,6,0.1)]" />
+              <img src="/images/food.jpg" alt="Breakfast" className="w-24 h-24 rounded-full object-cover mb-12 border border-amber-500/30 transition-all duration-1000 shadow-[0_0_30px_rgba(217,119,6,0.1)]" />
 
               <h3 className="font-cinzel text-4xl md:text-5xl lg:text-6xl mb-6 text-white/95 leading-tight tracking-wider">Mornings at<br /><span className="italic text-amber-500 font-georgia text-3xl md:text-4xl block mt-2">The Manor</span></h3>
 

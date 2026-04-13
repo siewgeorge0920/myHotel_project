@@ -70,7 +70,7 @@ export default function LocalIrishExcursion() {
                      <img src="/images/Lincoln/Local/all.png" className="absolute inset-0 w-full h-full object-cover object-[30%_center] opacity-80 z-0" alt="The Elements Color" />
 
                      {/* Top Layer: Grayscale Image with a Gradient Mask (fades left to right) */}
-                     <img src="/images/Lincoln/Local/all.png" className="absolute inset-0 w-full h-full object-cover object-[30%_center] grayscale opacity-90 z-10 mix-blend-luminosity" style={{ WebkitMaskImage: 'linear-gradient(to right, black 20%, transparent 80%)', maskImage: 'linear-gradient(to right, black 20%, transparent 80%)' }} alt="The Elements Grayscale" aria-hidden="true" />
+                     <img src="/images/Lincoln/Local/all.png" className="absolute inset-0 w-full h-full object-cover object-[30%_center] opacity-90 z-10" style={{ WebkitMaskImage: 'linear-gradient(to right, black 20%, transparent 80%)', maskImage: 'linear-gradient(to right, black 20%, transparent 80%)' }} alt="The Elements Color" aria-hidden="true" />
                   </div>
                </div>
             </div>

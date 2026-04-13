@@ -18,7 +18,7 @@ export default function UltimateExclusivity() {
     <div className="bg-[#faf9f6] min-h-screen">
       {/* SECTION 1: MINIMALIST VIDEO HERO */}
       <section className="relative h-[80vh] bg-manorGreen flex flex-col justify-center items-center text-center px-6 overflow-hidden">
-        <img src={superiorImgs[0]} className="absolute inset-0 w-full h-full object-cover opacity-20 grayscale" alt="Exclusivity Hero" />
+        <img src={superiorImgs[0]} className="absolute inset-0 w-full h-full object-cover opacity-20" alt="Exclusivity Hero" />
         <div className="relative z-10 space-y-8">
           <h1 className="font-cinzel text-6xl md:text-8xl text-white tracking-[0.3em] uppercase">BEYOND<br/>EXPERIENCE</h1>
           <div className="h-px w-32 bg-manorGold mx-auto mt-10"></div>
@@ -45,9 +45,9 @@ export default function UltimateExclusivity() {
            <div className="bg-white p-20 shadow-2xl rounded-sm text-center space-y-12">
               <h3 className="font-cinzel text-3xl tracking-widest text-manorGreen">THE REFINEMENT SUITE</h3>
               <div className="grid md:grid-cols-3 gap-6">
-                 <img src={superiorImgs[3]} className="w-full h-64 object-cover rounded grayscale hover:grayscale-0 transition-all duration-700 shadow-md" alt="Bed" />
-                 <img src={superiorImgs[8]} className="w-full h-64 object-cover rounded grayscale hover:grayscale-0 transition-all duration-700 shadow-md" alt="Living" />
-                 <img src={superiorImgs[6]} className="w-full h-64 object-cover rounded grayscale hover:grayscale-0 transition-all duration-700 shadow-md" alt="Bath" />
+                 <img src={superiorImgs[3]} className="w-full h-64 object-cover rounded transition-all duration-700 shadow-md" alt="Bed" />
+                 <img src={superiorImgs[8]} className="w-full h-64 object-cover rounded transition-all duration-700 shadow-md" alt="Living" />
+                 <img src={superiorImgs[6]} className="w-full h-64 object-cover rounded transition-all duration-700 shadow-md" alt="Bath" />
               </div>
               <p className="max-w-2xl mx-auto text-xs opacity-50 uppercase tracking-widest italic">"Every detail curated by the Manor Shadow Team – for those whose lives require absolute precision."</p>
            </div>
