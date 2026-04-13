@@ -1,5 +1,4 @@
-import React, { Suspense, useEffect, useState } from 'react'; //  Core Fix 1: Remember to import useEffect
-//  Added useNavigate to the import below
+import React, { Suspense, useEffect, useState } from 'react'; // Core Fix 1: Remember Import useEffect
 import { BrowserRouter as Router, Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import Lenis from 'lenis';
 
@@ -27,19 +26,19 @@ import AdminSettings from './pages/adminSettings';
 import SelfCheckIn from './pages/SelfCheckIn';
 import BookingSuccess from './pages/BookingSuccess';
 
-//  Lincoln's Pages (Experience)
+// Lincoln's Pages (Experience)
 import ContinentalBreakfast from './pages/Lincoln/continentalBreakfast';
 import HoneymoonPackage from './pages/Lincoln/honeymoonPackage';
 import LocalIrishExcursion from './pages/Lincoln/localIrishExcursion';
 import MichelineQualityFood from './pages/Lincoln/michelineQualityFood';
 import PrivateChauffer from './pages/Lincoln/privateChauffer';
 
-//  George's Pages (Resort)
+// George's Pages (Resort)
 import PrivateLodges from './pages/George/privateLodges';
 import PrivateResidences from './pages/George/privateResidencesAndVillas';
 import UltimateExclusivity from './pages/George/ultimateExclusivity';
 
-//  Derrick's Pages (Wellness)
+// Derrick's Pages (Wellness)
 import Sauna from './pages/Derrick/Sauna';
 import Facial from './pages/Derrick/Facial';
 import Masaage from './pages/Derrick/Massage'; 
@@ -67,7 +66,7 @@ import CookieWindow from './components/CookieWindow';
 
 const AdminLogs = React.lazy(() => import('./pages/adminLogs'));
 
-// Core Fix 2: Auto scroll-to-top component (Must start with an uppercase letter)
+// Scroll Auto-top Component
 const ScrollToTop = () => {
   const { pathname } = useLocation();
   useEffect(() => {
@@ -155,7 +154,11 @@ export default function App() {
   const [isCookieOpen, setIsCookieOpen] = useState(false);
 
   useEffect(() => {
+<<<<<<< HEAD
     //  Initialize Lenis Smooth Scroll
+=======
+    // Initialize Lenis Smooth Scroll
+>>>>>>> a304eb4c40056f9165b4c1fc8dfa110cf6b02241
     const lenis = new Lenis({
       duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), 
@@ -202,7 +205,11 @@ export default function App() {
 
   return (
     <Router>
+<<<<<<< HEAD
       {/*  Core Fix 3: ScrollToTop must be placed inside the Router */}
+=======
+      {/* Core Fix 3: ScrollToTop must be inside Router */}
+>>>>>>> a304eb4c40056f9165b4c1fc8dfa110cf6b02241
       <ScrollToTop /> 
 
       {/* Pass the function to open cookies into the LayoutWrapper */}

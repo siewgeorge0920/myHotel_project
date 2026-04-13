@@ -6,6 +6,26 @@ import inventoryService from './inventoryService.js';
 import crmService from './crmService.js';
 
 class BookingService {
+
+calculateNights(checkIn, checkOut) {
+    const start = new Date(checkIn);
+    const end = new Date(checkOut);
+    const diffTime = Math.abs(end - start);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays || 1;
+  }
+
+  async _resolveBooking(idOrBookingId) {
+    if (!idOrBookingId) return null;
+    // Standard MongoDB ObjectId is 24 hex chars. 
+    // Public booking_ids are like "ATL-XXXXXX" (10 chars).
+    if (idOrBookingId.toString().length > 20) {
+      return await Booking.findById(idOrBookingId);
+    }
+    return await Booking.findOne({ booking_id: idOrBookingId });
+  }
+
+
   async createBooking(data) {
     const email = data.guest_email || data.guestEmail;
     let guest = await Client.findOne({ email });
@@ -19,8 +39,11 @@ class BookingService {
       await guest.save();
     }
 
-    const bookingId = `ATL-${Math.floor(100000 + Math.random() * 900000)}`;
+    
 
+    const bookingId = `ATL-${Math.floor(100000 + Math.random() * 900000)}`;
+    const nights = this.calculateNights(data.check_in || data.checkIn, data.check_out || data.checkOut);
+    
     const booking = new Booking({
       booking_id: bookingId,
       client_id: guest.client_id,
@@ -31,7 +54,8 @@ class BookingService {
       check_out: new Date(data.check_out || data.checkOut),
       total_amount: data.total_amount || data.price,
       payment_status: data.paymentStatus || 'Paid',
-      status: data.status || 'Confirmed'
+      status: data.status || 'Confirmed',
+      nights: nights
     });
 
     await booking.save();
@@ -42,8 +66,8 @@ class BookingService {
     return booking;
   }
 
-  async forceReceptionCheckIn(bookingId) {
-    const booking = await Booking.findOne({ booking_id: bookingId });
+  async forceReceptionCheckIn(idOrBookingId) {
+    const booking = await this._resolveBooking(idOrBookingId);
     if (!booking) throw new Error("Booking record not found");
 
     const readyRoom = await PhysicalRoom.findOne({
@@ -51,23 +75,23 @@ class BookingService {
       current_status: 'Ready'
     });
 
-    if (!readyRoom) {
-      throw new Error(`No 'Ready' rooms in ${booking.room_type}. Notify Housekeeping!`);
+    if (readyRoom) {
+      readyRoom.current_status = 'Occupied';
+      readyRoom.active_booking = booking._id;
+      await readyRoom.save();
+      booking.assigned_room = readyRoom.room_name;
     }
 
-    readyRoom.current_status = 'Occupied';
-    readyRoom.active_booking = booking._id;
-    await readyRoom.save();
-
     booking.status = 'CheckedIn';
-    booking.assigned_room = readyRoom.room_name;
     booking.check_in_time = new Date();
     await booking.save();
 
     await Log.create({
-      action: `RECEPTION CHECK-IN: Guest ${booking.guest_name} assigned to ${readyRoom.room_name}`,
-      performedBy: 'Reception Staff',
-      targetId: bookingId
+      action: `RECEPTION CHECK-IN`,
+      details: `Guest ${booking.guest_name} ${readyRoom ? `assigned to ${readyRoom.room_name}` : '(No room available/assigned)'}`,
+      performed_by: 'Reception Staff',
+      target_id: booking.booking_id || idOrBookingId,
+      user_type: 'Staff'
     });
 
     return booking;
@@ -78,7 +102,7 @@ class BookingService {
   }
 
   async transitionStatus(id, status) {
-    const booking = await Booking.findById(id);
+    const booking = await this._resolveBooking(id);
     if (!booking) throw new Error("Booking not found");
     booking.status = status;
     await booking.save();
@@ -86,7 +110,7 @@ class BookingService {
   }
 
   async updatePaymentStatus(id, status) {
-    const booking = await Booking.findById(id);
+    const booking = await this._resolveBooking(id);
     if (!booking) throw new Error("Booking not found");
     booking.payment_status = status;
     if (status === 'Paid') booking.status = 'Confirmed';
@@ -95,7 +119,7 @@ class BookingService {
   }
 
   async update(id, data) {
-    const existing = await Booking.findById(id);
+    const existing = await this._resolveBooking(id);
     if (!existing) throw new Error("Booking not found");
     if (existing.status === 'CheckedOut') throw new Error("This stay is finalized and cannot be modified.");
 
@@ -114,9 +138,9 @@ class BookingService {
   }
 
   async delete(id) {
-    const booking = await Booking.findByIdAndDelete(id);
+    const booking = await this._resolveBooking(id);
     if (!booking) throw new Error("Booking not found");
-    return booking;
+    return await Booking.findByIdAndDelete(booking._id);
   }
 
   async adminCreate(data) {

@@ -175,9 +175,9 @@ export default function InventoryManagement() {
                        </div>
                     </td>
                     <td className="p-8 text-right">
-                       <div className="flex items-center justify-end gap-3">
-                          <button onClick={() => handleOpenEdit(room)} className="p-3 border border-white/10 hover:border-amber-500/50 hover:bg-amber-500/10 text-white/20 hover:text-amber-500 transition-all">✎</button>
-                          <button onClick={() => handleDelete(room._id)} className="p-3 border border-white/10 hover:border-red-500/40 hover:bg-red-500/10 text-white/10 hover:text-red-400 transition-all">🗑</button>
+                        <div className="flex items-center justify-end gap-3">
+                          <button onClick={() => handleOpenEdit(room)} className="px-4 py-2 border border-white/10 hover:border-amber-500/50 hover:bg-amber-500/10 text-white/20 hover:text-amber-500 transition-all text-[8px] uppercase font-black tracking-widest">Edit</button>
+                          <button onClick={() => handleDelete(room._id)} className="px-4 py-2 border border-white/10 hover:border-red-500/40 hover:bg-red-500/10 text-white/10 hover:text-red-400 transition-all text-[8px] uppercase font-black tracking-widest">Del</button>
                        </div>
                     </td>
                   </tr>

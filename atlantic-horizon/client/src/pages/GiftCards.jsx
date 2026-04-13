@@ -19,13 +19,36 @@ export default function GiftCards() {
     e.preventDefault();
     setLoading(true);
     try {
-      const { data } = await axios.post('/api/v3/gift-cards/checkout', formData);
-      if (data.data?.url) {
-        window.location.href = data.data.url;
+      const res = await axios.post('/api/v3/gift-cards/checkout', formData);
+      console.log("V3 GC Debug Response:", res.data);
+
+      const checkoutUrl = res.data.data?.url || res.data.url;
+
+      if (checkoutUrl) {
+        window.location.href = checkoutUrl;
+      } else {
+        throw new Error("Checkout URL not found in response. Restart backend logic.");
       }
     } catch (error) {
       console.error("Purchase failed:", error);
       alert("Alamak, purchase failed: " + (error.response?.data?.error || error.message));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleInstantIssue = async () => {
+    if (!formData.recipientEmail || !formData.recipientName) {
+      alert("Please fill in recipient details first!");
+      return;
+    }
+    setLoading(true);
+    try {
+      const res = await axios.post('/api/v3/gift-cards/instant-purchase', formData);
+      const { code, stripe_session_id } = res.data.data;
+      window.location.href = `/gift-card-success?session_id=${stripe_session_id}`;
+    } catch (error) {
+      alert("Instant issue failed: " + (error.response?.data?.error || error.message));
     } finally {
       setLoading(false);
     }
@@ -162,13 +185,24 @@ export default function GiftCards() {
                 </div>
               </div>
 
-              <button
-                disabled={loading}
-                className="w-full bg-amber-500 text-black font-cinzel font-bold py-5 rounded-2xl flex items-center justify-center gap-3 hover:bg-amber-400 transition-all shadow-xl shadow-amber-500/20 mt-8 disabled:opacity-50"
-              >
-                <CreditCard className="w-5 h-5" />
-                {loading ? 'PROCESSING...' : 'PURCHASE VOUCHER'}
-              </button>
+              <div className="flex flex-col gap-4 mt-8">
+                <button
+                  disabled={loading}
+                  className="w-full bg-amber-500 text-black font-cinzel font-bold py-5 rounded-2xl flex items-center justify-center gap-3 hover:bg-amber-400 transition-all shadow-xl shadow-amber-500/20 disabled:opacity-50"
+                >
+                  <CreditCard className="w-5 h-5" />
+                  {loading ? 'PROCESSING...' : 'PURCHASE VOUCHER'}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleInstantIssue}
+                  disabled={loading}
+                  className="w-full bg-white/5 border border-white/10 text-white font-cinzel text-[10px] py-3 rounded-xl hover:bg-white/10 transition-all tracking-[0.2em] font-black"
+                >
+                  ISSUE COMPLIMENTARY (SKIP PAYMENT)
+                </button>
+              </div>
             </div>
           </form>
         </div>

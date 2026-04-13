@@ -3,6 +3,8 @@ import mongoose from 'mongoose';
 const logSchema = new mongoose.Schema({
   action: { type: String, required: true },
   details: { type: String },
+  performed_by: { type: String },
+  target_id: { type: String },
   user_type: { 
     type: String, 
     enum: ['System', 'Guest', 'Staff'], 

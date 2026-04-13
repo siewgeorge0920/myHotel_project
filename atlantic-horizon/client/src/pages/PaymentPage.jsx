@@ -69,7 +69,7 @@ function CheckoutForm({ clientSecret, bookingId, totalPrice }) {
       {error && <div className="text-red-400 text-xs mb-4">{error}</div>}
       {succeeded ? (
         <div className="text-green-400 text-sm font-black uppercase tracking-widest text-center animate-pulse">
-          ✅ Payment Successful! Redirecting...
+          Payment Successful! Redirecting...
         </div>
       ) : (
         <button 
