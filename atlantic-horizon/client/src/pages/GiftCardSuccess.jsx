@@ -11,6 +11,7 @@ export default function GiftCardSuccess() {
   const [error, setError] = useState(null);
   const [giftCard, setGiftCard] = useState(null);
   const [isCopied, setIsCopied] = useState(false);
+  const hasCalledRef = React.useRef(false);
 
   useEffect(() => {
     if (!sessionId) {
@@ -18,6 +19,9 @@ export default function GiftCardSuccess() {
       setLoading(false);
       return;
     }
+
+    if (hasCalledRef.current) return;
+    hasCalledRef.current = true;
 
     const verify = async () => {
       try {

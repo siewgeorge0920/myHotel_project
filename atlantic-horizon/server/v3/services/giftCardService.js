@@ -70,15 +70,26 @@ class GiftCardService {
 
     if (!amount) throw new Error("Crucial data missing: 'amount' not found in Stripe session metadata.");
 
-    return await this.instantActivate({
-      amount,
-      purchaserName,
-      purchaserEmail,
-      recipientName,
-      recipientEmail,
-      notes,
-      stripeSessionId: sessionId
-    });
+    try {
+      return await this.instantActivate({
+        amount,
+        purchaserName,
+        purchaserEmail,
+        recipientName,
+        recipientEmail,
+        notes,
+        stripeSessionId: sessionId
+      });
+    } catch (error) {
+      if (error.code === 11000) {
+        // Race condition: another concurrent request just completed the insert
+        const existingCard = await GiftCard.findOne({ stripe_session_id: sessionId });
+        if (existingCard) {
+          return { success: true, code: existingCard.code, alreadyProcessed: true };
+        }
+      }
+      throw error;
+    }
   }
 
   /**
@@ -98,47 +109,61 @@ class GiftCardService {
       return res;
     };
 
-    let code = generateCode();
-    while (await GiftCard.findOne({ code })) {
-      code = generateCode();
+    let newCode = generateCode();
+    while (await GiftCard.findOne({ code: newCode })) {
+      newCode = generateCode();
     }
 
-    // 2. Create Record
-    const giftCard = new GiftCard({
-      code,
-      initial_amount: parseFloat(amount),
-      balance: parseFloat(amount),
-      purchaser_name: purchaserName || 'Direct Issue',
-      purchaser_email: purchaserEmail || 'admin@manor.com',
-      recipient_name: recipientName,
-      recipient_email: recipientEmail,
-      notes: notes || 'Manual/Instant issuance',
-      stripe_session_id: stripeSessionId || `INST-${Date.now()}`,
-      status: 'Active'
-    });
+    const sessionIdToUse = stripeSessionId || `INST-${Date.now()}-${Math.random()}`;
 
-    await giftCard.save();
+    // 2. Upsert Record (Idempotent Operation)
+    const giftCard = await GiftCard.findOneAndUpdate(
+      { stripe_session_id: sessionIdToUse },
+      {
+        $setOnInsert: {
+          code: newCode,
+          initial_amount: parseFloat(amount),
+          balance: parseFloat(amount),
+          purchaser_name: purchaserName || 'Direct Issue',
+          purchaser_email: purchaserEmail || 'admin@manor.com',
+          recipient_name: recipientName,
+          recipient_email: recipientEmail,
+          notes: notes || 'Manual/Instant issuance',
+          status: 'Active'
+        }
+      },
+      { upsert: true, new: true } // Return the updated (or newly created) document
+    );
 
-    // 3. 📧 Dispatch Notifications
-    try {
-      await emailService.sendGiftCardEmail(recipientEmail, {
-        code,
-        amount: parseFloat(amount),
-        recipientName,
-        purchaserName: purchaserName || 'The Manor'
+    // If the returned document's code matches the one we generated, it's newly inserted.
+    const isNewInsert = giftCard.code === newCode;
+
+    if (isNewInsert) {
+      // 3. 📧 Dispatch Notifications ONLY for new inserts
+      try {
+        await emailService.sendGiftCardEmail(recipientEmail, {
+          code: giftCard.code,
+          amount: parseFloat(amount),
+          recipientName,
+          purchaserName: purchaserName || 'The Manor'
+        });
+      } catch (emailErr) {
+         console.error("V3 Instant GC Email Failed:", emailErr.message);
+      }
+
+      // 4. Audit Logging ONLY for new inserts
+      await Log.create({
+        action: `Sold/Issued Gift Card: ${giftCard.code} (€${amount})`,
+        performedBy: purchaserName || 'System',
+        targetId: giftCard.code
       });
-    } catch (emailErr) {
-       console.error("V3 Instant GC Email Failed:", emailErr.message);
     }
 
-    // 4. Audit Logging
-    await Log.create({
-      action: `Sold/Issued Gift Card: ${code} (€${amount})`,
-      performedBy: purchaserName || 'System',
-      targetId: code
-    });
-
-    return { success: true, code };
+    return { 
+      success: true, 
+      code: giftCard.code, 
+      alreadyProcessed: !isNewInsert 
+    };
   }
 
   /**
