@@ -11,7 +11,7 @@ class GiftCardService {
   async createSession(data) {
     const { amount, purchaserEmail, recipientName } = data;
     const stripe = await getStripe();
-    const baseUrl = await configHelper.getSetting('base_url', 'http://localhost:5173');
+    const baseUrl = await configHelper.getSetting('base_url', process.env.CLIENT_URL || 'http://localhost:5173');
 
     // 🛡️ Ensure all metadata values are strings! Stripe requirement.
     const metadataStringified = {};
