@@ -13,12 +13,12 @@ export default function ManagementSidebar({ user }) {
 
   // Strategic Grouping
   const menuItems = [
-    { name: 'Dashboard', path: '/staffDashboard', icon: '🛎️' },
-    { name: 'Bookings', path: '/bookings', icon: '📅' },
-    { name: 'Room Service', path: '/roomService', icon: '🍽️' },
-    { name: 'Identity (CRM)', path: '/crm', icon: '👥' },
-    { name: 'Inventory', path: '/inventory', icon: '🏨' },
-    { name: 'Settings', path: '/adminSettings', icon: '⚙️', adminOnly: true }
+    { name: 'Dashboard', path: '/staffDashboard', icon: '' },
+    { name: 'Bookings', path: '/bookings', icon: '' },
+    { name: 'Room Service', path: '/roomService', icon: '' },
+    { name: 'Identity (CRM)', path: '/crm', icon: '' },
+    { name: 'Inventory', path: '/inventory', icon: '' },
+    { name: 'Settings', path: '/adminSettings', icon: '', adminOnly: true }
   ];
 
   return (
@@ -52,7 +52,7 @@ export default function ManagementSidebar({ user }) {
           onClick={handleLogout}
           className="w-full py-3 text-[9px] uppercase font-black tracking-[0.3em] text-red-400/60 hover:text-red-400 transition-colors text-left"
         >
-          Terminate Session ⏻
+          Terminate Session
         </button>
       </div>
     </aside>

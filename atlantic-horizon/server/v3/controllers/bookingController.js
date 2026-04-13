@@ -52,7 +52,7 @@ class BookingController {
    */
   receptionCheckIn = catchAsync(async (req, res) => {
     const { id } = req.params;
-    const booking = await bookingService.receptionCheckIn(id);
+    const booking = await bookingService.forceReceptionCheckIn(id);
     sendSuccess(res, booking, "Manual check-in completed successfully.");
   });
 

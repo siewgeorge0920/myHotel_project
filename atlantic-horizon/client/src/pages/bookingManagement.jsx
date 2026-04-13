@@ -43,21 +43,20 @@ export default function BookingManagement() {
   useEffect(() => { fetchData(); }, []);
 
   const handleReceptionCheckIn = async (id) => {
-    if (window.confirm("Perform manual check-in for this resident?")) {
-      try {
-        await axios.put(`/api/v3/bookings/${id}/status`, { status: 'CheckedIn' });
-        fetchData();
-      } catch (err) {
-        alert(err.response?.data?.message || err.response?.data?.error || "Check-in failed");
-      }
+    try {
+      const res = await axios.put(`/api/v3/bookings/${id}/reception-checkin`);
+      // Update local state without full refresh
+      setBookings(prev => prev.map(b => b._id === id ? res.data.data : b));
+    } catch (err) {
+      console.error("Check-in conflict or system error:", err.response?.data?.error || err.message);
     }
   };
 
   const handleReceptionCheckOut = async (id) => {
     if (window.confirm("Complete check-out and settle folio?")) {
       try {
-        await axios.put(`/api/v3/bookings/${id}/status`, { status: 'CheckedOut' });
-        fetchData();
+        const res = await axios.put(`/api/v3/bookings/${id}/status`, { status: 'CheckedOut' });
+        setBookings(prev => prev.map(b => b._id === id ? res.data.data : b));
       } catch (err) {
         alert(err.response?.data?.message || err.response?.data?.error || "Check-out failed");
       }
@@ -68,7 +67,7 @@ export default function BookingManagement() {
     if (window.confirm("CRITICAL: Delete this booking from the system?")) {
       try {
         await axios.delete(`/api/v3/bookings/${id}`);
-        fetchData();
+        setBookings(prev => prev.filter(b => b._id !== id));
       } catch (err) {
         alert(err.response?.data?.error || "Delete failed");
       }
@@ -209,7 +208,7 @@ export default function BookingManagement() {
                 </tr>
               </thead>
               <tbody className="text-sm">
-              {bookings.map(b => {
+              {filteredBookings.map(b => {
                 const nights = b.nights || Math.ceil(Math.abs(new Date(b.check_out) - new Date(b.check_in)) / (1000 * 60 * 60 * 24));
                 return (
                   <tr key={b._id} className="border-t border-white/5 hover:bg-white/[0.01] transition-colors">
@@ -232,15 +231,41 @@ export default function BookingManagement() {
                         {b.status}
                       </span>
                     </td>
-                    <td className="p-6">
-                      {b.status === 'Confirmed' && (
-                        <button 
-                          onClick={() => handleReceptionCheckIn(b.booking_id)}
-                          className="bg-white text-black px-5 py-2.5 rounded-full text-[9px] font-black uppercase tracking-widest hover:bg-amber-500 hover:text-white transition-all shadow-xl"
-                        >
-                          Reception Check-in
-                        </button>
-                      )}
+                    <td className="p-6 text-right">
+                      <div className="flex justify-end gap-2">
+                        {b.status === 'Confirmed' && (
+                          <button 
+                            onClick={() => handleReceptionCheckIn(b._id)}
+                            className="bg-white text-black px-5 py-2.5 rounded-full text-[9px] font-black uppercase tracking-widest hover:bg-amber-500 hover:text-white transition-all shadow-xl"
+                          >
+                            Check-in
+                          </button>
+                        )}
+                        {b.status === 'CheckedIn' && (
+                          <button 
+                            onClick={() => handleReceptionCheckOut(b._id)}
+                            className="bg-amber-600 text-white px-5 py-2.5 rounded-full text-[9px] font-black uppercase tracking-widest hover:bg-amber-500 transition-all shadow-xl"
+                          >
+                            Checkout
+                          </button>
+                        )}
+                        {canEdit && (
+                          <button 
+                            onClick={() => openForm(b)}
+                            className="bg-white/5 text-white/40 hover:text-white px-4 py-2.5 rounded-full text-[9px] font-black uppercase tracking-widest transition-all border border-white/5"
+                          >
+                            Edit
+                          </button>
+                        )}
+                        {canDelete && (
+                          <button 
+                            onClick={() => handleDelete(b._id)}
+                            className="bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white px-4 py-2.5 rounded-full text-[9px] font-black uppercase tracking-widest transition-all border border-red-500/20"
+                          >
+                            Del
+                          </button>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 );
@@ -318,7 +343,7 @@ export default function BookingManagement() {
                     </button>
                   ) : (
                     <div className="bg-white/5 px-6 py-3 rounded-full text-[9px] font-black uppercase text-white/20 border border-white/10">
-                      🔒 Past Stay Locked
+                      Past Stay Locked
                     </div>
                   )}
                 </div>

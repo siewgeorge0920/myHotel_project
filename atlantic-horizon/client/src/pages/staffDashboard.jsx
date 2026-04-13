@@ -4,7 +4,7 @@ import ManagementSidebar from '../components/managementSidebar';
 import { COLORS } from '../colors';
 
 /**
- * 🛎️ RECEPTION & FRONT DESK OPERATIONS
+ * RECEPTION & FRONT DESK OPERATIONS
  * Simple, action-oriented dashboard for daily operations.
  */
 export default function StaffDashboard() {
@@ -41,7 +41,7 @@ export default function StaffDashboard() {
           {/* Action 1: Bookings & Reservations */}
           <ActionCard 
             title="Bookings & Reservations" 
-            icon="📅"
+            icon=""
             desc="Manage all reservations, view guest lists, and create new manual bookings."
             primaryBtn="Manage Bookings"
             onPrimaryClick={() => navigate('/bookings')}
@@ -52,7 +52,7 @@ export default function StaffDashboard() {
           {/* Action 2: Check-In & Arrivals */}
           <ActionCard 
             title="Reception Check-In" 
-            icon="🛎️"
+            icon=""
             desc="Process arriving guests. Assign physical rooms or generate IoT Keys."
             primaryBtn="Go to Check-In"
             onPrimaryClick={() => navigate('/bookings')} // Both point to booking management typically, or a specific check-in view if made
@@ -63,7 +63,7 @@ export default function StaffDashboard() {
           {/* Action 3: Check-Out & Departures */}
           <ActionCard 
             title="Folio & Check-Out" 
-            icon="🚪"
+            icon=""
             desc="Settle guest folios, process payments, and complete checkout procedures."
             primaryBtn="Process Check-Out"
             onPrimaryClick={() => navigate('/bookings')}
@@ -74,7 +74,7 @@ export default function StaffDashboard() {
           {/* Action 4: Room Service */}
           <ActionCard 
             title="Room Service (F&B)" 
-            icon="🍽️"
+            icon=""
             desc="Manage inbound culinary orders, update order status, and bill to room."
             primaryBtn="F&B Interface"
             onPrimaryClick={() => navigate('/roomService')}

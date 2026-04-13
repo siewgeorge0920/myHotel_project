@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect, useState } from 'react'; // 🌟 核心修正 1：记得 Import useEffect
+import React, { Suspense, useEffect, useState } from 'react'; // Core Fix 1: Remember Import useEffect
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import Lenis from 'lenis';
 
@@ -17,19 +17,19 @@ import AdminSettings from './pages/adminSettings';
 import SelfCheckIn from './pages/SelfCheckIn';
 import BookingSuccess from './pages/BookingSuccess';
 
-// 🌟 Lincoln's Pages (Experience)
+// Lincoln's Pages (Experience)
 import ContinentalBreakfast from './pages/Lincoln/continentalBreakfast';
 import HoneymoonPackage from './pages/Lincoln/honeymoonPackage';
 import LocalIrishExcursion from './pages/Lincoln/localIrishExcursion';
 import MichelineQualityFood from './pages/Lincoln/michelineQualityFood';
 import PrivateChauffer from './pages/Lincoln/privateChauffer';
 
-// 🌟 George's Pages (Resort)
+// George's Pages (Resort)
 import PrivateLodges from './pages/George/privateLodges';
 import PrivateResidences from './pages/George/privateResidencesAndVillas';
 import UltimateExclusivity from './pages/George/ultimateExclusivity';
 
-// 🌟 Derrick's Pages (Wellness)
+// Derrick's Pages (Wellness)
 import Sauna from './pages/Derrick/Sauna';
 import Facial from './pages/Derrick/Facial';
 import Masaage from './pages/Derrick/Massage'; 
@@ -58,7 +58,7 @@ import CookieWindow from './components/CookieWindow';
 
 const AdminLogs = React.lazy(() => import('./pages/adminLogs'));
 
-// 🌟 核心修正 2：自动回顶组件 (首字母一定要大写)
+// Scroll Auto-top Component
 const ScrollToTop = () => {
   const { pathname } = useLocation();
   useEffect(() => {
@@ -109,7 +109,7 @@ export default function App() {
   const [isCookieOpen, setIsCookieOpen] = useState(false);
 
   useEffect(() => {
-    // 🌀 Initialize Lenis Smooth Scroll
+    // Initialize Lenis Smooth Scroll
     const lenis = new Lenis({
       duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // Custom easing for premium feel
@@ -158,7 +158,7 @@ export default function App() {
   return (
     
     <Router>
-      {/* 🌟 核心修正 3：必须把 ScrollToTop 放在 Router 里面跑 */}
+      {/* Core Fix 3: ScrollToTop must be inside Router */}
       <ScrollToTop /> 
 
       <LayoutWrapper>

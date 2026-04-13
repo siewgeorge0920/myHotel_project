@@ -248,11 +248,11 @@ export default function CalendarPage() {
         {/* 🌟 Progress Stepper — Icon Slider */}
         <div className="flex items-center justify-between mb-16 px-1">
           {[
-            { icon: '🏠', label: 'Service', step: 0 },
-            { icon: '🛎', label: 'Selection', step: 1 },
-            { icon: '✦', label: 'Enhance', step: 2 },
-            { icon: '📋', label: 'Details', step: 3 },
-            { icon: '💳', label: 'Payment', step: 4 },
+            { icon: '', label: 'Service', step: 0 },
+            { icon: '', label: 'Selection', step: 1 },
+            { icon: '', label: 'Enhance', step: 2 },
+            { icon: '', label: 'Details', step: 3 },
+            { icon: '', label: 'Payment', step: 4 },
           ].map((s, i, arr) => {
             const isDone = bookingStep > s.step;
             const isActive = bookingStep === s.step;
@@ -269,7 +269,7 @@ export default function CalendarPage() {
                     isActive ? 'bg-amber-600/20 border-amber-500 text-amber-400 shadow-[0_0_20px_rgba(245,158,11,0.3)] scale-110' :
                     'bg-white/5 border-white/15 text-white/30'
                   }`}>
-                    {isDone ? '✓' : s.icon}
+                    {isDone ? 'Done' : s.icon}
                   </div>
                   <span className={`hidden sm:block text-[9px] uppercase tracking-widest font-black transition-colors ${
                     isDone ? 'text-amber-500/60 group-hover:text-amber-500' : isActive ? 'text-amber-400' : 'text-white/10'
@@ -484,7 +484,7 @@ export default function CalendarPage() {
                      <img src={opt.img} className="w-full h-32 object-cover mb-4" alt={opt.label} />
                      <h4 className="font-cinzel text-lg uppercase mb-2">{opt.label}</h4>
                      <p className="text-xs text-amber-500 font-bold">{opt.price}</p>
-                     {addons[opt.id] && <div className="absolute top-4 right-4 text-amber-500 text-xl font-black">✓</div>}
+                     {addons[opt.id] && <div className="absolute top-4 right-4 text-amber-500 text-xl font-black">SELECTED</div>}
                   </div>
                 ))}
              </div>
@@ -614,7 +614,7 @@ export default function CalendarPage() {
                 disabled={isSubmitting}
                 className={`w-full ${calculateTotal() <= 0 ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-[#6772e5] hover:bg-indigo-600'} disabled:opacity-60 disabled:cursor-not-allowed py-5 text-[11px] font-black uppercase tracking-[0.4em] flex items-center justify-center gap-3 shadow-2xl transition-all`}
              >
-                {isSubmitting ? '↻ Processing...' : calculateTotal() <= 0 ? '✓ Complete Booking Free' : '💳 Pay Securely with Stripe'}
+                {isSubmitting ? '↻ Processing...' : calculateTotal() <= 0 ? '✓ Complete Booking Free' : 'Pay Securely with Stripe'}
              </button>
              {bookingError && (
                 <div className="mt-6 p-4 border border-red-500/50 bg-red-500/10 text-red-500 text-sm font-bold uppercase tracking-widest">
@@ -627,7 +627,7 @@ export default function CalendarPage() {
         {/* STEP 5: SUCCESS (成功画面) */}
         {bookingStep === 5 && (
           <div className="text-center py-20 animate-fadeIn">
-            <div className="text-6xl mb-8">🗝️</div>
+            <div className="text-6xl mb-8"></div>
             <h2 className="font-cinzel text-6xl mb-6">THE KEYS ARE YOURS</h2>
             <p className="opacity-60 italic mb-12 max-w-md mx-auto leading-loose">A confirmation of your sanctuary has been dispatched to your inbox. We await your arrival on {format(checkIn, 'dd MMM')}.</p>
             <button onClick={() => navigate('/')} className="border border-white/20 px-16 py-5 text-[10px] uppercase tracking-widest hover:bg-white hover:text-black transition-all">Return to Manor Grounds</button>

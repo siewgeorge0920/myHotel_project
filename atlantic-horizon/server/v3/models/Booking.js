@@ -28,6 +28,8 @@ const bookingSchema = new mongoose.Schema({
     default: 'Unpaid' 
   },
   stripe_session_id: { type: String, default: null },
+  assigned_room: { type: String },
+  check_in_time: { type: Date },
   folio_charges: [{ 
     type: mongoose.Schema.Types.ObjectId, 
     ref: 'Order' 

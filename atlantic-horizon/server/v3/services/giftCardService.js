@@ -153,9 +153,11 @@ class GiftCardService {
 
       // 4. Audit Logging ONLY for new inserts
       await Log.create({
-        action: `Sold/Issued Gift Card: ${giftCard.code} (€${amount})`,
-        performedBy: purchaserName || 'System',
-        targetId: giftCard.code
+        action: `GIFT_CARD_ISSUE`,
+        details: `Sold/Issued Gift Card: ${giftCard.code} (€${amount})`,
+        performed_by: purchaserName || 'Direct Issue',
+        target_id: giftCard.code,
+        user_type: 'Staff'
       });
     }
 

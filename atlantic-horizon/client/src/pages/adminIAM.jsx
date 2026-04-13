@@ -11,10 +11,10 @@ const ROLES = ['staff', 'manager', 'admin'];
 const STATUSES = ['Active', 'Suspended'];
 // Permission catalog for optional tool access.
 const PERMISSION_OPTIONS = [
-  { key: 'payment_edit', label: '💳 Process Payments', desc: 'Generate & resend payment links' },
-  { key: 'booking_manage', label: '📋 Manage Bookings', desc: 'Edit, cancel, check-in/out' },
-  { key: 'room_manage', label: '🏨 Manage Rooms', desc: 'Create, edit, delete room inventory' },
-  { key: 'iam_manage', label: '👤 Manage Staff', desc: 'Create and suspend accounts' },
+  { key: 'payment_edit', label: 'Process Payments', desc: 'Generate & resend payment links' },
+  { key: 'booking_manage', label: 'Manage Bookings', desc: 'Edit, cancel, check-in/out' },
+  { key: 'room_manage', label: 'Manage Rooms', desc: 'Create, edit, delete room inventory' },
+  { key: 'iam_manage', label: 'Manage Staff', desc: 'Create and suspend accounts' },
 ];
 
 export default function AdminIAM() {
@@ -56,9 +56,9 @@ export default function AdminIAM() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ [key]: value })
       });
-      flash(`✅ Updated ${key}`);
+      flash(`Updated ${key}`);
     } catch {
-      flash(`❌ Failed to update ${key}`, true);
+      flash(`Failed to update ${key}`, true);
     }
   };
 
@@ -80,45 +80,45 @@ export default function AdminIAM() {
     try {
       const res = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
       if (!res.ok) throw new Error();
-      flash(isEdit ? '✅ Account updated successfully' : '✅ New account registered');
-      setForm(EMPTY);
-      setIsEdit(false);
-      fetchStaff();
-    } catch {
-      flash('❌ Failed to save', true);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Delete confirmation modal state.
-  const [deleteModal, setDeleteModal] = useState({ isOpen: false, id: null, name: null });
-
-  // Open delete confirmation for a selected account.
-  const requestDelete = (id, name) => {
-    setDeleteModal({ isOpen: true, id, name });
-  };
-
-  // Execute delete after confirmation.
-  const confirmDelete = async () => {
-    const { id } = deleteModal;
-    setDeleteModal({ isOpen: false, id: null, name: null });
-    await fetch(`/api/v3/staff/${id}`, { method: 'DELETE' });
-    flash('🗑️ Account removed');
+    flash(isEdit ? 'Account updated successfully' : 'Account registered successfully');
+    setForm(EMPTY);
+    setIsEdit(false);
     fetchStaff();
-  };
+  } catch {
+    flash('Failed to save', true);
+  } finally {
+    setLoading(false);
+  }
+};
 
-  // Toggle Active/Suspended status for a staff account.
-  const toggleStatus = async (staff) => {
-    const newStatus = staff.status === 'Active' ? 'Suspended' : 'Active';
-    await fetch(`/api/v3/staff/${staff._id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ status: newStatus })
-    });
-    flash(`${newStatus === 'Active' ? '✅ Activated' : '🚫 Suspended'}: ${staff.name}`);
-    fetchStaff();
-  };
+// Delete confirmation modal state.
+const [deleteModal, setDeleteModal] = useState({ isOpen: false, id: null, name: null });
+
+// Open delete confirmation for a selected account.
+const requestDelete = (id, name) => {
+  setDeleteModal({ isOpen: true, id, name });
+};
+
+// Execute delete after confirmation.
+const confirmDelete = async () => {
+  const { id } = deleteModal;
+  setDeleteModal({ isOpen: false, id: null, name: null });
+  await fetch(`/api/v3/staff/${id}`, { method: 'DELETE' });
+  flash('Account removed');
+  fetchStaff();
+};
+
+// Toggle Active/Suspended status for a staff account.
+const toggleStatus = async (staff) => {
+  const newStatus = staff.status === 'Active' ? 'Suspended' : 'Active';
+  await fetch(`/api/v3/staff/${staff._id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ status: newStatus })
+  });
+  flash(`${newStatus === 'Active' ? 'Activated' : 'Suspended'}: ${staff.name}`);
+  fetchStaff();
+};
 
   // Role-to-color mapping for table badges.
   const ROLE_COLOR = { admin: 'text-red-400', manager: 'text-amber-400', staff: 'text-blue-300' };
@@ -142,7 +142,7 @@ export default function AdminIAM() {
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-10">
           {/* Account create/edit form */}
           <div className="p-8 border" style={{ backgroundColor: COLORS.bgSurface, borderColor: isEdit ? COLORS.amber : COLORS.border }}>
-            <h2 className="text-lg font-serif italic mb-6">{isEdit ? '✏️ Edit Account' : '+ Register New Account'}</h2>
+            <h2 className="text-lg font-serif italic mb-6">{isEdit ? 'Edit Account' : '+ Register New Account'}</h2>
             <form onSubmit={handleSubmit} className="space-y-5">
               <div>
                 <label className="block text-[10px] uppercase tracking-widest text-amber-500 font-bold mb-1">Full Name (Username)</label>
@@ -267,7 +267,7 @@ export default function AdminIAM() {
 
         {/* Global hotel defaults panel */}
         <div className="mt-10 p-8 border" style={{ backgroundColor: COLORS.bgSurface, borderColor: COLORS.amber }}>
-          <h2 className="text-lg font-serif italic mb-6">⚙️ Global Hotel Settings</h2>
+          <h2 className="text-lg font-serif italic mb-6">Global Hotel Settings</h2>
           <div className="flex flex-col md:flex-row gap-10">
             <div className="flex-1">
               <label className="block text-[10px] uppercase tracking-widest text-amber-500 font-bold mb-1">Standard Check-In Time</label>

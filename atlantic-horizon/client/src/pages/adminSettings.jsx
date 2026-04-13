@@ -44,7 +44,7 @@ export default function AdminSettings() {
     setMessage({ text: '', type: '' });
     try {
       await axios.post('/api/v3/settings/email', emailConfig);
-      setMessage({ text: 'Configuration saved successfully! ✅', type: 'success' });
+      setMessage({ text: 'Configuration saved successfully!', type: 'success' });
       // Clear password field to masked state if user wants, but masked state is handled by backend on next load
     } catch (err) {
       setMessage({ text: 'Failed to save settings: ' + (err.response?.data?.error || err.message), type: 'error' });

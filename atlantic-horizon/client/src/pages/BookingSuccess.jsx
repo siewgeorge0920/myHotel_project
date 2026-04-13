@@ -19,7 +19,7 @@ export default function BookingSuccess() {
         {/* Icon */}
         <div className="flex justify-center mb-8">
           <div className="w-24 h-24 rounded-full border border-amber-500/30 flex items-center justify-center bg-amber-500/10">
-            <span className="text-5xl text-amber-500">🗝️</span>
+            <span className="text-5xl text-amber-500"></span>
           </div>
         </div>
 
