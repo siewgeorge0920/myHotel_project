@@ -1,8 +1,8 @@
-# myHotel_project
+myHotel_project
 
 Cleaned project structure for the Atlantic Horizon hotel app.
 
-## Current layout
+Current layout
 
 - `atlantic-horizon/` contains the app code
 - `atlantic-horizon/client/` contains the Vite React frontend
@@ -10,13 +10,13 @@ Cleaned project structure for the Atlantic Horizon hotel app.
 - `RoomTypes/` contains room reference images
 - `AddPagesToTheProject.txt` contains page-integration notes for contributors
 
-## Notes
+Notes
 
 - Redundant wrapper folders were removed so the repo root now opens directly to the real project files.
 - The frontend now lives at `atlantic-horizon/client` instead of `atlantic-horizon/client/client`.
 - The backend now lives at `atlantic-horizon/server` instead of `atlantic-horizon/server/server`.
 
-## Run the project
+Run the project
 
 Frontend:
 
