@@ -565,20 +565,46 @@ export default function CalendarPage() {
           <div className="max-w-md mx-auto animate-pageTransition text-center">
              <h2 className="font-cinzel text-2xl mb-12 tracking-widest">FINAL REVIEW</h2>
              
-             <div className="bg-[#242820] p-10 mb-8 text-left space-y-4 border-t-4 border-amber-600">
-                <div className="flex justify-between border-b border-white/5 pb-4">
-                   <span className="text-[10px] uppercase opacity-40">Stay</span>
-                   <span className="text-xs font-bold uppercase">{selectedItem.name} x {nights}</span>
+             <div className="bg-[#242820] p-10 mb-8 text-left border-t-4 border-amber-600 space-y-6 shadow-2xl">
+                {/* Handwriting Format Layout */}
+                <div className="flex justify-between border-b border-white/5 pb-3">
+                   <span className="text-[10px] uppercase opacity-40 font-bold tracking-widest">Date</span>
+                   <span className="text-xs font-bold">{format(checkIn, 'dd/MM/yyyy')} — {format(checkOut, 'dd/MM/yyyy')}</span>
                 </div>
-                <div className="flex justify-between border-b border-white/5 pb-4">
-                   <span className="text-[10px] uppercase opacity-40">Add-ons</span>
+
+                <div className="flex justify-between border-b border-white/5 pb-3">
+                   <span className="text-[10px] uppercase opacity-40 font-bold tracking-widest">Travelers</span>
+                   <span className="text-xs font-bold uppercase">{guestDetails.adults + guestDetails.seniors + guestDetails.infants} totals</span>
+                </div>
+
+                <div className="flex justify-between border-b border-white/5 pb-3">
+                   <span className="text-[10px] uppercase opacity-40 font-bold tracking-widest">stay</span>
+                   <span className="text-xs font-bold uppercase">{category === 'lodge' ? 'private lodge' : category === 'residence' ? 'private residence' : 'ultimate exclusivity'}</span>
+                </div>
+
+                <div className="flex justify-between border-b border-white/5 pb-3">
+                   <span className="text-[10px] uppercase opacity-40 font-bold tracking-widest">Add-ons</span>
                    <span className="text-xs font-bold uppercase">
                      {[addons.breakfast && 'Breakfast', addons.spa && 'Spa'].filter(Boolean).join(', ') || 'None'}
                    </span>
                 </div>
+
+                <div className="flex justify-between border-b border-white/5 pb-3">
+                   <span className="text-[10px] uppercase opacity-40 font-bold tracking-widest">Guest</span>
+                   <span className="text-xs font-bold uppercase">{guestInfo.firstName} {guestInfo.lastName}</span>
+                </div>
+
+                <div className="flex justify-between border-b border-white/5 pb-3">
+                   <span className="text-[10px] uppercase opacity-40 font-bold tracking-widest">Email</span>
+                   <span className="text-xs font-bold lowercase">{guestInfo.email}</span>
+                </div>
+
                 <div className="flex justify-between items-end pt-4">
-                   <span className="text-[10px] uppercase font-black text-amber-500 tracking-widest">Total Amount</span>
-                   <span className="text-3xl font-georgia italic">€{calculateTotal()}</span>
+                   <span className="text-[10px] uppercase font-black text-amber-500 tracking-widest">Total amount</span>
+                   <div className="text-right">
+                      <span className="text-3xl font-georgia italic text-white">€{calculateTotal()}</span>
+                      <span className="text-[10px] text-white/40 ml-2 font-lato not-italic tracking-normal">/ {nights} {nights === 1 ? 'night' : 'nights'}</span>
+                   </div>
                 </div>
              </div>
 
