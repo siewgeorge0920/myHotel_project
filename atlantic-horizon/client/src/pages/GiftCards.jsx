@@ -5,7 +5,7 @@ import { Gift, Mail, User, CreditCard, ChevronRight } from 'lucide-react';
 export default function GiftCards() {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-    amount: 50,
+    amount: 500,
     purchaserName: '',
     purchaserEmail: '',
     recipientName: '',
@@ -13,7 +13,7 @@ export default function GiftCards() {
     notes: ''
   });
 
-  const amounts = [50, 100, 250, 500];
+  const amounts = [500, 1000, 2500, 5000];
 
   const handleSubmit = async (e) => {
     e.preventDefault();
