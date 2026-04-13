@@ -145,6 +145,14 @@ export default function BookingManagement() {
     });
   };
 
+  const calculateNights = (checkIn, checkOut) => {
+    const start = new Date(checkIn);
+    const end = new Date(checkOut);
+    const diffTime = Math.abs(end - start);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays || 1;
+  };
+
   const filteredBookings = getFilteredBookings();
   return (
     <div className="flex min-h-screen text-white" style={{ backgroundColor: COLORS.bgDeep }}>
@@ -200,82 +208,44 @@ export default function BookingManagement() {
                   <th className="p-6 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="text-sm divide-y divide-white/5">
-                {filteredBookings.map(b => (
-                  <tr key={b._id} className="hover:bg-white/[0.02] transition-colors group">
+              <tbody className="text-sm">
+              {bookings.map(b => {
+                const nights = b.nights || Math.ceil(Math.abs(new Date(b.check_out) - new Date(b.check_in)) / (1000 * 60 * 60 * 24));
+                return (
+                  <tr key={b._id} className="border-t border-white/5 hover:bg-white/[0.01] transition-colors">
                     <td className="p-6">
-                      <div className="flex flex-col">
-                        <span 
-                          onClick={() => (canEdit && b.status !== 'CheckedOut') && openForm(b)}
-                          className={`font-bold text-white/90 ${canEdit && b.status !== 'CheckedOut' ? 'cursor-pointer hover:text-amber-500 hover:underline decoration-amber-500/30 underline-offset-4' : ''}`}
-                        >
-                          {b.guest_name}
+                      <p className="font-bold text-white/90">{b.guest_name}</p>
+                      <p className="text-[10px] text-white/20 font-mono tracking-tighter">{b.booking_id}</p>
+                    </td>
+                    <td className="p-6 text-white/60 font-light">{b.room_type}</td>
+                    <td className="p-6">
+                      <p className="text-amber-500 font-mono font-bold">€{b.total_amount}</p>
+                      <div className="flex items-center gap-2 mt-1">
+                        <span className="text-[8px] px-2 py-0.5 rounded bg-white/5 text-white/40 border border-white/5 uppercase font-black">
+                          {nights} {nights === 1 ? 'Night' : 'Nights'}
                         </span>
-                        
-                        {activeFilter === 'upcoming' ? (
-                          <div className="flex flex-col mt-2 gap-1">
-                             <p className="text-[10px] text-white/40 flex items-center gap-1">
-                               <span>📧</span> {b.guest_email}
-                             </p>
-                             <p className="text-[10px] text-white/40 flex items-center gap-1">
-                               <span>📱</span> {b.guest_phone || 'No phone record'}
-                             </p>
-                          </div>
-                        ) : (
-                          <p className="text-[10px] text-white/40 font-mono mt-1">{b.booking_id || b._id}</p>
-                        )}
+                        <span className="text-[9px] uppercase text-white/20 tracking-widest font-bold">{b.payment_status}</span>
                       </div>
                     </td>
                     <td className="p-6">
-                      <p className="text-white/60">{b.room_type}</p>
-                      {activeFilter === 'upcoming' && (
-                        <span className={`mt-2 inline-block px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-widest border ${
-                          b.payment_status === 'Paid' ? 'border-green-500/20 text-green-500/60 bg-green-500/5' : 'border-red-500/20 text-red-500/60 bg-red-500/5'
-                        }`}>
-                          {b.payment_status === 'Paid' ? 'Full Paid' : 'Not Paid'}
-                        </span>
-                      )}
-                    </td>
-                    <td className="p-6 text-xs text-white/50">
-                       <p>In: {new Date(b.check_in).toLocaleDateString()}</p>
-                       <p>Out: {new Date(b.check_out).toLocaleDateString()}</p>
-                    </td>
-                    <td className="p-6">
-                      <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border ${
-                        b.status === 'CheckedIn' ? 'bg-green-500/10 text-green-400 border-green-500/30' : 
-                        b.status === 'CheckedOut' ? 'bg-amber-500/10 text-amber-500 border-amber-500/30' :
-                        b.status === 'Cancelled' ? 'bg-red-500/10 text-red-400 border-red-500/30' :
-                        'bg-white/5 text-white/60 border-white/10'
-                      }`}>
+                      <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest ${b.status === 'CheckedIn' ? 'bg-green-500/10 text-green-500 border border-green-500/20' : 'bg-white/5 text-white/30 border border-white/5'}`}>
                         {b.status}
                       </span>
                     </td>
-                    <td className="p-6 flex items-center justify-end gap-3 opacity-80 group-hover:opacity-100 transition-opacity">
-                      
+                    <td className="p-6">
                       {b.status === 'Confirmed' && (
-                        <button onClick={() => handleReceptionCheckIn(b._id)} className="bg-green-600/80 hover:bg-green-500 text-white px-3 py-2 rounded text-[9px] font-black uppercase tracking-widest transition-all hover:scale-105 active:scale-95 shadow-lg shadow-green-500/10">
-                          Check-In
+                        <button 
+                          onClick={() => handleReceptionCheckIn(b.booking_id)}
+                          className="bg-white text-black px-5 py-2.5 rounded-full text-[9px] font-black uppercase tracking-widest hover:bg-amber-500 hover:text-white transition-all shadow-xl"
+                        >
+                          Reception Check-in
                         </button>
-                      )}
-                      
-                      {b.status === 'CheckedIn' && (
-                        <button onClick={() => handleReceptionCheckOut(b._id)} className="bg-amber-600/80 hover:bg-amber-500 text-white px-3 py-2 rounded text-[9px] font-black uppercase tracking-widest transition-all hover:scale-105 active:scale-95 shadow-lg shadow-amber-500/10">
-                          Check-Out
-                        </button>
-                      )}
-
-                      {canDelete && activeFilter !== 'history' && (
-                        <button onClick={() => handleDelete(b._id)} className="text-red-500/40 hover:text-red-400 text-[10px] font-black uppercase tracking-widest px-2">Delete</button>
                       )}
                     </td>
                   </tr>
-                ))}
-                {filteredBookings.length === 0 && (
-                  <tr>
-                    <td colSpan="5" className="p-12 text-center text-white/30 italic">No bookings found in this roster.</td>
-                  </tr>
-                )}
-              </tbody>
+                );
+              })}
+            </tbody>
             </table>
           </div>
         )}

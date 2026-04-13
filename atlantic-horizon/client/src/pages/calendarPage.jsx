@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { format, differenceInDays } from 'date-fns';
-import DatePicker from 'react-datepicker';
+import DatePickerModule from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import { COLORS } from '../colors';
+
+const DatePicker = DatePickerModule.default || DatePickerModule;
 
 export default function CalendarPage() {
   const navigate = useNavigate();
@@ -447,7 +449,10 @@ export default function CalendarPage() {
                        <div className="flex justify-between items-end pt-8 border-t border-white/5 mt-8">
                           <div>
                              <p className="text-[10px] text-white/30 uppercase tracking-widest mb-1">Total Stay Price</p>
-                             <p className="text-4xl font-georgia italic text-amber-500">€{item.price * nights}</p>
+                             <p className="text-4xl font-georgia italic text-amber-500">
+                               €{item.price * nights}
+                               <span className="text-lg text-white/40 ml-3 font-lato not-italic tracking-normal">/ {nights} {nights === 1 ? 'Night' : 'Nights'}</span>
+                             </p>
                           </div>
                           <button 
                             disabled={isSoldOut || isChecking}

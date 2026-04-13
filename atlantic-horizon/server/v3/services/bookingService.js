@@ -6,6 +6,16 @@ import inventoryService from './inventoryService.js';
 import crmService from './crmService.js';
 
 class BookingService {
+
+calculateNights(checkIn, checkOut) {
+    const start = new Date(checkIn);
+    const end = new Date(checkOut);
+    const diffTime = Math.abs(end - start);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays || 1;
+  }
+
+
   async createBooking(data) {
     const email = data.guest_email || data.guestEmail;
     let guest = await Client.findOne({ email });
@@ -19,8 +29,11 @@ class BookingService {
       await guest.save();
     }
 
-    const bookingId = `ATL-${Math.floor(100000 + Math.random() * 900000)}`;
+    
 
+    const bookingId = `ATL-${Math.floor(100000 + Math.random() * 900000)}`;
+    const nights = this.calculateNights(data.check_in || data.checkIn, data.check_out || data.checkOut);
+    
     const booking = new Booking({
       booking_id: bookingId,
       client_id: guest.client_id,
@@ -31,7 +44,8 @@ class BookingService {
       check_out: new Date(data.check_out || data.checkOut),
       total_amount: data.total_amount || data.price,
       payment_status: data.paymentStatus || 'Paid',
-      status: data.status || 'Confirmed'
+      status: data.status || 'Confirmed',
+      nights: nights
     });
 
     await booking.save();

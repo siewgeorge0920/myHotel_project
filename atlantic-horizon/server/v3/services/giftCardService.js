@@ -13,6 +13,12 @@ class GiftCardService {
     const stripe = await getStripe();
     const baseUrl = await configHelper.getSetting('base_url', 'http://localhost:5173');
 
+    // 🛡️ Ensure all metadata values are strings! Stripe requirement.
+    const metadataStringified = {};
+    Object.keys(data).forEach(key => {
+      metadataStringified[key] = (data[key] !== undefined && data[key] !== null) ? data[key].toString() : '';
+    });
+
     return await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       customer_email: purchaserEmail,
@@ -23,15 +29,14 @@ class GiftCardService {
             name: `Atlantic Horizon - €${amount} Gift Voucher`,
             description: `Luxury gift for ${recipientName}`,
           },
-          unit_amount: Math.round(amount * 100),
+          unit_amount: Math.round(parseFloat(amount) * 100),
         },
         quantity: 1,
       }],
       mode: 'payment',
       metadata: { 
         type: 'gift_card', 
-        amount: amount.toString(),
-        ...data 
+        ...metadataStringified
       },
       success_url: `${baseUrl}/gift-card-success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${baseUrl}/gift-cards?status=cancel`,
@@ -43,7 +48,7 @@ class GiftCardService {
    */
   async verifyAndActivate(sessionId) {
     // 1. Idempotency Check
-    const existing = await GiftCard.findOne({ stripeSessionId: sessionId });
+    const existing = await GiftCard.findOne({ stripe_session_id: sessionId });
     if (existing) return { success: true, code: existing.code, alreadyProcessed: true };
 
     // 2. Retrieve Stripe Session
@@ -54,9 +59,35 @@ class GiftCardService {
       throw new Error("Payment verification failed: Session not paid.");
     }
 
-    const { amount, purchaserName, purchaserEmail, recipientName, recipientEmail, notes } = session.metadata;
+    // 🛡️ Case-insensitive check for metadata fields if needed, but we rely on our createSession keys
+    const m = session.metadata;
+    const amount = m.amount || m.total_amount;
+    const purchaserName = m.purchaser_name || m.purchaserName;
+    const purchaserEmail = m.purchaser_email || m.purchaserEmail;
+    const recipientName = m.recipient_name || m.recipientName;
+    const recipientEmail = m.recipient_email || m.recipientEmail;
+    const notes = m.notes || '';
 
-    // 3. Generate Unique Code (ATH-XXXX-XXXX)
+    if (!amount) throw new Error("Crucial data missing: 'amount' not found in Stripe session metadata.");
+
+    return await this.instantActivate({
+      amount,
+      purchaserName,
+      purchaserEmail,
+      recipientName,
+      recipientEmail,
+      notes,
+      stripeSessionId: sessionId
+    });
+  }
+
+  /**
+   * ⚡ Instant Activation (Bypass Stripe)
+   */
+  async instantActivate(data) {
+    const { amount, purchaserName, purchaserEmail, recipientName, recipientEmail, notes, stripeSessionId } = data;
+
+    // 1. Generate Unique Code (ATH-XXXX-XXXX)
     const generateCode = () => {
       const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
       let res = 'ATH-';
@@ -72,48 +103,38 @@ class GiftCardService {
       code = generateCode();
     }
 
-    // 4. Create Record
+    // 2. Create Record
     const giftCard = new GiftCard({
       code,
-      initialAmount: parseFloat(amount),
+      initial_amount: parseFloat(amount),
       balance: parseFloat(amount),
-      purchaserName,
-      purchaserEmail,
-      recipientName,
-      recipientEmail,
-      notes: notes || '',
-      stripeSessionId: sessionId,
+      purchaser_name: purchaserName || 'Direct Issue',
+      purchaser_email: purchaserEmail || 'admin@manor.com',
+      recipient_name: recipientName,
+      recipient_email: recipientEmail,
+      notes: notes || 'Manual/Instant issuance',
+      stripe_session_id: stripeSessionId || `INST-${Date.now()}`,
       status: 'Active'
     });
 
     await giftCard.save();
 
-    // 5. 📧 Dispatch Notifications (Zoho)
+    // 3. 📧 Dispatch Notifications
     try {
       await emailService.sendGiftCardEmail(recipientEmail, {
         code,
         amount: parseFloat(amount),
         recipientName,
-        purchaserName
-      });
-      
-      // Also notify purchaser
-      await emailService.sendGiftCardEmail(purchaserEmail, {
-        code,
-        amount: parseFloat(amount),
-        recipientName,
-        purchaserName,
-        isPurchaser: true
+        purchaserName: purchaserName || 'The Manor'
       });
     } catch (emailErr) {
-      console.error("V3 Email Notification Failed:", emailErr.message);
-      // Non-blocking error for the API response
+       console.error("V3 Instant GC Email Failed:", emailErr.message);
     }
 
-    // 6. Audit Logging
+    // 4. Audit Logging
     await Log.create({
-      action: `Sold Gift Card: ${code} (€${amount})`,
-      performedBy: 'System',
+      action: `Sold/Issued Gift Card: ${code} (€${amount})`,
+      performedBy: purchaserName || 'System',
       targetId: code
     });
 

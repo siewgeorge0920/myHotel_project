@@ -54,6 +54,7 @@ router.post('/room-service/checkout', orderController.createFbCheckout);
 router.post('/gift-cards/checkout', giftCardController.startPurchase);
 router.post('/gift-cards/verify-purchase', giftCardController.verifyPurchase);
 router.post('/gift-cards/validate', giftCardController.validate);
+router.post('/gift-cards/instant-purchase', giftCardController.instantPurchase);
 
 /**
  * 🏨 Physical Room & IoT Inventory Routes

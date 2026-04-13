@@ -1,4 +1,5 @@
 import giftCardService from '../services/giftCardService.js';
+import { sendSuccess } from '../utils/responseHandler.js';
 
 class GiftCardController {
   /**
@@ -7,7 +8,7 @@ class GiftCardController {
   async startPurchase(req, res) {
     try {
       const session = await giftCardService.createSession(req.body);
-      res.status(200).json({ url: session.url });
+      sendSuccess(res, { url: session.url }, "Voucher session initialized.");
     } catch (error) {
       console.error("V3 GC Purchase Error:", error.message);
       res.status(500).json({ error: error.message });
@@ -23,7 +24,7 @@ class GiftCardController {
 
     try {
       const result = await giftCardService.verifyAndActivate(sessionId);
-      res.status(200).json(result);
+      sendSuccess(res, result, "Voucher identity activated and confirmed.");
     } catch (error) {
       console.error("V3 GC Verification Error:", error.message);
       res.status(500).json({ error: error.message });
@@ -44,6 +45,19 @@ class GiftCardController {
       });
     } catch (error) {
       res.status(400).json({ error: error.message });
+    }
+  }
+
+  /**
+   * ⚡ Instant/Manual Purchase (Bypass Stripe)
+   */
+  async instantPurchase(req, res) {
+    try {
+      const result = await giftCardService.instantActivate(req.body);
+      sendSuccess(res, result, "Voucher issued successfully (Direct).");
+    } catch (error) {
+      console.error("V3 GC Instant Purchase Error:", error.message);
+      res.status(500).json({ error: error.message });
     }
   }
 }
