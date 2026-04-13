@@ -53,8 +53,8 @@ export default function AdminSettings() {
     }
   };
 
-  if (!isManagerMode || user?.role !== 'admin') {
-     return <div className="p-20 text-center text-red-500 font-black">ACCESS DENIED. ADMIN MODE REQUIRED.</div>;
+  if (user?.role !== 'admin' && user?.role !== 'manager') {
+     return <div className="p-20 text-center text-red-500 font-black uppercase tracking-widest mt-12">Access Denied. Admin or Manager role required.</div>;
   }
 
   return (
