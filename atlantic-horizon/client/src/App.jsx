@@ -79,7 +79,7 @@ const ScrollToTop = () => {
 // Layout Wrapper (Includes transition effects)
 const LayoutWrapper = ({ children, onOpenCookies }) => {
   const location = useLocation();
-  const navigate = useNavigate(); // 🌟 Added navigate hook
+  const navigate = useNavigate(); // Added navigate hook
   const [isTransitioning, setIsTransitioning] = React.useState(false);
   
   //  NEW MODAL STATE 
@@ -136,7 +136,7 @@ const LayoutWrapper = ({ children, onOpenCookies }) => {
         onOpenParking={() => setActiveModal('parking')}
         onOpenPrivacy={() => setActiveModal('privacy')}
         onOpenCookies={onOpenCookies}
-        onOpenGallery={handleGalleryClick} // 🌟 Passed the gallery function here
+        onOpenGallery={handleGalleryClick} // Passed the gallery function here
       />
 
       {/* RENDER ACTIVE MODAL  */}

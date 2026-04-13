@@ -6,7 +6,7 @@ const roomSchema = new mongoose.Schema({
     type: String,
   },
 
-  // 🏢 INTERNAL STAFF TRACKING ONLY
+  // INTERNAL STAFF TRACKING ONLY
   unitNumbers: [{
     type: String 
   }],

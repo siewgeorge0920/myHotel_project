@@ -5,11 +5,11 @@ import { useNavigate } from 'react-router-dom';
 import "react-datepicker/dist/react-datepicker.css";
 import './datepicker-custom.css';
 
-// 🌟 VITE INTEROP: Handle cases where react-datepicker is an object with a .default property
+// VITE INTEROP: Handle cases where react-datepicker is an object with a .default property
 const DatePicker = DatePickerModule.default || DatePickerModule;
 
 /**
- * 🌟 CounterRow: Manages independent guest category increments
+ * CounterRow: Manages independent guest category increments
  */
 function CounterRow({ label, subLabel, type, value, onUpdate }) {
   return (
@@ -36,7 +36,7 @@ function CounterRow({ label, subLabel, type, value, onUpdate }) {
 }
 
 /**
- * 🌟 CustomDateInput: The visual trigger for the DatePicker
+ * CustomDateInput: The visual trigger for the DatePicker
  * Passes ref and onClick from DatePicker to our custom layout
  */
 const CustomDateInput = forwardRef(({ value, onClick, startDate, endDate }, ref) => (
@@ -106,7 +106,7 @@ export default function QuickBook() {
     });
   };
 
-  // 🌟 Type Guard for Rendering
+  // Type Guard for Rendering
   if (typeof DatePicker !== 'function' && typeof DatePicker !== 'object') {
      return <div className="text-white text-xs text-center p-4">Component initialization error. Check console.</div>;
   }

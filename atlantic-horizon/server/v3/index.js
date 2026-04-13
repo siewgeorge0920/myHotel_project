@@ -9,7 +9,7 @@ import { AppError } from './utils/responseHandler.js';
 dotenv.config();
 const app = express();
 
-// 🚀 Core Initialization
+// Core Initialization
 connectDB();
 
 const allowedOrigins = [
@@ -32,16 +32,16 @@ app.use(cors({
 app.use(cookieParser());
 app.use(express.json());
 
-// 🛰️ Strategic API Mounting
+// Strategic API Mounting
 app.use('/api/v3', v3Router);
 
-// 🔍 Handle Undefined Routes (Anti-Ghosting)
+// Handle Undefined Routes (Anti-Ghosting)
 app.use((req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this manor's server!`, 404));
 });
 
 /**
- * 🛡️ Visionary Global Error Handler
+ * Visionary Global Error Handler
  * Replaces the basic one in the old system
  */
 app.use((err, req, res, next) => {

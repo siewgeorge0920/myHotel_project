@@ -47,7 +47,7 @@ export default function CalendarPage() {
     setBookingStep(step);
   };
 
-  // --- 模拟数据 (加入 Facility 和 Package) ---
+  // --- Mock Data (Added Facility and Package) ---
   const products = {
     lodge: [
       { 
@@ -163,7 +163,7 @@ export default function CalendarPage() {
         }
       });
     }
-  }, [bookingStep, checkIn.getTime(), checkOut.getTime()]); // 🌟 Fix infinite loop by tracking timestamp instead of object ref
+  }, [bookingStep, checkIn.getTime(), checkOut.getTime()]); // Fix infinite loop by tracking timestamp instead of object ref
 
   
   const [isSubmitting, setIsSubmitting] = useState(false);

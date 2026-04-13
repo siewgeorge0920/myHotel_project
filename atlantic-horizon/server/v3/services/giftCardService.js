@@ -6,14 +6,14 @@ import emailService from './emailService.js';
 
 class GiftCardService {
   /**
-   * 🎫 Initialize Stripe session for Gift Card purchase
+   * Initialize Stripe session for Gift Card purchase
    */
   async createSession(data) {
     const { amount, purchaserEmail, recipientName } = data;
     const stripe = await getStripe();
     const baseUrl = process.env.CLIENT_URL || 'https://theatlantichorizion.com';
 
-    // 🛡️ Ensure all metadata values are strings! Stripe requirement.
+    // Ensure all metadata values are strings! Stripe requirement.
     const metadataStringified = {};
     Object.keys(data).forEach(key => {
       metadataStringified[key] = (data[key] !== undefined && data[key] !== null) ? data[key].toString() : '';
@@ -44,7 +44,7 @@ class GiftCardService {
   }
 
   /**
-   * 🛡️ Verify Stripe Purchase & Activate Code
+   * Verify Stripe Purchase & Activate Code
    */
   async verifyAndActivate(sessionId) {
     // 1. Idempotency Check
@@ -59,7 +59,7 @@ class GiftCardService {
       throw new Error("Payment verification failed: Session not paid.");
     }
 
-    // 🛡️ Case-insensitive check for metadata fields if needed, but we rely on our createSession keys
+    // Case-insensitive check for metadata fields if needed, but we rely on our createSession keys
     const m = session.metadata;
     const amount = m.amount || m.total_amount;
     const purchaserName = m.purchaser_name || m.purchaserName;
@@ -93,7 +93,7 @@ class GiftCardService {
   }
 
   /**
-   * ⚡ Instant Activation (Bypass Stripe)
+   * Instant Activation (Bypass Stripe)
    */
   async instantActivate(data) {
     const { amount, purchaserName, purchaserEmail, recipientName, recipientEmail, notes, stripeSessionId } = data;
@@ -139,7 +139,7 @@ class GiftCardService {
     const isNewInsert = giftCard.code === newCode;
 
     if (isNewInsert) {
-      // 3. 📧 Dispatch Notifications ONLY for new inserts
+      // 3. Dispatch Notifications ONLY for new inserts
       try {
         await emailService.sendGiftCardEmail(recipientEmail, {
           code: giftCard.code,
@@ -169,7 +169,7 @@ class GiftCardService {
   }
 
   /**
-   * 🔍 Validate Gift Card for usage
+   * Validate Gift Card for usage
    */
   async validate(code) {
      const card = await GiftCard.findOne({ code: code.toUpperCase(), status: 'Active' });
@@ -179,14 +179,14 @@ class GiftCardService {
   }
 
   /**
-   * 📜 Get All Gift Cards (Admin View)
+   * Get All Gift Cards (Admin View)
    */
   async getAll() {
     return await GiftCard.find().sort({ createdAt: -1 });
   }
 
   /**
-   * 🕰️ Get Detailed History for a Code
+   * Get Detailed History for a Code
    */
   async getHistory(code) {
     const card = await GiftCard.findOne({ code: code.toUpperCase() });

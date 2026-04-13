@@ -180,7 +180,7 @@ function HistoryModal({ code, onClose }) {
              <p className="text-white/20 text-xs uppercase tracking-widest animate-pulse">Syncing with database...</p>
           ) : (
              <div className="space-y-10">
-                {/*  Payment Status */}
+                {/* 💳 Payment Status */}
                 <div className="p-6 bg-white/[0.02] border border-white/5 rounded-2xl">
                    <div className="flex justify-between items-center mb-1">
                       <span className="text-[10px] text-white/30 uppercase tracking-widest font-black">Stripe Status</span>

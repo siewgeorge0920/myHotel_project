@@ -228,7 +228,7 @@ export default function PhysicalRoomManager() {
           </div>
 
           <div className="lg:col-span-2">
-             {/* 🔍 Department Filter Bar (Minimalist) */}
+             {/* Department Filter Bar (Minimalist) */}
              <div className="mb-8 flex gap-8 border-b border-white/5 pb-2 overflow-x-auto scrollbar-hide">
                {DEPARTMENTS.map(dept => (
                  <button 
