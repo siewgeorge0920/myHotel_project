@@ -49,27 +49,7 @@ export default function StaffDashboard() {
             btnColor="bg-blue-600 hover:bg-blue-500"
           />
 
-          {/* Action 2: Check-In & Arrivals */}
-          <ActionCard 
-            title="Reception Check-In" 
-            icon=""
-            desc="Process arriving guests. Assign physical rooms or generate IoT Keys."
-            primaryBtn="Go to Check-In"
-            onPrimaryClick={() => navigate('/bookings')} // Both point to booking management typically, or a specific check-in view if made
-            bgGradient="from-green-900/20 to-transparent border-green-500/20 hover:border-green-500/50"
-            btnColor="bg-green-600 hover:bg-green-500"
-          />
 
-          {/* Action 3: Check-Out & Departures */}
-          <ActionCard 
-            title="Folio & Check-Out" 
-            icon=""
-            desc="Settle guest folios, process payments, and complete checkout procedures."
-            primaryBtn="Process Check-Out"
-            onPrimaryClick={() => navigate('/bookings')}
-            bgGradient="from-amber-900/20 to-transparent border-amber-500/20 hover:border-amber-500/50"
-            btnColor="bg-amber-600 hover:bg-amber-500"
-          />
 
           {/* Action 4: Room Service */}
           <ActionCard 

@@ -126,7 +126,7 @@ export default function PrivateChauffer() {
         </div>
       </section>
 
-      {/* ✨ FINAL TOUCH - LOBBY DEPARTURE */}
+      {/* FINAL TOUCH - LOBBY DEPARTURE */}
       <section className="relative aspect-video min-h-[400px] md:max-h-[80vh] w-full flex items-center justify-center overflow-hidden border-t border-white/5">
         <div className="absolute inset-0 z-0 opacity-40 mix-blend-luminosity">
           <img src="/images/Lincoln/Chauffeur/greetings.jpg" className="w-full h-full object-cover" alt="Hotel Lobby Departure" />

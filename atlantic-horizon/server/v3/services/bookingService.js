@@ -59,7 +59,7 @@ calculateNights(checkIn, checkOut) {
       gift_card_used: data.giftCardCode || null
     });
 
-    // 🎫 Handle Gift Card Redemption
+    // Handle Gift Card Redemption
     if (data.giftCardCode) {
       const GiftCard = (await import('../models/GiftCard.js')).default;
       const card = await GiftCard.findOne({ code: data.giftCardCode.toUpperCase(), status: 'Active' });

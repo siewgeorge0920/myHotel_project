@@ -97,7 +97,7 @@ export default function RoomPackage() {
           </div>
         )}
 
-        {/* 🌟 LUXURY PACKAGE CREATOR TOGGLE */}
+        {/* LUXURY PACKAGE CREATOR TOGGLE */}
         <div className="mb-12">
           <button 
             onClick={() => {
@@ -132,11 +132,11 @@ export default function RoomPackage() {
           )}
         </div>
 
-        {/* 🌟 LUXURY PACKAGE INVENTORY LIST */}
+        {/* LUXURY PACKAGE INVENTORY LIST */}
         <div>
           <h2 className="text-2xl font-serif text-amber-500 mb-6">Current Inventory</h2>
           
-          {/* 🔍 Department Filter Bar (Minimalist) */}
+          {/* Department Filter Bar (Minimalist) */}
           <div className="mb-8 flex gap-8 border-b border-white/5 pb-2 overflow-x-auto scrollbar-hide">
             {DEPARTMENTS.map(dept => (
               <button 
@@ -165,7 +165,7 @@ export default function RoomPackage() {
                 .map(room => (
                   <div key={room._id} className="relative border p-6 flex flex-col md:flex-row gap-6 hover:border-amber-500/50 transition-colors shadow-sm" style={{ backgroundColor: COLORS.bgSurface, borderColor: COLORS.border }}>
                     
-                    {/* 👑 Vertical Department Strip */}
+                    {/* Vertical Department Strip */}
                     <div className="absolute top-0 bottom-0 left-0 w-1 bg-amber-600"></div>
 
                     <div className="flex-1">

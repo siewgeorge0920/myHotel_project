@@ -5,7 +5,7 @@ import dotenv from 'dotenv';
 import session from 'express-session'; 
 import cookieParser from 'cookie-parser';
 
-// 🌟 引入 Models
+// Import Models
 import Room from './models/room.js';
 import Staff from './models/staff.js';
 import Booking from './models/booking.js';
@@ -47,33 +47,33 @@ export const getStripe = async () => {
   return new Stripe(secret);
 };
 
-// 🚀 MongoDB
+// MongoDB
 mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log('Fuiyoh! 🚀 MongoDB Atlas 连接成功!'))
-  .catch((error) => console.log('Alamak, Database 连线失败 ❌:', error.message));
+  .then(() => console.log('Fuiyoh! MongoDB Atlas Connected!'))
+  .catch((error) => console.log('Alamak, Database Connection Failed:', error.message));
 
 // ==========================================
 // AUTH
 // ==========================================
 // ==========================================
-// AUTH — Login with Session & Cookies
+// AUTH - Login with Session & Cookies
 // ==========================================
 app.post('/api/login', async (req, res) => {
   const { username, password } = req.body;
 
-  // 🛡️ SERVER-SIDE VALIDATION: Check if empty
+  // SERVER-SIDE VALIDATION: Check if empty
   if (!username || !password) {
-    return res.status(400).json({ message: 'Aiya, username and password cannot be empty! ❌' });
+    return res.status(400).json({ message: 'Aiya, username and password cannot be empty!' });
   }
 
   // Admin Login Logic
   if (username === process.env.ADMIN_USERNAME && password === process.env.ADMIN_PASSWORD) {
-    // 📌 Set Session Data
+    // Set Session Data
     req.session.user = { role: 'admin', name: 'Boss' };
-    // 📌 Set an explicit Cookie for the examiner to see
+    // Set an explicit Cookie for the examiner to see
     res.cookie('manor_auth', 'admin_token_active', { httpOnly: true, maxAge: 86400000 });
     
-    return res.status(200).json({ role: 'admin', name: 'Boss', message: 'Welcome back, Boss! 👑' });
+    return res.status(200).json({ role: 'admin', name: 'Boss', message: 'Welcome back, Boss!' });
   }
 
   try {
@@ -81,24 +81,24 @@ app.post('/api/login', async (req, res) => {
     const user = await Staff.findOne({ name: username, password: password });
     if (user) {
       if (user.status === 'Active') {
-        // 📌 Maintain state: Save staff details to session
+        // Maintain state: Save staff details to session
         req.session.user = { id: user._id, role: user.role || 'staff', name: user.name };
-        // 📌 Maintain state: Set cookie
+        // Maintain state: Set cookie
         res.cookie('manor_auth', `staff_${user._id}`, { httpOnly: true, maxAge: 86400000 });
 
         return res.status(200).json({ role: user.role || 'staff', name: user.name, message: `Welcome, ${user.name}!` });
       }
-      return res.status(401).json({ message: 'Account Suspended 🚫' });
+      return res.status(401).json({ message: 'Account Suspended' });
     }
     // Invalid credentials
-    res.status(401).json({ message: 'Ouh, Wrong Name or Password ! ❌' });
+    res.status(401).json({ message: 'Ouh, Wrong Name or Password !' });
   } catch (error) {
     res.status(500).json({ message: 'Server Error', error: error.message });
   }
 });
 
 // ==========================================
-// LUXURY PROPERTY (ROOMS) — CRUD
+// LUXURY PROPERTY (ROOMS) - CRUD
 // ==========================================
 app.get('/api/rooms', async (req, res) => {
   try {
@@ -110,12 +110,12 @@ app.get('/api/rooms', async (req, res) => {
 });
 
 app.post('/api/rooms', async (req, res) => {
-  // 🛡️ SERVER-SIDE VALIDATION: Ensure critical data is provided before saving
-  // 🛡️ SERVER-SIDE VALIDATION: Ensure critical data is provided before saving
+  // SERVER-SIDE VALIDATION: Ensure critical data is provided before saving
+  // SERVER-SIDE VALIDATION: Ensure critical data is provided before saving
 const { department, name, bedType, pricePerNight, inventoryQuantity, maxGuests } = req.body;
   
   if (!department || !name) {
-    return res.status(400).json({ message: "Aiya, Department and Name cannot be empty lah! ❌" });
+    return res.status(400).json({ message: "Aiya, Department and Name cannot be empty lah!" });
   }
   if (!pricePerNight || pricePerNight <= 0) {
     return res.status(400).json({ message: "Price must be set properly, Boss!" });
@@ -135,7 +135,7 @@ const { department, name, bedType, pricePerNight, inventoryQuantity, maxGuests }
     const room = new Room(propertyData);
     await room.save();
 
-    // 📌 Audit Trail for Assignment Marks
+    // Audit Trail for Assignment Marks
     await Log.create({ 
       action: `Created Room Type/Package: ${name}`, 
       performedBy: req.session?.user?.name || 'Admin', 
@@ -143,7 +143,7 @@ const { department, name, bedType, pricePerNight, inventoryQuantity, maxGuests }
     });
 
     res.status(201).json({ 
-      message: "Room Type deployed into the Property Management System! 🏠✨",
+      message: "Room Type deployed into the Property Management System!",
       room 
     });
 
@@ -156,7 +156,7 @@ app.put('/api/rooms/:id', async (req, res) => {
   try {
     const room = await Room.findByIdAndUpdate(req.params.id, req.body, { returnDocument: 'after' });
     if (!room) return res.status(404).json({ message: 'Room not found' });
-    res.status(200).json({ message: 'Room updated ✅', room });
+    res.status(200).json({ message: 'Room updated', room });
   } catch (error) {
     res.status(500).json({ message: 'Failed to update room', error: error.message });
   }
@@ -165,14 +165,14 @@ app.put('/api/rooms/:id', async (req, res) => {
 app.delete('/api/rooms/:id', async (req, res) => {
   try {
     await Room.findByIdAndDelete(req.params.id);
-    res.status(200).json({ message: 'Room deleted ✅' });
+    res.status(200).json({ message: 'Room deleted' });
   } catch (error) {
     res.status(500).json({ message: 'Failed to delete room', error: error.message });
   }
 });
 
 // ==========================================
-// STAFF — CRUD
+// STAFF - CRUD
 // ==========================================
 app.get('/api/staff', async (req, res) => {
   try {
@@ -184,7 +184,7 @@ app.get('/api/staff', async (req, res) => {
 });
 
 app.post('/api/staff', async (req, res) => {
-  // 🛡️ SERVER-SIDE VALIDATION
+  // SERVER-SIDE VALIDATION
   const { name, password, role } = req.body;
   if (!name || name.trim() === '') return res.status(400).json({ message: 'Staff name is required!' });
   if (!password || password.length < 6) return res.status(400).json({ message: 'Password must be at least 6 characters long!' });
@@ -197,7 +197,7 @@ app.post('/api/staff', async (req, res) => {
     // Log the action for audit purposes
     await Log.create({ action: 'STAFF_CREATED', performedBy: req.body.createdBy || 'Admin', targetId: staff._id.toString() });
     
-    res.status(201).json({ message: 'Staff registered ✅', staff });
+    res.status(201).json({ message: 'Staff registered', staff });
   } catch (error) {
     res.status(500).json({ message: 'Failed to register staff', error: error.message });
   }
@@ -210,7 +210,7 @@ app.put('/api/staff/:id', async (req, res) => {
     const staff = await Staff.findByIdAndUpdate(req.params.id, update, { returnDocument: 'after' });
     if (!staff) return res.status(404).json({ message: 'Staff not found' });
     await Log.create({ action: 'STAFF_UPDATED', performedBy: req.body.updatedBy || 'Admin', targetId: req.params.id });
-    res.status(200).json({ message: 'Staff updated ✅', staff });
+    res.status(200).json({ message: 'Staff updated', staff });
   } catch (error) {
     res.status(500).json({ message: 'Failed to update staff', error: error.message });
   }
@@ -220,14 +220,14 @@ app.delete('/api/staff/:id', async (req, res) => {
   try {
     await Staff.findByIdAndDelete(req.params.id);
     await Log.create({ action: 'STAFF_DELETED', performedBy: 'Admin', targetId: req.params.id });
-    res.status(200).json({ message: 'Staff removed ✅' });
+    res.status(200).json({ message: 'Staff removed' });
   } catch (error) {
     res.status(500).json({ message: 'Failed to delete staff', error: error.message });
   }
 });
 
 // ==========================================
-// SETTINGS — System Configurations
+// SETTINGS - System Configurations
 // ==========================================
 app.get('/api/settings', async (req, res) => {
   try {
@@ -338,7 +338,7 @@ app.post('/api/physical-rooms', async (req, res) => {
   }
 });
 
-// 🚀 UNIT ASSIGNMENT
+// UNIT ASSIGNMENT
 app.put('/api/physical-rooms/assign', async (req, res) => {
   const { roomType, unitNames } = req.body; 
 
@@ -394,7 +394,7 @@ app.delete('/api/physical-rooms/:id', async (req, res) => {
 });
 
 // ==========================================
-// BOOKINGS — Read + Manage
+// BOOKINGS - Read + Manage
 // ==========================================
 app.get('/api/bookings', async (req, res) => {
   try {
@@ -441,7 +441,7 @@ app.put('/api/bookings/:id/status', async (req, res) => {
       });
     }
 
-    res.status(200).json({ message: 'Booking updated ✅', booking });
+    res.status(200).json({ message: 'Booking updated', booking });
   } catch (error) {
     res.status(500).json({ message: 'Failed to update booking', error: error.message });
   }
@@ -460,7 +460,7 @@ app.delete('/api/bookings/:id', async (req, res) => {
       targetId: booking.bookingId
     });
 
-    res.status(200).json({ message: 'Booking removed ✅' });
+    res.status(200).json({ message: 'Booking removed' });
   } catch (error) {
     res.status(500).json({ message: 'Failed to delete booking', error: error.message });
   }
@@ -560,7 +560,7 @@ app.post('/api/bookings/self-check-in', async (req, res) => {
 });
 
 // ==========================================
-// TRANSACTIONS — Payment records overview
+// TRANSACTIONS - Payment records overview
 // ==========================================
 app.get('/api/transactions', async (req, res) => {
   try {
@@ -603,7 +603,7 @@ app.get('/api/logs', async (req, res) => {
 });
 
 // ==========================================
-// STRIPE — Payment Intent (custom page, no redirect)
+// STRIPE - Payment Intent (custom page, no redirect)
 // ==========================================
 app.post('/api/create-payment-intent', async (req, res) => {
   const { amount, guestEmail, roomName } = req.body;
@@ -714,7 +714,7 @@ app.post('/api/resend-payment-link', async (req, res) => {
 
 
 // ==========================================
-// GIFT CARDS — Purchase & Redemption
+// GIFT CARDS - Purchase & Redemption
 // ==========================================
 
 // 1. Create Stripe Checkout Session for Gift Card
@@ -808,7 +808,7 @@ app.post('/api/gift-cards/verify-purchase', async (req, res) => {
 
     await giftCard.save();
 
-    // 📧 Send Email via Zoho
+    // Send Email via Zoho
     try {
       await sendGiftCardEmail(recipientEmail, {
         code,
@@ -916,7 +916,7 @@ app.post('/api/check-availability', async (req, res) => {
 app.post('/api/bookings/create', async (req, res) => {
   const { checkIn, checkOut, roomName, guestEmail, guestFirstName, guestLastName, price, paymentStatus, expectedCheckInTime, expectedCheckOutTime, isWalkIn, assignedUnit } = req.body;
   
-  // 🛡️ Server-Side Validation
+  // Server-Side Validation
   if (!checkIn || !checkOut || !roomName || !guestEmail) {
     return res.status(400).json({ error: "Missing required booking details lah!" });
   }
@@ -925,7 +925,7 @@ app.post('/api/bookings/create', async (req, res) => {
     const start = new Date(checkIn);
     const end = new Date(checkOut);
 
-    // 🧠 Check overlapping bookings
+    // Check overlapping bookings
     const overlappingBookings = await Booking.find({
       roomName,
       $or: [
@@ -938,7 +938,7 @@ app.post('/api/bookings/create', async (req, res) => {
     const maxHouses = roomDetails ? roomDetails.inventoryQuantity : 1;
 
     if (overlappingBookings.length >= maxHouses) {
-      return res.status(400).json({ error: 'Alamak, Bilik ini telah penuh pada tarikh tersebut! All physical houses are booked.' });
+      return res.status(400).json({ error: 'Alamak, this room is full on these dates! All physical houses are booked.' });
     }
 
     const { giftCardCode } = req.body;
@@ -997,7 +997,7 @@ app.post('/api/bookings/create', async (req, res) => {
 
     await booking.save();
 
-    // 📌 Log the booking action
+    // Log the booking action
     await Log.create({
       action: `Created new booking for ${roomName}`,
       performedBy: assignedStaff.name,
@@ -1005,7 +1005,7 @@ app.post('/api/bookings/create', async (req, res) => {
     });
 
     res.status(201).json({ 
-      message: 'Booking Successful! 🎉', 
+      message: 'Booking Successful!', 
       bookingId: booking.bookingId, 
       managedBy: assignedStaff.name 
     });
@@ -1040,7 +1040,7 @@ app.post('/api/cookies', async (req, res) => {
 // Phase 2: IoT & Room Card System
 // ==========================================
 
-// 🔑 Generate KeyCard (INTERNAL UTILITY)
+// Generate KeyCard (INTERNAL UTILITY)
 const generateKeyCard = async (bookingId, roomId, checkIn, checkOut) => {
   const token = crypto.randomBytes(32).toString('hex');
   const keyCard = new KeyCard({
@@ -1054,7 +1054,7 @@ const generateKeyCard = async (bookingId, roomId, checkIn, checkOut) => {
   return token;
 };
 
-// 💳 Stripe Webhook handler
+// Stripe Webhook handler
 app.post('/api/webhook/stripe', express.raw({ type: 'application/json' }), async (req, res) => {
   const sig = req.headers['stripe-signature'];
   let event;
@@ -1089,7 +1089,7 @@ app.post('/api/webhook/stripe', express.raw({ type: 'application/json' }), async
   res.json({ received: true });
 });
 
-// 📱 Guest Key Retrieval
+// Guest Key Retrieval
 app.get('/api/room-card/my-key', async (req, res) => {
   const { bookingId } = req.query; // Usually from guest session/token
   if (!bookingId) return res.status(400).json({ error: "Booking ID required" });
@@ -1118,7 +1118,7 @@ app.get('/api/room-card/my-key', async (req, res) => {
 // Phase 3: F&B Room Service Module
 // ==========================================
 
-// 🍔 Menu Management (CRUD)
+// Menu Management (CRUD)
 app.get('/api/menu', async (req, res) => {
   try {
     const items = await Menu.find({ isAvailable: true });
@@ -1158,12 +1158,12 @@ app.delete('/api/menu/:id', async (req, res) => {
   }
 });
 
-// 🍽️ Ordering Engine
+// Ordering Engine
 app.post('/api/room-service/order', async (req, res) => {
   const { bookingId, roomName, items, paymentMethod, notes } = req.body;
   
   try {
-    // 🕒 Check Service Hours
+    // Check Service Hours
     const serviceHours = await getSetting('fb_service_hours', '07:00-23:00');
     if (serviceHours && serviceHours.includes('-')) {
       const [startStr, endStr] = serviceHours.split('-');
@@ -1215,7 +1215,7 @@ app.post('/api/room-service/order', async (req, res) => {
 
     await order.save();
 
-    // 🕵️ Log the order
+    // Log the order
     const logEntry = new Log({
       action: 'F&B Order Placed',
       details: `Order #${order._id} for Room ${roomName} via ${paymentMethod}. Total: €${total}`,
@@ -1233,14 +1233,14 @@ app.post('/api/room-service/order', async (req, res) => {
   }
 });
 
-// 🚚 Update Order Status
+// Update Order Status
 app.put('/api/room-service/order/:id', async (req, res) => {
   try {
     const { status } = req.body;
     const order = await Order.findByIdAndUpdate(req.params.id, { paymentStatus: status }, { new: true });
     if (!order) return res.status(404).json({ error: "Order not found" });
 
-    // 🕵️ Log the status transition
+    // Log the status transition
     const logEntry = new Log({
       action: 'F&B Order Status Updated',
       details: `Order #${order._id} status changed to: ${status}`,
@@ -1258,7 +1258,7 @@ app.put('/api/room-service/order/:id', async (req, res) => {
 // START SERVER
 if (process.env.NODE_ENV !== 'production') {
   app.listen(PORT, () => {
-    console.log(`✅ Backend server tengah run kat port: ${PORT}`);
+    console.log(`Backend server running on port: ${PORT}`);
   });
 }
 

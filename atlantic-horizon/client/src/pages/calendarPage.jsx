@@ -47,7 +47,7 @@ export default function CalendarPage() {
     setBookingStep(step);
   };
 
-  // --- 模拟数据 (加入 Facility 和 Package) ---
+  // --- Mock Data (Added Facility and Package) ---
   const products = {
     lodge: [
       { 
@@ -85,7 +85,7 @@ export default function CalendarPage() {
     ]
   };
 
-  // --- 计算总价 ---
+  // --- Calculate Total Price ---
   const calculateTotal = () => {
     let total = selectedItem ? selectedItem.price * nights : 0;
     
@@ -131,7 +131,7 @@ export default function CalendarPage() {
     }
   };
 
-  // --- 查空房逻辑 ---
+  // --- Availability Check Logic ---
   useEffect(() => {
     if (bookingStep === 1) {
       if (abortControllerRef.current) abortControllerRef.current.abort();
@@ -163,9 +163,9 @@ export default function CalendarPage() {
         }
       });
     }
-  }, [bookingStep, checkIn.getTime(), checkOut.getTime()]); // 🌟 Fix infinite loop by tracking timestamp instead of object ref
+  }, [bookingStep, checkIn.getTime(), checkOut.getTime()]); // Fix infinite loop by tracking timestamp instead of object ref
 
-  // --- 提交 Booking 并跳转 Stripe ---
+  // --- Submit Booking and Redirect to Stripe ---
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleBookingSubmit = async () => {
@@ -225,7 +225,7 @@ export default function CalendarPage() {
     <div className="bg-[#1a1d17] min-h-screen pt-32 pb-20 px-6 text-white font-lato">
       <div className="max-w-6xl mx-auto">
 
-        {/* 🌟 Navigation Controls (Top Bar) */}
+        {/* Navigation Controls (Top Bar) */}
         <div className="flex justify-between items-center mb-8 border-b border-white/5 pb-4">
            <button 
              onClick={() => setBookingStep(Math.max(0, bookingStep - 1))}
@@ -253,7 +253,7 @@ export default function CalendarPage() {
            </button>
         </div>
 
-        {/* 🌟 Progress Stepper — Icon Slider */}
+        {/* Progress Stepper - Icon Slider */}
         <div className="flex items-center justify-between mb-16 px-1">
           {[
             { icon: '', label: 'Service', step: 0 },
@@ -301,7 +301,7 @@ export default function CalendarPage() {
           })}
         </div>
 
-        {/* 🌟 Inline Edit Panel - Luxury Style */}
+        {/* Inline Edit Panel - Luxury Style */}
         {isEditingDates && (
           <div className="bg-[#1e2219] border border-amber-600/40 shadow-2xl mb-10 animate-fadeIn overflow-hidden">
             {/* Panel Header */}
@@ -415,7 +415,7 @@ export default function CalendarPage() {
           </div>
         )}
 
-        {/* STEP 1: 房间/设施选择 (类似 Agoda 风格) */}
+        {/* STEP 1: Room/Facility Selection (Agoda Style) */}
         {bookingStep === 1 && (
           <div className="animate-pageTransition space-y-10">
             <div className="flex justify-between items-end border-b border-white/10 pb-6">
@@ -482,7 +482,7 @@ export default function CalendarPage() {
           </div>
         )}
 
-        {/* STEP 2: ENHANCE YOUR STAY (Agoda 的 Upsell 环节) */}
+        {/* STEP 2: ENHANCE YOUR STAY (Agoda Upsell) */}
         {bookingStep === 2 && (
           <div className="max-w-4xl mx-auto animate-pageTransition">
              <h2 className="font-cinzel text-3xl text-center mb-12">ENHANCE YOUR SANCTUARY</h2>
@@ -515,7 +515,7 @@ export default function CalendarPage() {
           </div>
         )}
 
-        {/* STEP 3: GUEST DETAILS (资料录入) */}
+        {/* STEP 3: GUEST DETAILS (Data Entry) */}
         {bookingStep === 3 && (
           <div className="max-w-xl mx-auto animate-pageTransition">
              <h2 className="font-cinzel text-3xl text-center mb-10">GUEST INFORMATION</h2>
@@ -572,7 +572,7 @@ export default function CalendarPage() {
           </div>
         )}
 
-        {/* STEP 4: PAYMENT (Stripe 模拟) */}
+        {/* STEP 4: PAYMENT (Stripe Mockup) */}
         {bookingStep === 4 && (
           <div className="max-w-md mx-auto animate-pageTransition text-center">
              <h2 className="font-cinzel text-2xl mb-12 tracking-widest">FINAL REVIEW</h2>
@@ -662,7 +662,7 @@ export default function CalendarPage() {
           </div>
         )}
 
-        {/* STEP 5: SUCCESS (成功画面) */}
+        {/* STEP 5: SUCCESS (Success Page) */}
         {bookingStep === 5 && (
           <div className="text-center py-20 animate-fadeIn">
             <div className="text-6xl mb-8"></div>

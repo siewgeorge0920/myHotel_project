@@ -142,7 +142,7 @@ export default function Header() {
           {/* Backdrop */}
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setIsMobileMenuOpen(false)} />
           
-          {/* Dropdown Panel — slides from top */}
+          {/* Dropdown Panel - slides from top */}
           <div className="relative bg-[#1e2219] w-full shadow-2xl border-b border-white/10 animate-slideDown overflow-y-auto max-h-full" style={{borderTop: '2px solid rgba(212,197,161,0.3)'}}>
 
             <nav className="px-4 pt-2 pb-4">
