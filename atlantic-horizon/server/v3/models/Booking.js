@@ -11,7 +11,7 @@ const bookingSchema = new mongoose.Schema({
   guest_email: { type: String, required: true, index: true },
   guest_phone: { type: String },
   guest_address: { type: String },
-  client_id: { type: String, index: true },
+
   room_type: { type: String, required: true },
   check_in: { type: Date, required: true },
   check_out: { type: Date, required: true },

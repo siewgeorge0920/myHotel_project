@@ -233,7 +233,7 @@ export default function BookingManagement() {
                     </td>
                     <td className="p-6 text-right">
                       <div className="flex justify-end gap-2">
-                        {b.status === 'Confirmed' && (
+                        {b.status === 'Confirmed' && !isAdmin && !isManager && (
                           <button 
                             onClick={() => handleReceptionCheckIn(b._id)}
                             className="bg-white text-black px-5 py-2.5 rounded-full text-[9px] font-black uppercase tracking-widest hover:bg-amber-500 hover:text-white transition-all shadow-xl"
@@ -241,7 +241,7 @@ export default function BookingManagement() {
                             Check-in
                           </button>
                         )}
-                        {b.status === 'CheckedIn' && (
+                        {b.status === 'CheckedIn' && !isAdmin && !isManager && (
                           <button 
                             onClick={() => handleReceptionCheckOut(b._id)}
                             className="bg-amber-600 text-white px-5 py-2.5 rounded-full text-[9px] font-black uppercase tracking-widest hover:bg-amber-500 transition-all shadow-xl"

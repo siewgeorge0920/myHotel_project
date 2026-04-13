@@ -92,9 +92,9 @@ export default function AdminCalendar() {
                               'bg-white/5 border-white/20 text-white/40'
                             }`}>
                               <span className="font-bold">{b.bookingId}</span> ({b.bookingStatus})
-                              {b.clientId && (
+                              {b.guest_name && (
                                 <div className="mt-0.5 text-[7px] text-white/80 lowercase capitalize-first">
-                                  {b.clientId.firstName} {b.clientId.lastName}
+                                  {b.guest_name}
                                 </div>
                               )}
                             </div>

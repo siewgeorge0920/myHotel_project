@@ -57,7 +57,7 @@ import Transactions from './pages/transactions';
 import AdminCalendar from './pages/adminCalendar';
 import RoomService from './pages/roomService';
 import PhysicalRoomManager from './pages/physicalRoomManager';
-import CrmManagement from './pages/crmManagement';
+
 
 import PaymentPage from './pages/PaymentPage';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -106,7 +106,7 @@ const LayoutWrapper = ({ children, onOpenCookies }) => {
   const isManagement = [
     '/staffdashboard', '/adminiam', '/inventory', '/adminlogs', 
     '/roommanagement', '/roompackage', '/physicalrooms', '/bookings', '/transactions', 
-    '/admincalendar', '/roomservice', '/crm', '/admin'
+    '/admincalendar', '/roomservice', '/admin'
   ].some(p => location.pathname.toLowerCase().startsWith(p));
 
   if (isManagement) {
@@ -263,7 +263,7 @@ export default function App() {
           <Route path="/physicalRooms" element={<ProtectedRoute><PhysicalRoomManager /></ProtectedRoute>} />
           <Route path="/self-check-in" element={<SelfCheckIn />} />
           <Route path="/booking-management" element={<ProtectedRoute><BookingManagement /></ProtectedRoute>} />
-          <Route path="/crm" element={<ProtectedRoute><CrmManagement /></ProtectedRoute>} />
+
 
         </Routes>
         </Suspense>

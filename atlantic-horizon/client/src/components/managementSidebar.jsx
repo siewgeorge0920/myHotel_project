@@ -31,7 +31,7 @@ export default function ManagementSidebar({ user }) {
 
       <nav className="flex-1 space-y-2">
         {menuItems.map((item) => (
-          (!item.adminOnly || user.role === 'admin') && (
+          (!item.adminOnly || user.role === 'admin' || (item.name === 'Gift Cards' && user.role === 'manager')) && (
             <Link 
               key={item.path}
               to={item.path}

@@ -5,7 +5,7 @@ import iotKeyController from '../controllers/iotKeyController.js';
 import giftCardController from '../controllers/giftCardController.js';
 import physicalRoomController from '../controllers/physicalRoomController.js';
 import authController from '../controllers/authController.js';
-import crmController from '../controllers/crmController.js';
+
 import cookieController from '../controllers/cookieController.js';
 import { protect, restrictTo } from '../middleware/auth.js';
 
@@ -67,14 +67,7 @@ router.post('/physical-rooms', protect, restrictTo('admin', 'manager'), physical
 router.put('/physical-rooms/:id', protect, restrictTo('admin', 'manager'), physicalRoomController.update);
 router.delete('/physical-rooms/:id', protect, restrictTo('admin'), physicalRoomController.delete);
 
-/**
- * 👥 CRM & Guest Management Routes
- */
-router.get('/crm/clients', protect, crmController.getAllClients);
-router.get('/crm/clients/:id', protect, crmController.getClientById);
-router.post('/crm/clients', protect, restrictTo('admin', 'manager'), crmController.createClient);
-router.put('/crm/clients/:id', protect, restrictTo('admin', 'manager'), crmController.updateClient);
-router.delete('/crm/clients/:id', protect, restrictTo('admin'), crmController.deleteClient);
+
 
 /**
  * 📱 IoT Key Routes

@@ -1,9 +1,9 @@
 import Booking from '../models/Booking.js';
 import PhysicalRoom from '../models/PhysicalRoom.js';
-import Client from '../models/Client.js';
+
 import Log from '../models/Log.js';
 import inventoryService from './inventoryService.js';
-import crmService from './crmService.js';
+
 
 class BookingService {
 
@@ -28,16 +28,7 @@ calculateNights(checkIn, checkOut) {
 
   async createBooking(data) {
     const email = data.guest_email || data.guestEmail;
-    let guest = await Client.findOne({ email });
-    if (!guest) {
-      guest = new Client({
-        client_id: `CUST-${Math.floor(10000 + Math.random() * 90000)}`,
-        name: data.guest_name || `${data.guestFirstName} ${data.guestLastName}`,
-        email: email,
-        phone: data.guest_phone || data.guestPhone
-      });
-      await guest.save();
-    }
+
 
     
 
@@ -46,9 +37,8 @@ calculateNights(checkIn, checkOut) {
     
     const booking = new Booking({
       booking_id: bookingId,
-      client_id: guest.client_id,
-      guest_name: guest.name,
-      guest_email: guest.email,
+      guest_name: data.guest_name || `${data.guestFirstName} ${data.guestLastName}`,
+      guest_email: email,
       room_type: data.room_type || data.roomName,
       check_in: new Date(data.check_in || data.checkIn),
       check_out: new Date(data.check_out || data.checkOut),
@@ -80,7 +70,7 @@ calculateNights(checkIn, checkOut) {
         await Log.create({
           action: 'GIFT_CARD_REDEEM',
           details: `Redeemed €${deduction} from ${card.code} for booking ${bookingId}`,
-          performedBy: guest.name,
+          performedBy: data.guest_name || `${data.guestFirstName} ${data.guestLastName}`,
           targetId: card.code,
           timestamp: new Date()
         });
@@ -89,8 +79,7 @@ calculateNights(checkIn, checkOut) {
 
     await booking.save();
     
-    guest.total_spend += parseFloat(data.price);
-    await guest.save();
+
 
     return booking;
   }
