@@ -1,10 +1,20 @@
-import React, { Suspense, useEffect, useState } from 'react'; // 🌟 核心修正 1：记得 Import useEffect
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import React, { Suspense, useEffect, useState } from 'react'; //  Core Fix 1: Remember to import useEffect
+//  Added useNavigate to the import below
+import { BrowserRouter as Router, Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import Lenis from 'lenis';
 
 // Layout Components
 import Header from './components/Header';
 import Footer from './components/Footer';
+
+// --- NEW MODAL IMPORTS ---
+import BlogModal from './components/footer/BlogModal';
+import CareersModal from './components/footer/CareersModal';
+import ContactUsModal from './components/footer/ContactUsModal';
+import FaqsModal from './components/footer/FaqsModal';
+import LocationModal from './components/footer/LocationModal';
+import ParkingModal from './components/footer/ParkingModal';
+import PrivacyPolicyModal from './components/footer/PrivacyPolicyModal';
 
 // Guest Pages
 import Home from './pages/Home';
@@ -17,25 +27,24 @@ import AdminSettings from './pages/adminSettings';
 import SelfCheckIn from './pages/SelfCheckIn';
 import BookingSuccess from './pages/BookingSuccess';
 
-// 🌟 Lincoln's Pages (Experience)
+//  Lincoln's Pages (Experience)
 import ContinentalBreakfast from './pages/Lincoln/continentalBreakfast';
 import HoneymoonPackage from './pages/Lincoln/honeymoonPackage';
 import LocalIrishExcursion from './pages/Lincoln/localIrishExcursion';
 import MichelineQualityFood from './pages/Lincoln/michelineQualityFood';
 import PrivateChauffer from './pages/Lincoln/privateChauffer';
 
-// 🌟 George's Pages (Resort)
+//  George's Pages (Resort)
 import PrivateLodges from './pages/George/privateLodges';
 import PrivateResidences from './pages/George/privateResidencesAndVillas';
 import UltimateExclusivity from './pages/George/ultimateExclusivity';
 
-// 🌟 Derrick's Pages (Wellness)
+//  Derrick's Pages (Wellness)
 import Sauna from './pages/Derrick/Sauna';
 import Facial from './pages/Derrick/Facial';
 import Masaage from './pages/Derrick/Massage'; 
 import Hottub from './pages/Derrick/Hottub';
 import Jacuzzi from './pages/Derrick/Jacuzzi';
-
 
 // Staff/Admin Portal
 import StaffDashboard from './pages/staffDashboard';
@@ -58,25 +67,41 @@ import CookieWindow from './components/CookieWindow';
 
 const AdminLogs = React.lazy(() => import('./pages/adminLogs'));
 
-// 🌟 核心修正 2：自动回顶组件 (首字母一定要大写)
+// Core Fix 2: Auto scroll-to-top component (Must start with an uppercase letter)
 const ScrollToTop = () => {
   const { pathname } = useLocation();
   useEffect(() => {
-    window.scrollTo(0, 0); // 每次换 URL，立刻回到最顶！
+    window.scrollTo(0, 0); // Instantly scroll to top on every URL change!
   }, [pathname]);
   return null;
 };
 
-// Layout Wrapper (包含转场特效)
-const LayoutWrapper = ({ children }) => {
+// Layout Wrapper (Includes transition effects)
+const LayoutWrapper = ({ children, onOpenCookies }) => {
   const location = useLocation();
+  const navigate = useNavigate(); // 🌟 Added navigate hook
   const [isTransitioning, setIsTransitioning] = React.useState(false);
+  
+  // --- NEW MODAL STATE ---
+  const [activeModal, setActiveModal] = useState(null);
+  const closeModal = () => setActiveModal(null);
 
   React.useEffect(() => {
     setIsTransitioning(true);
     const timer = setTimeout(() => setIsTransitioning(false), 800);
     return () => clearTimeout(timer);
   }, [location.pathname]);
+
+  // NEW: Handle Gallery Click
+  const handleGalleryClick = () => {
+    if (location.pathname === '/') {
+      // If already on Home, smooth scroll to top
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      // If on another page, navigate to Home
+      navigate('/');
+    }
+  };
 
   const isManagement = [
     '/staffdashboard', '/adminiam', '/inventory', '/adminlogs', 
@@ -100,7 +125,28 @@ const LayoutWrapper = ({ children }) => {
         {isTransitioning && <LuxuryLoader message="Loading Manor..." />}
         {children}
       </main>
-      <Footer />
+      
+      {/* --- CONNECTED FOOTER PROPS --- */}
+      <Footer 
+        onOpenBlog={() => setActiveModal('blog')}
+        onOpenCareers={() => setActiveModal('careers')}
+        onOpenContact={() => setActiveModal('contact')}
+        onOpenFaqs={() => setActiveModal('faqs')}
+        onOpenLocation={() => setActiveModal('location')}
+        onOpenParking={() => setActiveModal('parking')}
+        onOpenPrivacy={() => setActiveModal('privacy')}
+        onOpenCookies={onOpenCookies}
+        onOpenGallery={handleGalleryClick} // 🌟 Passed the gallery function here
+      />
+
+      {/* --- RENDER ACTIVE MODAL --- */}
+      {activeModal === 'blog' && <BlogModal onClose={closeModal} />}
+      {activeModal === 'careers' && <CareersModal onClose={closeModal} />}
+      {activeModal === 'contact' && <ContactUsModal onClose={closeModal} />}
+      {activeModal === 'faqs' && <FaqsModal onClose={closeModal} />}
+      {activeModal === 'location' && <LocationModal onClose={closeModal} />}
+      {activeModal === 'parking' && <ParkingModal onClose={closeModal} />}
+      {activeModal === 'privacy' && <PrivacyPolicyModal onClose={closeModal} />}
     </div>
   );
 };
@@ -109,10 +155,10 @@ export default function App() {
   const [isCookieOpen, setIsCookieOpen] = useState(false);
 
   useEffect(() => {
-    // 🌀 Initialize Lenis Smooth Scroll
+    //  Initialize Lenis Smooth Scroll
     const lenis = new Lenis({
       duration: 1.2,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // Custom easing for premium feel
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), 
       orientation: 'vertical',
       gestureOrientation: 'vertical',
       smoothWheel: true,
@@ -129,7 +175,6 @@ export default function App() {
 
     requestAnimationFrame(raf);
 
-    // Cleanup on unmount
     return () => {
       lenis.destroy();
     };
@@ -156,12 +201,12 @@ export default function App() {
   };
 
   return (
-    
     <Router>
-      {/* 🌟 核心修正 3：必须把 ScrollToTop 放在 Router 里面跑 */}
+      {/*  Core Fix 3: ScrollToTop must be placed inside the Router */}
       <ScrollToTop /> 
 
-      <LayoutWrapper>
+      {/* Pass the function to open cookies into the LayoutWrapper */}
+      <LayoutWrapper onOpenCookies={() => setIsCookieOpen(true)}>
         <Suspense fallback={<p>Loading our luxury experience...</p>}>
         <Routes>
           <Route path="/" element={<Home />} />

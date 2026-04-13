@@ -3,9 +3,25 @@ import { Link } from 'react-router-dom';
 
 export default function Footer({ 
   onOpenCookies, onOpenPrivacy, onOpenCareers, onOpenContact,
-  onOpenFaqs, onOpenBlog, onOpenParking, onOpenLocation
+  onOpenFaqs, onOpenBlog, onOpenParking, onOpenLocation, onOpenGallery 
 }) { 
-  const links = ["Gallery", "Location", "Parking", "Blog", "FAQs", "Careers", "Contact Us", "Private Policy", "Cookies"];
+  // 1. Array of objects to map names to their functions
+  const linkItems = [
+    { name: "Gallery", action: onOpenGallery }, 
+    { name: "Location", action: onOpenLocation },
+    { name: "Parking", action: onOpenParking },
+    { name: "Blog", action: onOpenBlog },
+    { name: "FAQs", action: onOpenFaqs },
+    { name: "Careers", action: onOpenCareers },
+    { name: "Contact Us", action: onOpenContact },
+    { name: "Privacy Policy", action: onOpenPrivacy }, // Fixed typo from "Private" to "Privacy"
+    { name: "Cookies", action: onOpenCookies }
+  ];
+
+  // 2. Smooth scroll function to prevent Lenis conflicts
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   return (
     <footer className="relative text-manorGold py-16 px-[5%] text-center overflow-hidden">
@@ -14,13 +30,26 @@ export default function Footer({
 
       <div className="relative z-10">
         <div className="scroll-top-area mb-10">
-          <a href="#top" className="scroll-btn inline-flex items-center justify-center w-12 h-12 bg-manorRose text-manorGreen rounded-full text-2xl mb-2 transition hover:-translate-y-1 hover:bg-white">↑</a>
+          {/* Changed <a> to <button> and attached scrollToTop */}
+          <button 
+            onClick={scrollToTop} 
+            className="scroll-btn inline-flex items-center justify-center w-12 h-12 bg-manorRose text-manorGreen rounded-full text-2xl mb-2 transition hover:-translate-y-1 hover:bg-white"
+            aria-label="Return to top"
+          >
+            ↑
+          </button>
           <p className="text-[12px] uppercase tracking-[1px]">Return To Top</p>
         </div>
 
         <nav className="footer-nav flex flex-wrap justify-center gap-5 my-10 border-y border-manorGold/20 py-5">
-          {links.map((link) => (
-            <button key={link} className="text-manorRose text-sm tracking-wide hover:text-white transition">{link}</button>
+          {linkItems.map((item) => (
+            <button 
+              key={item.name} 
+              onClick={item.action} 
+              className="text-manorRose text-sm tracking-wide hover:text-white transition"
+            >
+              {item.name}
+            </button>
           ))}
         </nav>
 
