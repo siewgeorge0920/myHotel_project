@@ -154,11 +154,7 @@ export default function App() {
   const [isCookieOpen, setIsCookieOpen] = useState(false);
 
   useEffect(() => {
-<<<<<<< HEAD
-    //  Initialize Lenis Smooth Scroll
-=======
     // Initialize Lenis Smooth Scroll
->>>>>>> a304eb4c40056f9165b4c1fc8dfa110cf6b02241
     const lenis = new Lenis({
       duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), 
@@ -205,11 +201,7 @@ export default function App() {
 
   return (
     <Router>
-<<<<<<< HEAD
-      {/*  Core Fix 3: ScrollToTop must be placed inside the Router */}
-=======
       {/* Core Fix 3: ScrollToTop must be inside Router */}
->>>>>>> a304eb4c40056f9165b4c1fc8dfa110cf6b02241
       <ScrollToTop /> 
 
       {/* Pass the function to open cookies into the LayoutWrapper */}
