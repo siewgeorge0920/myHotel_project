@@ -22,6 +22,7 @@ export default function InventoryManagement() {
 
   const fetchRooms = async (initial = false) => {
     try {
+      // Initial load shows full-page loading state; background refresh does not.
       if (initial) setLoading(true);
       const res = await axios.get('/api/v3/physical-rooms');
       setRooms(res.data);
@@ -33,16 +34,19 @@ export default function InventoryManagement() {
   };
 
   useEffect(() => {
+    // Bootstrap inventory dataset when page mounts.
     fetchRooms(true);
   }, []);
 
   const handleOpenCreate = () => {
+    // Reset form for provision flow.
     setIsEditing(false);
     setFormData({ room_name: '', department: 'Private Lodge', room_type_category: 'Standard Lodge (King)', current_status: 'Ready' });
     setShowModal(true);
   };
 
   const handleOpenEdit = (room) => {
+    // Pre-fill form with selected unit values for reconfiguration.
     setIsEditing(true);
     setEditingId(room._id);
     setFormData({
@@ -56,6 +60,7 @@ export default function InventoryManagement() {
 
   const handleSubmit = async () => {
     try {
+      // Same modal submit handles create and edit depending on mode.
       if (isEditing) {
         await axios.put(`/api/v3/physical-rooms/${editingId}`, formData);
       } else {
@@ -79,6 +84,7 @@ export default function InventoryManagement() {
   };
 
   const updateQuickStatus = async (id, status) => {
+    // Lightweight status transition from the table view.
     try {
       await axios.put(`/api/v3/physical-rooms/${id}`, { current_status: status });
       fetchRooms();

@@ -82,7 +82,7 @@ const LayoutWrapper = ({ children, onOpenCookies }) => {
   const navigate = useNavigate(); // 🌟 Added navigate hook
   const [isTransitioning, setIsTransitioning] = React.useState(false);
   
-  // --- NEW MODAL STATE ---
+  //  NEW MODAL STATE 
   const [activeModal, setActiveModal] = useState(null);
   const closeModal = () => setActiveModal(null);
 
@@ -126,7 +126,7 @@ const LayoutWrapper = ({ children, onOpenCookies }) => {
         {children}
       </main>
       
-      {/* --- CONNECTED FOOTER PROPS --- */}
+      {/*  CONNECTED FOOTER PROPS  */}
       <Footer 
         onOpenBlog={() => setActiveModal('blog')}
         onOpenCareers={() => setActiveModal('careers')}
@@ -139,7 +139,7 @@ const LayoutWrapper = ({ children, onOpenCookies }) => {
         onOpenGallery={handleGalleryClick} // 🌟 Passed the gallery function here
       />
 
-      {/* --- RENDER ACTIVE MODAL --- */}
+      {/* RENDER ACTIVE MODAL  */}
       {activeModal === 'blog' && <BlogModal onClose={closeModal} />}
       {activeModal === 'careers' && <CareersModal onClose={closeModal} />}
       {activeModal === 'contact' && <ContactUsModal onClose={closeModal} />}

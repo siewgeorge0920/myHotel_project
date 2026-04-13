@@ -10,7 +10,7 @@ const AVAILABLE_SERVICES = [
 ];
 
 export default function AdminRoomPackageCreator({ onPackageCreated, editData, onCancel }) {
-  // --- State Management ---
+  //  State Management 
   const [formData, setFormData] = useState({
     department: DEPARTMENTS[0],
     name: '',
@@ -91,7 +91,7 @@ export default function AdminRoomPackageCreator({ onPackageCreated, editData, on
     }
   };
 
-  // --- Render (The "Humanable" Form) ---
+  // Render 
   return (
     <div className="p-6 bg-gray-800 text-white rounded-lg shadow-lg border border-white/10">
       <div className="flex justify-between items-center mb-6">

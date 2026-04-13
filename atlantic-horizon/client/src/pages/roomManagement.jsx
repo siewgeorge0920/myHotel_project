@@ -5,16 +5,19 @@ import axios from 'axios';
 
 export default function RoomManagement() {
   const [rooms, setRooms] = useState([]);
+  // Active department tab drives room card filtering.
   const [activeDept, setActiveDept] = useState('Private Lodge');
   const DEPARTMENTS = ['Private Lodge', 'Private Residences & Villas', 'Ultimate Exclusivity'];
 
   const handleManualAddon = async (room) => {
+  // Prompt-based quick charge workflow for concierge-triggered add-ons.
   const serviceName = prompt("Enter service description (e.g., Spa, Extra Towels):");
   const price = prompt("Enter price (€):");
 
   useEffect(() => {
     const fetchRooms = async () => {
       try {
+        // Load physical room registry for the selected department cards.
         const res = await axios.get('/api/v3/physical-rooms');
         setRooms(res.data.data);
       } catch (err) {

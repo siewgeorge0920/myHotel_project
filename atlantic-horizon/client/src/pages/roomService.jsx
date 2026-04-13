@@ -4,6 +4,7 @@ import ManagementSidebar from '../components/managementSidebar';
 import { COLORS } from '../colors';
 
 export default function SanctuaryOperations() {
+  // Staff context and mode flags sourced from local session storage.
   const user = JSON.parse(localStorage.getItem('user'));
   const isManagerMode = localStorage.getItem('managerMode') === 'true';
 
@@ -14,6 +15,7 @@ export default function SanctuaryOperations() {
 
   const fetchData = async (initial = false) => {
     try {
+      // Initial load uses blocking loader; subsequent refreshes are silent.
       if (initial) setLoading(true);
       const [resUnits, resOrders] = await Promise.all([
         axios.get('/api/v3/physical-rooms'),
@@ -29,12 +31,14 @@ export default function SanctuaryOperations() {
   };
 
   useEffect(() => {
+    // Keep operations dashboard fresh with periodic polling.
     fetchData(true);
     const interval = setInterval(fetchData, 30000); // Auto-refresh every 30s
     return () => clearInterval(interval);
   }, []);
 
   const updateCleaningStatus = async (id, status) => {
+    // Push housekeeping state transition for a physical unit.
     try {
       await axios.put(`/api/v3/physical-rooms/${id}`, { current_status: status });
       fetchData();
@@ -44,6 +48,7 @@ export default function SanctuaryOperations() {
   };
 
   const updateOrderStatus = async (id, status) => {
+    // Advance gastronomy workflow status for an order.
     try {
       await axios.put(`/api/v3/room-service/order/${id}`, { status });
       fetchData();
@@ -53,6 +58,7 @@ export default function SanctuaryOperations() {
   };
 
   const departments = Array.from(new Set(units.map(u => u.department)));
+  // Department groups drive sectioned housekeeping rendering.
 
   const getStatusStyle = (status) => {
     switch (status) {

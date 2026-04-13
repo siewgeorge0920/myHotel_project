@@ -4,6 +4,7 @@ import { Gift, Mail, User, CreditCard, ChevronRight } from 'lucide-react';
 
 export default function GiftCards() {
   const [loading, setLoading] = useState(false);
+  // Form payload sent to checkout and instant-issue endpoints.
   const [formData, setFormData] = useState({
     amount: 500,
     purchaserName: '',
@@ -13,12 +14,14 @@ export default function GiftCards() {
     notes: ''
   });
 
+  // Preset gift values shown as selectable voucher tiers.
   const amounts = [500, 1000, 2500, 5000];
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     try {
+      // Create a Stripe checkout session and redirect the buyer to payment.
       const res = await axios.post('/api/v3/gift-cards/checkout', formData);
       console.log("V3 GC Debug Response:", res.data);
 
@@ -38,12 +41,14 @@ export default function GiftCards() {
   };
 
   const handleInstantIssue = async () => {
+    // Basic guard so backend receives minimum recipient identity data.
     if (!formData.recipientEmail || !formData.recipientName) {
       alert("Please fill in recipient details first!");
       return;
     }
     setLoading(true);
     try {
+      // Instant purchase path issues voucher immediately and forwards to success page.
       const res = await axios.post('/api/v3/gift-cards/instant-purchase', formData);
       const { code, stripe_session_id } = res.data.data;
       window.location.href = `/gift-card-success?session_id=${stripe_session_id}`;
@@ -112,6 +117,7 @@ export default function GiftCards() {
               <div>
                 <label className="block text-xs uppercase tracking-widest text-gray-500 mb-4 font-bold">Select Amount</label>
                 <div className="grid grid-cols-2 gap-3">
+                  {/* Amount buttons update only the amount while preserving other form fields. */}
                   {amounts.map(val => (
                     <button
                       key={val}

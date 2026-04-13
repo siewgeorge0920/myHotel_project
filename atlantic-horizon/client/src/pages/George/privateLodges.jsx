@@ -15,7 +15,7 @@ export default function PrivateLodges() {
 
   return (
     <div className="bg-[#faf9f6] min-h-screen font-lato">
-      {/* 🎬 Effect 1: Parallax-style Hero */}
+      {/*  Effect 1: Parallax-style Hero */}
       <section className="relative h-screen w-full overflow-hidden">
         <img src={deluxeImages[0]} className="absolute inset-0 w-full h-full object-cover scale-110" alt="Hero" />
         <div className="absolute inset-0 bg-black/30 backdrop-blur-[1px]"></div>

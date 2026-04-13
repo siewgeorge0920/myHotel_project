@@ -4,6 +4,7 @@ import ManagementSidebar from '../components/managementSidebar';
 import { COLORS } from '../colors';
 
 export default function CrmManagement() {
+  // Current authenticated staff profile cached in browser storage.
   const user = JSON.parse(localStorage.getItem('user'));
   const navigate = useNavigate();
 
@@ -17,15 +18,18 @@ export default function CrmManagement() {
   const isManager = user?.role === 'manager' || isAdmin;
   
   useEffect(() => {
+    // Redirect unauthenticated access attempts.
     if (!user) {
       navigate('/login');
       return;
     }
+    // Load client records once user context is available.
     fetchClients();
   }, [user, navigate]);
 
   const fetchClients = async () => {
     try {
+      // Keep the table state in sync with the server source of truth.
       setLoading(true);
       const res = await fetch('/api/v3/crm/clients');
       if (!res.ok) throw new Error('Failed to fetch guests (clients).');
@@ -47,12 +51,14 @@ export default function CrmManagement() {
         method: 'DELETE'
       });
       if (!res.ok) throw new Error("Failed to delete client.");
+      // Remove the deleted record locally so UI updates immediately.
       setClients(clients.filter(c => c._id !== id));
     } catch (err) {
       alert(err.message);
     }
   };
 
+  // Text search across primary identity fields used by operations staff.
   const filteredClients = clients.filter(c => 
     c.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
     c.email.toLowerCase().includes(searchTerm.toLowerCase()) ||

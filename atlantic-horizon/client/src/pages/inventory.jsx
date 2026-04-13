@@ -7,9 +7,11 @@ import CustomModal from '../components/CustomModal';
 export default function Inventory() {
   const [rooms, setRooms] = useState([]);
   const [loading, setLoading] = useState(true);
+  // Staff identity used to drive permission-sensitive actions.
   const user = JSON.parse(localStorage.getItem('user'));
 
   useEffect(() => {
+    // Pull room-type inventory snapshot for management view.
     fetch('/api/v3/inventory/room-types')
       .then(res => res.json())
       .then(data => { setRooms(data.data || []); setLoading(false); });
@@ -18,6 +20,7 @@ export default function Inventory() {
   const isAdmin = user?.role === 'admin';
 
   const [alertObj, setAlertObj] = useState({ isOpen: false, text: '' });
+  // Centralized alert helper to keep modal invocation concise.
   const showAlert = (text) => setAlertObj({ isOpen: true, text });
 
   return (
@@ -57,6 +60,7 @@ export default function Inventory() {
                 ) : (
                   <button 
                     className="text-[10px] uppercase tracking-widest text-amber-500 border border-amber-500/30 px-3 py-1 hover:bg-amber-500/10" 
+                    // Non-admin flow raises a deletion request instead of direct removal.
                     onClick={() => showAlert('Request to delete "' + room.name + '" has been sent to Admin for approval. 👑')}
                   >
                     Request Deletion

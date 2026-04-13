@@ -10,6 +10,7 @@ const PAYMENT_BADGE = {
 };
 
 export default function Transactions() {
+  // Staff context from local storage for sidebar mode rendering.
   const user = JSON.parse(localStorage.getItem('user'));
   const isManagerMode = localStorage.getItem('managerMode') === 'true';
   const [txns, setTxns] = useState([]);
@@ -17,13 +18,16 @@ export default function Transactions() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Retrieve all transaction rows for dashboard metrics and table view.
     fetch('/api/v3/transactions')
       .then(r => r.json())
       .then(data => { setTxns(data.data || []); setLoading(false); })
       .catch(() => setLoading(false));
   }, []);
 
+  // Frontend-side status filter for quick operational slicing.
   const filtered = filter === 'all' ? txns : txns.filter(t => t.paymentStatus === filter);
+  // Aggregate metrics used by summary cards.
   const totalRevenue = txns.filter(t => t.paymentStatus === 'Paid').reduce((s, t) => s + (t.amount || 0), 0);
   const pending = txns.filter(t => t.paymentStatus === 'Pending').reduce((s, t) => s + (t.amount || 0), 0);
 

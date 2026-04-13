@@ -5,15 +5,18 @@ import { CheckCircle, Copy, Download, Home, Gift } from 'lucide-react';
 
 export default function GiftCardSuccess() {
   const [searchParams] = useSearchParams();
+  // Stripe success callback session id used to verify and hydrate voucher details.
   const sessionId = searchParams.get('session_id');
   
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [giftCard, setGiftCard] = useState(null);
   const [isCopied, setIsCopied] = useState(false);
+  // Prevent duplicate verification calls in StrictMode double-invocation scenarios.
   const hasCalledRef = React.useRef(false);
 
   useEffect(() => {
+    // Hard stop when success page is opened without a valid checkout session.
     if (!sessionId) {
       setError("We couldn't identify this transaction session. Please contact the Manor Shadow Team.");
       setLoading(false);
@@ -25,6 +28,7 @@ export default function GiftCardSuccess() {
 
     const verify = async () => {
       try {
+        // Confirm payment session and retrieve the generated gift card payload.
         const res = await axios.post('/api/v3/gift-cards/verify-purchase', { sessionId });
         // Mapping: res.data.data because of sendSuccess wrapper
         setGiftCard(res.data.data);
@@ -41,6 +45,7 @@ export default function GiftCardSuccess() {
 
   const copyToClipboard = () => {
     if (giftCard?.code) {
+      // Quick utility action with a temporary success state for user feedback.
       navigator.clipboard.writeText(giftCard.code);
       setIsCopied(true);
       setTimeout(() => setIsCopied(false), 2000);

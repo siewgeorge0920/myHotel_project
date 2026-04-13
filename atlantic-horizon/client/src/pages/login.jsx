@@ -10,7 +10,7 @@ export default function Login() {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-  // ====== 24H SESSION AUTO-REDIRECT ======
+  // 24H SESSION AUTO-REDIRECT 
   useEffect(() => {
     const userStr = localStorage.getItem('user');
     const timestamp = localStorage.getItem('loginTimestamp');
