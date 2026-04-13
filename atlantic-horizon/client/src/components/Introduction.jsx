@@ -1,7 +1,6 @@
-
 export default function Introduction() {
   return (
-    <section className="relative overflow-hidden py-24 px-6 bg-white">
+    <section className="relative overflow-hidden py-24 px-6" style={{ backgroundColor: '#ded5af' }}>
 
       {/* Subtle gold accent lines */}
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-amber-600/40 to-transparent" />
