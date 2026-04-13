@@ -7,7 +7,7 @@ import Newsletter from '../components/Newsletter';
 
 export default function Home() {
   return (
-    <main id="top" className="relative bg-[#0d0f0b] font-sans">
+    <main id="top" className="relative bg-white font-sans">
       <HeroSlider />
 
       {/* Booking bar is positioned automatically by QuickBook's internal margin settings */}

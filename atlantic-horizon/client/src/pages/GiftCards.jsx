@@ -194,14 +194,6 @@ export default function GiftCards() {
                   {loading ? 'PROCESSING...' : 'PURCHASE VOUCHER'}
                 </button>
 
-                <button
-                  type="button"
-                  onClick={handleInstantIssue}
-                  disabled={loading}
-                  className="w-full bg-white/5 border border-white/10 text-white font-cinzel text-[10px] py-3 rounded-xl hover:bg-white/10 transition-all tracking-[0.2em] font-black"
-                >
-                  ISSUE COMPLIMENTARY (SKIP PAYMENT)
-                </button>
               </div>
             </div>
           </form>

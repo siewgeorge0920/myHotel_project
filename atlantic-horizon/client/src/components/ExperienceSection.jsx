@@ -17,12 +17,12 @@ const features = [
 
 export default function ExperienceSection() {
   return (
-    <section className="py-24 px-6 md:px-[8%]" style={{ background: 'linear-gradient(180deg, #141610 0%, #1a1d17 50%, #0f1109 100%)' }}>
+    <section className="py-24 px-6 md:px-[8%]" style={{ backgroundColor: '#ded5af' }}>
 
       {/* Section Header */}
       <div className="text-center mb-20">
         <p className="text-amber-500 uppercase tracking-[0.5em] text-[10px] font-black mb-4">The Manor Experience</p>
-        <h2 className="font-cinzel text-3xl md:text-4xl text-white/90 uppercase tracking-widest mb-4">A World Apart</h2>
+        <h2 className="font-cinzel text-3xl md:text-4xl text-gray-900 uppercase tracking-widest mb-4">A World Apart</h2>
         <div className="flex items-center gap-4 justify-center">
           <div className="h-px w-20 bg-gradient-to-r from-transparent to-amber-600/50" />
           <span className="text-amber-600/60 text-xs">✦</span>
@@ -48,14 +48,14 @@ export default function ExperienceSection() {
             </div>
 
             {/* Text column */}
-            <div className="flex-1 text-white">
+            <div className="flex-1 text-gray-900">
               <p className="text-amber-500 uppercase tracking-[0.4em] text-[10px] font-black mb-4">{f.eyebrow}</p>
-              <h3 className="font-cinzel text-2xl md:text-3xl text-white/90 uppercase tracking-wider mb-6">{f.title}</h3>
+              <h3 className="font-cinzel text-2xl md:text-3xl text-gray-900 uppercase tracking-wider mb-6">{f.title}</h3>
               
               {/* Gold rule */}
               <div className="h-px w-16 bg-amber-600/60 mb-6" />
               
-              <p className="text-white/50 text-base md:text-lg leading-relaxed font-light">{f.text}</p>
+              <p className="text-gray-600 text-base md:text-lg leading-relaxed font-light">{f.text}</p>
               
               <button className="mt-8 px-8 py-3 border border-amber-600/40 text-amber-500 text-[10px] uppercase tracking-[0.3em] font-black hover:bg-amber-600/10 hover:border-amber-500 transition-all">
                 Explore More
