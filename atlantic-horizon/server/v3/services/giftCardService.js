@@ -177,6 +177,44 @@ class GiftCardService {
      if (card.balance <= 0) throw new Error("Card balance is €0.");
      return card;
   }
+
+  /**
+   * 📜 Get All Gift Cards (Admin View)
+   */
+  async getAll() {
+    return await GiftCard.find().sort({ createdAt: -1 });
+  }
+
+  /**
+   * 🕰️ Get Detailed History for a Code
+   */
+  async getHistory(code) {
+    const card = await GiftCard.findOne({ code: code.toUpperCase() });
+    if (!card) throw new Error("Voucher not found.");
+
+    // 1. Fetch Audit Logs
+    const logs = await Log.find({ target_id: card.code }).sort({ createdAt: -1 });
+
+    // 2. Fetch Stripe Status (if applicable)
+    let stripeStatus = 'N/A';
+    if (card.stripe_session_id && !card.stripe_session_id.startsWith('INST-')) {
+      try {
+        const stripe = await getStripe();
+        const session = await stripe.checkout.sessions.retrieve(card.stripe_session_id);
+        stripeStatus = session.payment_status === 'paid' ? 'Succeeded' : session.payment_status;
+      } catch (err) {
+        stripeStatus = 'Stripe Error';
+      }
+    } else if (card.stripe_session_id?.startsWith('INST-')) {
+      stripeStatus = 'Direct Issue';
+    }
+
+    return {
+      card,
+      logs,
+      stripeStatus
+    };
+  }
 }
 
 export default new GiftCardService();

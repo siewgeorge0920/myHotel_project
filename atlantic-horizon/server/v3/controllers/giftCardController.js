@@ -60,6 +60,33 @@ class GiftCardController {
       res.status(500).json({ error: error.message });
     }
   }
+
+  /**
+   * 📜 Get All Gift Cards (Admin Only)
+   */
+  async getAllGiftCards(req, res) {
+    try {
+      const cards = await giftCardService.getAll();
+      sendSuccess(res, cards, "Gift card history retrieved.");
+    } catch (error) {
+      console.error("V3 Get All GCs Error:", error.message);
+      res.status(500).json({ error: error.message });
+    }
+  }
+
+  /**
+   * 🕰️ Get Detailed History for a single Code
+   */
+  async getGiftCardHistory(req, res) {
+    const { code } = req.params;
+    try {
+      const history = await giftCardService.getHistory(code);
+      sendSuccess(res, history, "Voucher timeline retrieved.");
+    } catch (error) {
+      console.error("V3 Get GC History Error:", error.message);
+      res.status(400).json({ error: error.message });
+    }
+  }
 }
 
 export default new GiftCardController();

@@ -18,6 +18,7 @@ export default function ManagementSidebar({ user }) {
     { name: 'Room Service', path: '/roomService', icon: '' },
     { name: 'Identity (CRM)', path: '/crm', icon: '' },
     { name: 'Inventory', path: '/inventory', icon: '' },
+    { name: 'Gift Cards', path: '/admin/gift-cards', icon: '', adminOnly: true },
     { name: 'Settings', path: '/adminSettings', icon: '', adminOnly: true }
   ];
 

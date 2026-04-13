@@ -55,8 +55,37 @@ calculateNights(checkIn, checkOut) {
       total_amount: data.total_amount || data.price,
       payment_status: data.paymentStatus || 'Paid',
       status: data.status || 'Confirmed',
-      nights: nights
+      nights: nights,
+      gift_card_used: data.giftCardCode || null
     });
+
+    // 🎫 Handle Gift Card Redemption
+    if (data.giftCardCode) {
+      const GiftCard = (await import('../models/GiftCard.js')).default;
+      const card = await GiftCard.findOne({ code: data.giftCardCode.toUpperCase(), status: 'Active' });
+      
+      if (card) {
+        const originalPrice = data.total_amount || data.price;
+        const totalWithAddons = originalPrice; // The price passed in should already be the total
+        
+        // We calculate how much to deduct
+        // If card has 200 and price is 500, deduct 200.
+        // If card has 500 and price is 200, deduct 200.
+        const deduction = Math.min(card.balance, totalWithAddons);
+        
+        card.balance -= deduction;
+        if (card.balance <= 0) card.status = 'Used';
+        await card.save();
+
+        await Log.create({
+          action: 'GIFT_CARD_REDEEM',
+          details: `Redeemed €${deduction} from ${card.code} for booking ${bookingId}`,
+          performedBy: guest.name,
+          targetId: card.code,
+          timestamp: new Date()
+        });
+      }
+    }
 
     await booking.save();
     

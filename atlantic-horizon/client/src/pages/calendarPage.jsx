@@ -88,12 +88,19 @@ export default function CalendarPage() {
   // --- 计算总价 ---
   const calculateTotal = () => {
     let total = selectedItem ? selectedItem.price * nights : 0;
-    if (addons.breakfast) total += (25 * nights * (guestDetails.adults + guestDetails.seniors));
+    
+    // Addons calculation
+    if (addons.breakfast) {
+      const totalGuests = (guestDetails.adults || 0) + (guestDetails.seniors || 0) + (guestDetails.infants || 0);
+      total += (25 * nights * totalGuests);
+    }
     if (addons.spa) total += 150;
     
     // Apply Gift Card Deduction
-    if (giftCardInfo.applied) {
-      total = Math.max(0, total - giftCardInfo.balance);
+    if (giftCardInfo.applied && giftCardInfo.balance) {
+      const balance = parseFloat(giftCardInfo.balance);
+      console.log(`[DEBUG] Applying Gift Card: Deducting €${balance} from €${total}`);
+      total = Math.max(0, total - balance);
     }
     
     return total;
@@ -199,10 +206,11 @@ export default function CalendarPage() {
         navigate('/secure-payment', {
           state: {
             bookingId: bookingData.data._id,
+            refId: bookingData.data.booking_id,
             selectedRoom: selectedItem,
             totalPrice: calculateTotal(),
-            guestInfo,
-            nights
+            guestInfo: guestInfo,
+            nights: nights
           }
         });
       }
@@ -269,7 +277,11 @@ export default function CalendarPage() {
                     isActive ? 'bg-amber-600/20 border-amber-500 text-amber-400 shadow-[0_0_20px_rgba(245,158,11,0.3)] scale-110' :
                     'bg-white/5 border-white/15 text-white/30'
                   }`}>
-                    {isDone ? 'Done' : s.icon}
+                    {isDone ? (
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
+                      </svg>
+                    ) : s.icon}
                   </div>
                   <span className={`hidden sm:block text-[9px] uppercase tracking-widest font-black transition-colors ${
                     isDone ? 'text-amber-500/60 group-hover:text-amber-500' : isActive ? 'text-amber-400' : 'text-white/10'

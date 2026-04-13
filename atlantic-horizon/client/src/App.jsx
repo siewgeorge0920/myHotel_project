@@ -23,6 +23,7 @@ import Login from './pages/login';
 import GiftCards from './pages/GiftCards';
 import GiftCardSuccess from './pages/GiftCardSuccess';
 import AdminSettings from './pages/adminSettings';
+import AdminGiftCards from './pages/adminGiftCards';
 import SelfCheckIn from './pages/SelfCheckIn';
 import BookingSuccess from './pages/BookingSuccess';
 
@@ -105,7 +106,7 @@ const LayoutWrapper = ({ children, onOpenCookies }) => {
   const isManagement = [
     '/staffdashboard', '/adminiam', '/inventory', '/adminlogs', 
     '/roommanagement', '/roompackage', '/physicalrooms', '/bookings', '/transactions', 
-    '/admincalendar', '/roomservice', '/crm'
+    '/admincalendar', '/roomservice', '/crm', '/admin'
   ].some(p => location.pathname.toLowerCase().startsWith(p));
 
   if (isManagement) {
@@ -209,6 +210,9 @@ export default function App() {
         <Suspense fallback={<p>Loading our luxury experience...</p>}>
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/admin/logs" element={<AdminLogs />} />
+          <Route path="/admin/gift-cards" element={<AdminGiftCards />} />
+          <Route path="/admin" element={<AdminSettings />} />
           <Route path="/calendar" element={<CalendarPage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/secure-payment" element={<PaymentPage />} />

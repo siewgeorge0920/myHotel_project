@@ -7,7 +7,7 @@ import { COLORS } from '../colors';
 // Initialize Stripe once using the publishable key from Vite env.
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || 'pk_test_51O2x5uD8Uo1oVpA1z2B3c4D5E6F7G8H9I0J1K2L3M4N5O6P7Q8R9S0T1U2V3W4X5Y6Z7A8B9C0D1E2F3G4H5I6J7K8L9M0N');
 
-function CheckoutForm({ clientSecret, bookingId, totalPrice }) {
+function CheckoutForm({ clientSecret, bookingId, refId, totalPrice, onPaymentSuccess }) {
   const stripe = useStripe();
   const elements = useElements();
   const navigate = useNavigate();
@@ -37,6 +37,7 @@ function CheckoutForm({ clientSecret, bookingId, totalPrice }) {
       setError(null);
       setProcessing(false);
       setSucceeded(true);
+      if (onPaymentSuccess) onPaymentSuccess();
       
       // Update payment status (Public endpoint)
       await fetch(`/api/v3/bookings/${bookingId}/payment-status`, {
@@ -46,7 +47,7 @@ function CheckoutForm({ clientSecret, bookingId, totalPrice }) {
       });
 
       // Redirect to dedicated success page and pass booking reference
-      setTimeout(() => navigate('/booking-success', { state: { bookingId } }), 3000);
+      setTimeout(() => navigate('/booking-success', { state: { bookingId: refId || bookingId } }), 1500);
     }
   };
 
@@ -54,6 +55,7 @@ function CheckoutForm({ clientSecret, bookingId, totalPrice }) {
     <form onSubmit={handleSubmit} className="w-full">
       <div className="p-4 border border-white/20 mb-6 bg-white/5">
         <CardElement options={{
+          hidePostalCode: true,
           style: {
             base: {
               color: '#ffffff',
@@ -88,12 +90,15 @@ export default function PaymentPage() {
   const navigate = useNavigate();
   const [clientSecret, setClientSecret] = useState('');
   const [error, setError] = useState(null);
+  const [paymentSucceeded, setPaymentSucceeded] = useState(false);
 
   // Booking payload passed from previous route (calendar/booking flow).
-  const { bookingId, selectedRoom, guestInfo, nights, totalPrice } = location.state || {};
+  const { bookingId, refId, selectedRoom, guestInfo, nights, totalPrice } = location.state || {};
 
   // Create a payment intent on mount; redirect back if required context is missing.
   useEffect(() => {
+    if (paymentSucceeded) return;
+
     if (!bookingId || !totalPrice) {
       navigate('/calendar');
       return;
@@ -135,7 +140,13 @@ export default function PaymentPage() {
           </div>
         ) : clientSecret ? (
           <Elements stripe={stripePromise} options={{ clientSecret }}>
-            <CheckoutForm clientSecret={clientSecret} bookingId={bookingId} totalPrice={totalPrice} />
+            <CheckoutForm 
+              clientSecret={clientSecret} 
+              bookingId={bookingId} 
+              refId={refId} 
+              totalPrice={totalPrice}
+              onPaymentSuccess={() => setPaymentSucceeded(true)} 
+            />
           </Elements>
         ) : (
           <p className="text-center text-white/30 text-xs uppercase animate-pulse">Initializing Secure Gateway...</p>
