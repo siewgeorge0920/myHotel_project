@@ -191,11 +191,19 @@ export default function App() {
     }
   }, []);
 
-  const handleCookieSave = (preference) => {
+  const handleCookieSave = async (preference) => {
     try {
+      // 1. Save to local storage for instant UI state
       localStorage.setItem('ath_cookie_preference', preference);
+
+      // 2. Save to database for compliance/audit
+      await fetch('/api/v3/cookie-consent', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ preference })
+      });
     } catch (error) {
-      // Ignore storage errors and still close the modal.
+      console.warn("Cookie preference sync failed:", error.message);
     }
     setIsCookieOpen(false);
   };

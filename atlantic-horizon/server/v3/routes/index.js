@@ -6,6 +6,7 @@ import giftCardController from '../controllers/giftCardController.js';
 import physicalRoomController from '../controllers/physicalRoomController.js';
 import authController from '../controllers/authController.js';
 import crmController from '../controllers/crmController.js';
+import cookieController from '../controllers/cookieController.js';
 import { protect, restrictTo } from '../middleware/auth.js';
 
 const router = express.Router();
@@ -80,5 +81,11 @@ router.delete('/crm/clients/:id', protect, restrictTo('admin'), crmController.de
  */
 router.get('/room-card/my-key', iotKeyController.getMyKey);
 router.post('/room-card/regenerate', iotKeyController.regenerateKey);
+
+/**
+ * 🍪 Cookie Consent Routes
+ */
+router.post('/cookie-consent', cookieController.saveConsent);
+router.get('/cookie-consents', protect, restrictTo('admin', 'manager'), cookieController.getAllConsents);
 
 export default router;
