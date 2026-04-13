@@ -18,6 +18,7 @@ class BookingController {
   updateStatus = catchAsync(async (req, res) => {
     const { id } = req.params;
     const { status } = req.body;
+    const updated = await bookingService.transitionStatus(id, status);
     sendSuccess(res, updated, `Status transitioned to ${status}`);
   });
 
