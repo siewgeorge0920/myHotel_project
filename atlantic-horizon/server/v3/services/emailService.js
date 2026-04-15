@@ -132,9 +132,16 @@ class EmailService {
       </div>
     `;
 
+    const checkOutDate = new Date(booking.check_out);
+    const checkoutDay = checkOutDate.toLocaleDateString('en-US', { weekday: 'long' });
+
     const html = this._parseTemplate(dbTemplate || defaultTemplate, {
       guest_name: booking.guest_name,
-      room_number: booking.assigned_room || 'Pending Assignment'
+      room_number: booking.assigned_room || 'Pending Assignment',
+      room_type: booking.room_type,
+      department_name: 'Reception Desk',
+      checkout_day: checkoutDay,
+      checkout_time: '11:00 AM' // Default hotel standard
     });
 
     return this._send(recipientEmail, `Welcome to The Manor, ${booking.guest_name}!`, html);

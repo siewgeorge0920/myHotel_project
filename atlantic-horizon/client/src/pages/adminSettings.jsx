@@ -289,7 +289,7 @@ const TemplatesSettingsUI = ({
                   label="Check-in Welcome"
                   value={emailConfig.email_template_checkin}
                   onChange={(val) => setEmailConfig({...emailConfig, email_template_checkin: val})}
-                  placeholders={['{{guest_name}}', '{{room_number}}']}
+                  placeholders={['{{guest_name}}', '{{room_number}}', '{{room_type}}', '{{department_name}}', '{{checkout_day}}', '{{checkout_time}}']}
                 />
 
                 <TemplateField 
