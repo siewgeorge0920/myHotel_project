@@ -108,20 +108,33 @@ export default function AdminSettings() {
 }
 
 // 🟢 FIX: Define sub-components OUTSIDE to prevent focus loss on re-render
-const TemplateField = ({ label, value, onChange, placeholders }) => (
-  <div className="space-y-4 pt-6 border-t border-white/5">
-    <div className="flex justify-between items-end">
-      <label className="text-[10px] uppercase tracking-widest text-amber-500 font-bold">{label}</label>
-      <span className="text-[9px] text-gray-500 italic">Placeholders: {placeholders.join(', ')}</span>
+const TemplateField = ({ label, value, onChange, placeholders }) => {
+  const textareaRef = React.useRef(null);
+
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.height = textareaRef.current.scrollHeight + 'px';
+    }
+  }, [value]);
+
+  return (
+    <div className="space-y-4 pt-6 border-t border-white/5">
+      <div className="flex justify-between items-end">
+        <label className="text-[10px] uppercase tracking-widest text-amber-500 font-bold">{label}</label>
+        <span className="text-[9px] text-gray-500 italic">Placeholders: {placeholders.join(', ')}</span>
+      </div>
+      <textarea
+        ref={textareaRef}
+        rows={6}
+        className="w-full bg-white/5 border border-white/10 p-4 font-mono text-[12px] focus:border-amber-500 outline-none transition-all text-gray-300 leading-relaxed rounded-sm resize-none overflow-hidden"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder="Enter HTML template content here..."
+      />
     </div>
-    <textarea
-      className="w-full bg-white/5 border border-white/10 p-4 font-mono text-[12px] h-[300px] overflow-y-auto focus:border-amber-500 outline-none transition-all text-gray-300 leading-relaxed rounded-sm resize-none"
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      placeholder="Enter HTML template content here..."
-    />
-  </div>
-);
+  );
+};
 
 const TemplatesSettingsUI = ({ 
   loading, 
