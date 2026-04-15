@@ -69,12 +69,16 @@ class EmailService {
       </div>
     `;
 
+    const checkInStr = new Date(booking.check_in).toLocaleDateString();
+    const checkOutStr = new Date(booking.check_out).toLocaleDateString();
+
     const html = this._parseTemplate(dbTemplate || defaultTemplate, {
       guest_name: booking.guest_name,
       booking_id: booking.booking_id,
       room_type: booking.room_type,
-      check_in: new Date(booking.check_in).toLocaleDateString(),
-      check_out: new Date(booking.check_out).toLocaleDateString()
+      check_in: checkInStr,
+      check_out: checkOutStr,
+      stay_range: `${checkInStr} to ${checkOutStr}`
     });
 
     return this._send(recipientEmail, `Reservation Confirmed: ${booking.booking_id}`, html);

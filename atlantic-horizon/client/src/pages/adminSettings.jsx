@@ -227,7 +227,7 @@ const TemplatesSettingsUI = ({ loading, emailConfig, setEmailConfig, saving, mes
                   label="Booking Confirmation"
                   value={emailConfig.email_template_booking}
                   onChange={(val) => setEmailConfig({...emailConfig, email_template_booking: val})}
-                  placeholders={['{{guest_name}}', '{{booking_id}}', '{{room_type}}', '{{check_in}}', '{{check_out}}']}
+                  placeholders={['{{guest_name}}', '{{booking_id}}', '{{room_type}}', '{{check_in}}', '{{check_out}}', '{{stay_range}}']}
                 />
 
                 <TemplateField 
