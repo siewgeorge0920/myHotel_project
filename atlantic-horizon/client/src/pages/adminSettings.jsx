@@ -63,21 +63,37 @@ export default function AdminSettings() {
      return <div className="p-20 text-center text-red-500 font-black uppercase tracking-widest mt-12">Access Denied. Admin or Manager role required.</div>;
   }
 
-  const TemplateField = ({ label, value, onChange, placeholders }) => (
-    <div className="space-y-4 pt-6 border-t border-white/5">
-      <div className="flex justify-between items-end">
-        <label className="text-[10px] uppercase tracking-widest text-amber-500 font-bold">{label}</label>
-        <span className="text-[9px] text-gray-500 italic">Placeholders: {placeholders.join(', ')}</span>
-      </div>
-      <textarea
-        className="w-full bg-white/5 border border-white/10 p-4 font-mono text-[12px] min-h-[200px] focus:border-amber-500 outline-none transition-all text-gray-300 leading-relaxed rounded-sm"
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder="Enter HTML template content here..."
-      />
-    </div>
+  return (
+    <TemplatesSettingsUI 
+      loading={loading}
+      emailConfig={emailConfig}
+      setEmailConfig={setEmailConfig}
+      saving={saving}
+      message={message}
+      handleSave={handleSave}
+      user={user}
+      isManagerMode={isManagerMode}
+    />
   );
+}
 
+// 🟢 FIX: Define sub-components OUTSIDE to prevent focus loss on re-render
+const TemplateField = ({ label, value, onChange, placeholders }) => (
+  <div className="space-y-4 pt-6 border-t border-white/5">
+    <div className="flex justify-between items-end">
+      <label className="text-[10px] uppercase tracking-widest text-amber-500 font-bold">{label}</label>
+      <span className="text-[9px] text-gray-500 italic">Placeholders: {placeholders.join(', ')}</span>
+    </div>
+    <textarea
+      className="w-full bg-white/5 border border-white/10 p-4 font-mono text-[12px] min-h-[200px] focus:border-amber-500 outline-none transition-all text-gray-300 leading-relaxed rounded-sm"
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      placeholder="Enter HTML template content here..."
+    />
+  </div>
+);
+
+const TemplatesSettingsUI = ({ loading, emailConfig, setEmailConfig, saving, message, handleSave, user, isManagerMode }) => {
   return (
     <div className="flex min-h-screen text-white font-sans" style={{ backgroundColor: COLORS.bgDeep }}>
       <ManagementSidebar user={user} isManagerMode={isManagerMode} />
@@ -177,6 +193,16 @@ export default function AdminSettings() {
                     />
                   </div>
                 </div>
+
+                <div className="pt-6 border-t border-white/5">
+                  <button
+                    disabled={saving}
+                    className="bg-amber-600 hover:bg-amber-700 w-full py-4 text-[11px] font-black uppercase tracking-[0.4em] flex items-center justify-center gap-3 transition-all disabled:opacity-50 shadow-xl"
+                  >
+                    {saving ? <Loader className="animate-spin w-4 h-4" /> : <Save className="w-4 h-4" />}
+                    {saving ? 'SAVING...' : 'COMMIT SMTP CONFIG'}
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -239,5 +265,5 @@ export default function AdminSettings() {
       </main>
     </div>
   );
-}
+};
 

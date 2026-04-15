@@ -17,7 +17,9 @@ const allowedOrigins = [
   'http://127.0.0.1:5173',
   'https://my-hotel-project-siewgeorge0920.vercel.app',
   'https://theatlantichorizon.ie',
-  'https://www.theatlantichorizon.ie'
+  'https://www.theatlantichorizon.ie',
+  'https://theatlantichorizion.com',
+  'https://www.theatlantichorizion.com'
 ];
 
 app.use(cors({

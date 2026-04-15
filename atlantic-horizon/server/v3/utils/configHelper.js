@@ -15,6 +15,17 @@ export const getSetting = async (key, defaultValue = null) => {
 };
 
 /**
+ * Batch Fetch Utility
+ */
+export const getSettings = async (keysMap) => {
+  const result = {};
+  for (const [key, envFallback] of Object.entries(keysMap)) {
+    result[key] = await getSetting(key, process.env[envFallback]);
+  }
+  return result;
+};
+
+/**
  * 💾 Mutation Utility: Create or Update Setting
  */
 export const upsertSetting = async (key, value, description = '') => {

@@ -5,6 +5,7 @@ import iotKeyController from '../controllers/iotKeyController.js';
 import giftCardController from '../controllers/giftCardController.js';
 import physicalRoomController from '../controllers/physicalRoomController.js';
 import authController from '../controllers/authController.js';
+import settingsController from '../controllers/settingsController.js';
 
 import cookieController from '../controllers/cookieController.js';
 import { protect, restrictTo } from '../middleware/auth.js';
