@@ -164,79 +164,15 @@ const TemplatesSettingsUI = ({
                  <Server size={80} />
                </div>
                
-              <div className="flex items-center gap-4 mb-10 border-b border-white/5 pb-6">
-                <div className="w-12 h-12 bg-amber-600/20 rounded-full flex items-center justify-center">
-                  <Mail className="text-amber-500" />
-                </div>
-                <div>
-                  <h2 className="text-2xl font-serif italic">Email SMTP Gateway</h2>
-                  <p className="text-[10px] text-gray-500 uppercase tracking-widest mt-1">Configure Zoho or other Business Mail services</p>
-                </div>
-              </div>
-
-              {smtpMessage.text && (
-                <div className={`mb-8 p-4 border text-[11px] uppercase tracking-widest flex items-center gap-3 ${
-                  smtpMessage.type === 'success' ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' : 'bg-red-500/10 border-red-500/20 text-red-400'
-                }`}>
-                  {smtpMessage.type === 'success' ? <CheckCircle size={16} /> : <Shield size={16} />}
-                  {smtpMessage.text}
-                </div>
-              )}
-
-              <div className="space-y-8">
-                <div className="grid md:grid-cols-2 gap-8">
-                  <div className="space-y-2">
-                    <label className="text-[10px] uppercase tracking-widest text-amber-500 font-bold">SMTP Host</label>
-                    <input
-                      required
-                      type="text"
-                      className="w-full bg-white/5 border border-white/10 py-4 px-4 focus:border-amber-500 outline-none transition-all text-sm"
-                      value={emailConfig.email_host}
-                      onChange={(e) => setEmailConfig({...emailConfig, email_host: e.target.value})}
-                      placeholder="smtp.zoho.com"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <label className="text-[10px] uppercase tracking-widest text-amber-500 font-bold">SMTP Port</label>
-                    <input
-                      required
-                      type="number"
-                      className="w-full bg-white/5 border border-white/10 py-4 px-4 focus:border-amber-500 outline-none transition-all text-sm"
-                      value={emailConfig.email_port}
-                      onChange={(e) => setEmailConfig({...emailConfig, email_port: e.target.value})}
-                      placeholder="465"
-                    />
-                  </div>
-                </div>
-
-                <div className="grid md:grid-cols-2 gap-8">
-                  <div className="space-y-2">
-                    <label className="text-[10px] uppercase tracking-widest text-amber-500 font-bold">System Email</label>
-                    <input
-                      required
-                      type="email"
-                      className="w-full bg-white/5 border border-white/10 py-4 px-4 focus:border-amber-500 outline-none transition-all text-sm"
-                      value={emailConfig.email_user}
-                      onChange={(e) => setEmailConfig({...emailConfig, email_user: e.target.value})}
-                      placeholder="admin@yourdomain.ie"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <label className="text-[10px] uppercase tracking-widest text-amber-500 font-bold">App Password</label>
-                    <input
-                      required
-                      type="password"
-                      className="w-full bg-white/5 border border-white/10 py-4 px-4 focus:border-amber-500 outline-none transition-all text-sm"
-                      value={emailConfig.email_pass}
-                      onChange={(e) => setEmailConfig({...emailConfig, email_pass: e.target.value})}
-                      placeholder="••••••••••••••••"
-                    />
-                  </div>
-                </div>
-
-                <div className="pt-6 border-t border-white/5">
+                <div className="pt-6 border-t border-white/5 space-y-4">
+                  {smtpMessage.text && (
+                    <div className={`p-4 border text-[11px] uppercase tracking-widest flex items-center gap-3 ${
+                      smtpMessage.type === 'success' ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' : 'bg-red-500/10 border-red-500/20 text-red-400'
+                    }`}>
+                      {smtpMessage.type === 'success' ? <CheckCircle size={16} /> : <Shield size={16} />}
+                      {smtpMessage.text}
+                    </div>
+                  )}
                   <button
                     type="submit"
                     disabled={savingSmtp}
@@ -265,15 +201,6 @@ const TemplatesSettingsUI = ({
                 </div>
               </div>
 
-              {templateMessage.text && (
-                <div className={`mb-8 p-4 border text-[11px] uppercase tracking-widest flex items-center gap-3 ${
-                  templateMessage.type === 'success' ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' : 'bg-red-500/10 border-red-500/20 text-red-400'
-                }`}>
-                  {templateMessage.type === 'success' ? <CheckCircle size={16} /> : <Shield size={16} />}
-                  {templateMessage.text}
-                </div>
-              )}
-
               <div className="space-y-12">
                 <TemplateField 
                   label="Booking Confirmation"
@@ -297,7 +224,15 @@ const TemplatesSettingsUI = ({
                 />
               </div>
 
-              <div className="pt-10 border-t border-white/5 mt-10">
+              <div className="pt-10 border-t border-white/5 mt-10 space-y-4">
+                  {templateMessage.text && (
+                    <div className={`p-4 border text-[11px] uppercase tracking-widest flex items-center gap-3 ${
+                      templateMessage.type === 'success' ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' : 'bg-red-500/10 border-red-500/20 text-red-400'
+                    }`}>
+                      {templateMessage.type === 'success' ? <CheckCircle size={16} /> : <Shield size={16} />}
+                      {templateMessage.text}
+                    </div>
+                  )}
                   <button
                     type="submit"
                     disabled={savingTemplates}
