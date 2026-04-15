@@ -14,16 +14,20 @@ connectDB();
 
 const allowedOrigins = [
   'http://localhost:5173',
+  'http://127.0.0.1:5173',
   'https://my-hotel-project-siewgeorge0920.vercel.app',
-  'https://www.theatlantichorizion.com',
-  'https://theatlantichorizion.com'
+  'https://theatlantichorizon.ie',
+  'https://www.theatlantichorizon.ie'
 ];
 
 app.use(cors({
   origin: function (origin, callback) {
+    // 💡 Logic: Allow requests with no origin (like mobile apps or curl) 
+    // or if the origin is in our whitelist
     if (!origin || allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
     } else {
+      console.warn(`🛑 CORS Blocked: Origin "${origin}" is not in the whitelist.`);
       callback(new Error('Not allowed by CORS'));
     }
   },

@@ -62,7 +62,7 @@ class BookingController {
   createSession = catchAsync(async (req, res) => {
     const { roomName, amount, guestEmail, nights } = req.body;
     const stripe = await getStripe();
-    const baseUrl = process.env.CLIENT_URL || 'https://theatlantichorizion.com';
+    const baseUrl = process.env.CLIENT_URL || 'https://theatlantichorizon.ie';
     const taxRate = parseFloat(await getSetting('tax_rate', '0'));
     const serviceCharge = parseFloat(await getSetting('service_charge', '0'));
 
@@ -121,7 +121,7 @@ class BookingController {
     const stripe = await getStripe();
     const taxRate = parseFloat(await getSetting('tax_rate', '0'));
     const serviceCharge = parseFloat(await getSetting('service_charge', '0'));
-    const baseUrl = process.env.CLIENT_URL || 'https://theatlantichorizion.com';
+    const baseUrl = process.env.CLIENT_URL || 'https://theatlantichorizon.ie';
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
