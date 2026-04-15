@@ -30,8 +30,10 @@ const slides = [
 
 export default function HeroSlider() {
   const [index, setIndex] = useState(0);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     const timer = setInterval(() => {
       setIndex((prev) => (prev + 1) % slides.length);
     }, 8000); // Slower interval for cinematic feel
@@ -51,7 +53,7 @@ export default function HeroSlider() {
           {/* Ken Burns Image */}
           <div
             className={`absolute inset-0 bg-cover bg-center transition-transform duration-[8000ms] ease-linear ${
-              i === index ? "scale-110" : "scale-100"
+              i === index && mounted ? "scale-110" : "scale-100"
             }`}
             style={{ backgroundImage: `url(${slide.src})` }}
           />
