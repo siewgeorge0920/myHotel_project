@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect, useState } from 'react'; // Core Fix 1: Remember Import useEffect
+import React, { Suspense, useEffect, useState, useRef } from 'react'; // Core Fix 1: Remember Import useEffect
 import { BrowserRouter as Router, Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import Lenis from 'lenis';
 
@@ -67,19 +67,10 @@ import CookieWindow from './components/CookieWindow';
 
 const AdminLogs = React.lazy(() => import('./pages/adminLogs'));
 
-// Scroll Auto-top Component
-const ScrollToTop = () => {
-  const { pathname } = useLocation();
-  useEffect(() => {
-    window.scrollTo(0, 0); // Instantly scroll to top on every URL change!
-  }, [pathname]);
-  return null;
-};
-
-// Layout Wrapper (Includes transition effects)
-const LayoutWrapper = ({ children, onOpenCookies }) => {
+// Layout Wrapper (Includes transition effects and Scroll Reset)
+const LayoutWrapper = ({ children, onOpenCookies, lenisRef }) => {
   const location = useLocation();
-  const navigate = useNavigate(); // Added navigate hook
+  const navigate = useNavigate();
   const [isTransitioning, setIsTransitioning] = React.useState(false);
   
   //  NEW MODAL STATE 
@@ -87,18 +78,29 @@ const LayoutWrapper = ({ children, onOpenCookies }) => {
   const closeModal = () => setActiveModal(null);
 
   React.useEffect(() => {
+    // 1. Trigger transition
     setIsTransitioning(true);
     const timer = setTimeout(() => setIsTransitioning(false), 800);
+
+    // 2. ⚡ ROBUST SCROLL RESET (Lenis aware)
+    if (lenisRef.current) {
+      lenisRef.current.scrollTo(0, { immediate: true });
+    } else {
+      window.scrollTo(0, 0);
+    }
+
     return () => clearTimeout(timer);
-  }, [location.pathname]);
+  }, [location.pathname, lenisRef]);
 
   // NEW: Handle Gallery Click
   const handleGalleryClick = () => {
     if (location.pathname === '/') {
-      // If already on Home, smooth scroll to top
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      if (lenisRef.current) {
+        lenisRef.current.scrollTo(0, { behavior: 'smooth' });
+      } else {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
     } else {
-      // If on another page, navigate to Home
       navigate('/');
     }
   };
@@ -136,7 +138,7 @@ const LayoutWrapper = ({ children, onOpenCookies }) => {
         onOpenParking={() => setActiveModal('parking')}
         onOpenPrivacy={() => setActiveModal('privacy')}
         onOpenCookies={onOpenCookies}
-        onOpenGallery={handleGalleryClick} // Passed the gallery function here
+        onOpenGallery={handleGalleryClick} 
       />
 
       {/* RENDER ACTIVE MODAL  */}
@@ -153,6 +155,7 @@ const LayoutWrapper = ({ children, onOpenCookies }) => {
 
 export default function App() {
   const [isCookieOpen, setIsCookieOpen] = useState(false);
+  const lenisRef = useRef(null);
 
   useEffect(() => {
     // Initialize Lenis Smooth Scroll
@@ -168,6 +171,8 @@ export default function App() {
       infinite: false,
     });
 
+    lenisRef.current = lenis;
+
     function raf(time) {
       lenis.raf(time);
       requestAnimationFrame(raf);
@@ -177,6 +182,7 @@ export default function App() {
 
     return () => {
       lenis.destroy();
+      lenisRef.current = null;
     };
   }, []);
 
@@ -193,10 +199,7 @@ export default function App() {
 
   const handleCookieSave = async (preference) => {
     try {
-      // 1. Save to local storage for instant UI state
       localStorage.setItem('ath_cookie_preference', preference);
-
-      // 2. Save to database for compliance/audit
       await fetch('/api/v3/cookie-consent', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -210,11 +213,11 @@ export default function App() {
 
   return (
     <Router>
-      {/* Core Fix 3: ScrollToTop must be inside Router */}
-      <ScrollToTop /> 
-
       {/* Pass the function to open cookies into the LayoutWrapper */}
-      <LayoutWrapper onOpenCookies={() => setIsCookieOpen(true)}>
+      <LayoutWrapper 
+        onOpenCookies={() => setIsCookieOpen(true)} 
+        lenisRef={lenisRef}
+      >
         <Suspense fallback={<p>Loading our luxury experience...</p>}>
         <Routes>
           <Route path="/" element={<Home />} />
