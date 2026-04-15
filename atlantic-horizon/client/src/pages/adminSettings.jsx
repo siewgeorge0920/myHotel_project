@@ -115,7 +115,7 @@ const TemplateField = ({ label, value, onChange, placeholders }) => (
       <span className="text-[9px] text-gray-500 italic">Placeholders: {placeholders.join(', ')}</span>
     </div>
     <textarea
-      className="w-full bg-white/5 border border-white/10 p-4 font-mono text-[12px] min-h-[200px] focus:border-amber-500 outline-none transition-all text-gray-300 leading-relaxed rounded-sm"
+      className="w-full bg-white/5 border border-white/10 p-4 font-mono text-[12px] h-[300px] overflow-y-auto focus:border-amber-500 outline-none transition-all text-gray-300 leading-relaxed rounded-sm resize-none"
       value={value}
       onChange={(e) => onChange(e.target.value)}
       placeholder="Enter HTML template content here..."
