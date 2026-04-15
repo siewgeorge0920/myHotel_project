@@ -345,11 +345,6 @@ const TemplatesSettingsUI = ({
                   </button>
               </div>
             </form>
-
-            <div className="p-6 border border-white/5 bg-white/5 backdrop-blur-sm italic text-[11px] leading-relaxed text-gray-500">
-               ⚠️ Note: HTML templates without placeholders might feel less personal to guests. Ensure you use the double-bracket syntax 
-               correctly (e.g., <code>{`{{guest_name}}`}</code>) else the system will skip them.
-            </div>
           </div>
         )}
       </main>
