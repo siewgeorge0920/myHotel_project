@@ -19,8 +19,10 @@ export default function AdminSettings() {
   });
 
   const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [message, setMessage] = useState({ text: '', type: '' });
+  const [savingSmtp, setSavingSmtp] = useState(false);
+  const [savingTemplates, setSavingTemplates] = useState(false);
+  const [smtpMessage, setSmtpMessage] = useState({ text: '', type: '' });
+  const [templateMessage, setTemplateMessage] = useState({ text: '', type: '' });
 
   useEffect(() => {
     const fetchSettings = async () => {
@@ -45,17 +47,42 @@ export default function AdminSettings() {
     fetchSettings();
   }, []);
 
-  const handleSave = async (e) => {
-    e.preventDefault();
-    setSaving(true);
-    setMessage({ text: '', type: '' });
+  const handleSaveSmtp = async (e) => {
+    if (e) e.preventDefault();
+    setSavingSmtp(true);
+    setSmtpMessage({ text: '', type: '' });
     try {
-      await axios.post('/api/v3/settings/email', emailConfig);
-      setMessage({ text: 'Configuration saved successfully!', type: 'success' });
+      const smtpData = {
+        email_user: emailConfig.email_user,
+        email_pass: emailConfig.email_pass,
+        email_host: emailConfig.email_host,
+        email_port: emailConfig.email_port
+      };
+      await axios.post('/api/v3/settings/email', smtpData);
+      setSmtpMessage({ text: 'SMTP Gateway Configuration Saved.', type: 'success' });
     } catch (err) {
-      setMessage({ text: 'Failed to save settings: ' + (err.response?.data?.error || err.message), type: 'error' });
+      setSmtpMessage({ text: 'Failed to save SMTP settings: ' + (err.response?.data?.error || err.message), type: 'error' });
     } finally {
-      setSaving(false);
+      setSavingSmtp(false);
+    }
+  };
+
+  const handleSaveTemplates = async (e) => {
+    if (e) e.preventDefault();
+    setSavingTemplates(true);
+    setTemplateMessage({ text: '', type: '' });
+    try {
+      const templateData = {
+        email_template_booking: emailConfig.email_template_booking,
+        email_template_checkin: emailConfig.email_template_checkin,
+        email_template_giftcard: emailConfig.email_template_giftcard
+      };
+      await axios.post('/api/v3/settings/email', templateData);
+      setTemplateMessage({ text: 'HTML Notification Templates Synchronized.', type: 'success' });
+    } catch (err) {
+      setTemplateMessage({ text: 'Failed to sync templates: ' + (err.response?.data?.error || err.message), type: 'error' });
+    } finally {
+      setSavingTemplates(false);
     }
   };
 
@@ -68,9 +95,12 @@ export default function AdminSettings() {
       loading={loading}
       emailConfig={emailConfig}
       setEmailConfig={setEmailConfig}
-      saving={saving}
-      message={message}
-      handleSave={handleSave}
+      savingSmtp={savingSmtp}
+      savingTemplates={savingTemplates}
+      smtpMessage={smtpMessage}
+      templateMessage={templateMessage}
+      handleSaveSmtp={handleSaveSmtp}
+      handleSaveTemplates={handleSaveTemplates}
       user={user}
       isManagerMode={isManagerMode}
     />
@@ -93,7 +123,19 @@ const TemplateField = ({ label, value, onChange, placeholders }) => (
   </div>
 );
 
-const TemplatesSettingsUI = ({ loading, emailConfig, setEmailConfig, saving, message, handleSave, user, isManagerMode }) => {
+const TemplatesSettingsUI = ({ 
+  loading, 
+  emailConfig, 
+  setEmailConfig, 
+  savingSmtp, 
+  savingTemplates, 
+  smtpMessage, 
+  templateMessage, 
+  handleSaveSmtp, 
+  handleSaveTemplates, 
+  user, 
+  isManagerMode 
+}) => {
   return (
     <div className="flex min-h-screen text-white font-sans" style={{ backgroundColor: COLORS.bgDeep }}>
       <ManagementSidebar user={user} isManagerMode={isManagerMode} />
@@ -115,9 +157,9 @@ const TemplatesSettingsUI = ({ loading, emailConfig, setEmailConfig, saving, mes
             <Loader className="animate-spin" /> Gathering encrypted sanctuary protocols...
           </div>
         ) : (
-          <form onSubmit={handleSave} className="max-w-4xl space-y-10 pb-20">
+          <div className="max-w-4xl space-y-10 pb-20">
             {/* SMTP SECTION */}
-            <div className="bg-[#1e2219] border border-amber-600/20 p-10 rounded-sm shadow-2xl relative overflow-hidden">
+            <form onSubmit={handleSaveSmtp} className="bg-[#1e2219] border border-amber-600/20 p-10 rounded-sm shadow-2xl relative overflow-hidden">
                <div className="absolute top-0 right-0 p-4 opacity-5">
                  <Server size={80} />
                </div>
@@ -132,12 +174,12 @@ const TemplatesSettingsUI = ({ loading, emailConfig, setEmailConfig, saving, mes
                 </div>
               </div>
 
-              {message.text && (
+              {smtpMessage.text && (
                 <div className={`mb-8 p-4 border text-[11px] uppercase tracking-widest flex items-center gap-3 ${
-                  message.type === 'success' ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' : 'bg-red-500/10 border-red-500/20 text-red-400'
+                  smtpMessage.type === 'success' ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' : 'bg-red-500/10 border-red-500/20 text-red-400'
                 }`}>
-                  {message.type === 'success' ? <CheckCircle size={16} /> : <Shield size={16} />}
-                  {message.text}
+                  {smtpMessage.type === 'success' ? <CheckCircle size={16} /> : <Shield size={16} />}
+                  {smtpMessage.text}
                 </div>
               )}
 
@@ -196,18 +238,19 @@ const TemplatesSettingsUI = ({ loading, emailConfig, setEmailConfig, saving, mes
 
                 <div className="pt-6 border-t border-white/5">
                   <button
-                    disabled={saving}
+                    type="submit"
+                    disabled={savingSmtp}
                     className="bg-amber-600 hover:bg-amber-700 w-full py-4 text-[11px] font-black uppercase tracking-[0.4em] flex items-center justify-center gap-3 transition-all disabled:opacity-50 shadow-xl"
                   >
-                    {saving ? <Loader className="animate-spin w-4 h-4" /> : <Save className="w-4 h-4" />}
-                    {saving ? 'SAVING...' : 'COMMIT SMTP CONFIG'}
+                    {savingSmtp ? <Loader className="animate-spin w-4 h-4" /> : <Save className="w-4 h-4" />}
+                    {savingSmtp ? 'SAVING SMTP...' : 'COMMIT SMTP CONFIG'}
                   </button>
                 </div>
               </div>
-            </div>
+            </form>
 
             {/* TEMPLATES SECTION */}
-            <div className="bg-[#1e2219] border border-amber-600/20 p-10 rounded-sm shadow-2xl relative overflow-hidden">
+            <form onSubmit={handleSaveTemplates} className="bg-[#1e2219] border border-amber-600/20 p-10 rounded-sm shadow-2xl relative overflow-hidden">
                <div className="absolute top-0 right-0 p-4 opacity-5">
                  <Code size={80} />
                </div>
@@ -221,6 +264,15 @@ const TemplatesSettingsUI = ({ loading, emailConfig, setEmailConfig, saving, mes
                   <p className="text-[10px] text-gray-500 uppercase tracking-widest mt-1">Design automated HTML responses for guests</p>
                 </div>
               </div>
+
+              {templateMessage.text && (
+                <div className={`mb-8 p-4 border text-[11px] uppercase tracking-widest flex items-center gap-3 ${
+                  templateMessage.type === 'success' ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' : 'bg-red-500/10 border-red-500/20 text-red-400'
+                }`}>
+                  {templateMessage.type === 'success' ? <CheckCircle size={16} /> : <Shield size={16} />}
+                  {templateMessage.text}
+                </div>
+              )}
 
               <div className="space-y-12">
                 <TemplateField 
@@ -247,20 +299,23 @@ const TemplatesSettingsUI = ({ loading, emailConfig, setEmailConfig, saving, mes
 
               <div className="pt-10 border-t border-white/5 mt-10">
                   <button
-                    disabled={saving}
+                    type="submit"
+                    disabled={savingTemplates}
                     className="bg-amber-600 hover:bg-amber-700 w-full py-5 text-[11px] font-black uppercase tracking-[0.5em] flex items-center justify-center gap-3 transition-all disabled:opacity-50 shadow-2xl"
                   >
-                    {saving ? <Loader className="animate-spin w-4 h-4" /> : <Save className="w-4 h-4" />}
-                    {saving ? 'SYNCHRONIZING...' : 'COMMIT ALL INFRASTRUCTURE CHANGES'}
+                    {savingTemplates ? <Loader className="animate-spin w-4 h-4" /> : <Save className="w-4 h-4" />}
+                    {savingTemplates ? 'SYNCHRONIZING...' : 'COMMIT TEMPLATE CHANGES'}
                   </button>
               </div>
-            </div>
+            </form>
 
-            
-          </form>
+            <div className="p-6 border border-white/5 bg-white/5 backdrop-blur-sm italic text-[11px] leading-relaxed text-gray-500">
+               ⚠️ Note: HTML templates without placeholders might feel less personal to guests. Ensure you use the double-bracket syntax 
+               correctly (e.g., <code>{`{{guest_name}}`}</code>) else the system will skip them.
+            </div>
+          </div>
         )}
       </main>
     </div>
   );
 };
-
