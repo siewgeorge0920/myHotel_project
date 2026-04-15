@@ -15,14 +15,19 @@ export const getSetting = async (key, defaultValue = null) => {
 };
 
 /**
- * Batch Fetch Utility
+ * 💾 Mutation Utility: Create or Update Setting
  */
-export const getSettings = async (keysMap) => {
-  const result = {};
-  for (const [key, envFallback] of Object.entries(keysMap)) {
-    result[key] = await getSetting(key, process.env[envFallback]);
+export const upsertSetting = async (key, value, description = '') => {
+  try {
+    return await Setting.findOneAndUpdate(
+      { key },
+      { value, description },
+      { upsert: true, new: true, runValidators: true }
+    );
+  } catch (error) {
+    console.error(`[V3 Config] Failed to save "${key}".`, error.message);
+    throw error;
   }
-  return result;
 };
 
-export default { getSetting, getSettings };
+export default { getSetting, getSettings, upsertSetting };

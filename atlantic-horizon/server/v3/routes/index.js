@@ -76,6 +76,12 @@ router.get('/room-card/my-key', iotKeyController.getMyKey);
 router.post('/room-card/regenerate', iotKeyController.regenerateKey);
 
 /**
+ * ⚙️ Infrastructure & Settings Routes
+ */
+router.get('/settings/email', protect, restrictTo('admin', 'manager'), settingsController.getEmailSettings);
+router.post('/settings/email', protect, restrictTo('admin', 'manager'), settingsController.updateEmailSettings);
+
+/**
  * 🍪 Cookie Consent Routes
  */
 router.post('/cookie-consent', cookieController.saveConsent);

@@ -3,6 +3,7 @@ import PhysicalRoom from '../models/PhysicalRoom.js';
 
 import Log from '../models/Log.js';
 import inventoryService from './inventoryService.js';
+import emailService from './emailService.js';
 
 
 class BookingService {
@@ -79,7 +80,12 @@ calculateNights(checkIn, checkOut) {
 
     await booking.save();
     
-
+    // 📧 Standard Notification
+    try {
+      await emailService.sendBookingEmail(booking.guest_email, booking);
+    } catch (e) {
+      console.error("[Email Notification Failed]", e.message);
+    }
 
     return booking;
   }
@@ -103,6 +109,13 @@ calculateNights(checkIn, checkOut) {
     booking.status = 'CheckedIn';
     booking.check_in_time = new Date();
     await booking.save();
+
+    // 📧 Welcome Notification
+    try {
+      await emailService.sendCheckInEmail(booking.guest_email, booking);
+    } catch (e) {
+      console.error("[Email Notification Failed]", e.message);
+    }
 
     await Log.create({
       action: `RECEPTION CHECK-IN`,
@@ -174,6 +187,14 @@ calculateNights(checkIn, checkOut) {
       status: data.status || 'Confirmed'
     });
     await booking.save();
+
+    // 📧 Administrative Notification
+    try {
+      await emailService.sendBookingEmail(booking.guest_email, booking);
+    } catch (e) {
+      console.error("[Email Notification Failed]", e.message);
+    }
+
     return booking;
   }
   async selfCheckIn(bookingId, email) {
@@ -204,6 +225,13 @@ calculateNights(checkIn, checkOut) {
 
     booking.status = 'CheckedIn';
     await booking.save();
+
+    // 📧 Self Check-in Welcome
+    try {
+      await emailService.sendCheckInEmail(booking.guest_email, booking);
+    } catch (e) {
+      console.error("[Email Notification Failed]", e.message);
+    }
 
     // Log the event
     await Log.create({
