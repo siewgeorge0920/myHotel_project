@@ -185,10 +185,6 @@ const TemplatesSettingsUI = ({
             <p className="text-amber-500 uppercase tracking-[0.4em] text-[10px] font-black mb-3">System Control</p>
             <h1 className="text-4xl font-serif italic tracking-wide">Infrastructure Settings</h1>
           </div>
-          <div className="text-right opacity-40">
-            <p className="text-[10px] uppercase tracking-widest font-bold">Node Environment</p>
-            <p className="text-sm font-mono">V3.0 Sanctuary Core</p>
-          </div>
         </header>
 
         {loading ? (
