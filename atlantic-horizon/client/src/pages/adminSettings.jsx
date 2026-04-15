@@ -118,6 +118,31 @@ const TemplateField = ({ label, value, onChange, placeholders }) => {
     }
   }, [value]);
 
+  const handleKeyDown = (e) => {
+    if ((e.ctrlKey || e.metaKey) && (e.key === 'b' || e.key === 'i')) {
+      e.preventDefault();
+      const textarea = textareaRef.current;
+      if (!textarea) return;
+
+      const start = textarea.selectionStart;
+      const end = textarea.selectionEnd;
+      const selectedText = value.substring(start, end);
+      const tag = e.key === 'b' ? 'b' : 'i';
+      
+      const before = value.substring(0, start);
+      const after = value.substring(end);
+      const newValue = `${before}<${tag}>${selectedText}</${tag}>${after}`;
+      
+      onChange(newValue);
+
+      // Restore focus and selection
+      setTimeout(() => {
+        textarea.focus();
+        textarea.setSelectionRange(start + tag.length + 2, end + tag.length + 2);
+      }, 10);
+    }
+  };
+
   return (
     <div className="space-y-4 pt-6 border-t border-white/5">
       <div className="flex justify-between items-end">
@@ -130,6 +155,7 @@ const TemplateField = ({ label, value, onChange, placeholders }) => {
         className="w-full bg-white/5 border border-white/10 p-4 font-mono text-[12px] focus:border-amber-500 outline-none transition-all text-gray-300 leading-relaxed rounded-sm resize-none overflow-hidden"
         value={value}
         onChange={(e) => onChange(e.target.value)}
+        onKeyDown={handleKeyDown}
         placeholder="Enter HTML template content here..."
       />
     </div>
