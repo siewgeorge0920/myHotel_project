@@ -144,10 +144,12 @@ export default function QuickBook() {
             </div>
 
             {isGuestOpen && (
-              <div className="absolute top-full right-0 md:right-auto md:left-1/2 md:-translate-x-1/2 mt-6 w-[300px] p-6 bg-[#0f110c]/98 backdrop-blur-3xl border border-white/10 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.8)] z-[100] animate-fadeIn">
-                <CounterRow label="Adults" subLabel="Ages 18+" type="adults" value={guests.adults} onUpdate={updateCount} />
-                <CounterRow label="Seniors" subLabel="Ages 65+" type="seniors" value={guests.seniors} onUpdate={updateCount} />
-                <CounterRow label="Infants" subLabel="Under 2" type="infants" value={guests.infants} onUpdate={updateCount} />
+              <div className="absolute top-full right-0 md:right-auto md:left-1/2 md:-translate-x-1/2 mt-6 w-[320px] p-8 bg-[#0a0c08] backdrop-blur-3xl border border-white/10 rounded-3xl shadow-[0_40px_80px_rgba(0,0,0,0.95)] z-[100] animate-fadeIn">
+                <div className="space-y-4">
+                  <CounterRow label="Adults" subLabel="Ages 18+" type="adults" value={guests.adults} onUpdate={updateCount} />
+                  <CounterRow label="Seniors" subLabel="Ages 65+" type="seniors" value={guests.seniors} onUpdate={updateCount} />
+                  <CounterRow label="Infants" subLabel="Under 2" type="infants" value={guests.infants} onUpdate={updateCount} />
+                </div>
               </div>
             )}
           </div>
