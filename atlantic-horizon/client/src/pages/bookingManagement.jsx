@@ -363,37 +363,76 @@ export default function BookingManagement() {
         {/* 🟡 CONFIRM MODAL (Room Assignment) */}
         {isConfirmModalOpen && selectedBooking && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-xl p-6">
-            <div className="bg-[#1a1d17] border border-white/10 p-12 rounded-[40px] w-full max-w-2xl shadow-2xl relative">
+            <div className="bg-[#1a1d17] border border-white/10 p-12 rounded-[40px] w-full max-w-4xl shadow-2xl relative">
                <button onClick={() => setIsConfirmModalOpen(false)} className="absolute top-8 right-8 text-white/20 hover:text-white"><X size={24} /></button>
                <h2 className="text-4xl font-serif italic mb-2">Sanctuary Assignment</h2>
                <p className="text-[10px] uppercase tracking-widest text-white/40 mb-10">Select a physical unit for {selectedBooking.guest_name}</p>
 
-               <div className="grid grid-cols-3 gap-4 mb-10 max-h-[300px] overflow-y-auto pr-4 custom-scrollbar">
+               <div className="flex flex-col gap-6">
+                  {/* Auto Selection */}
                   <button 
                     onClick={() => handleConfirm(selectedBooking._id, 'auto')}
-                    className="col-span-3 bg-amber-600/20 border border-amber-600/30 p-6 rounded-2xl flex items-center justify-center gap-4 hover:bg-amber-600 hover:text-white transition-all group"
+                    className="w-full bg-amber-600/20 border border-amber-600/30 p-6 rounded-2xl flex items-center justify-center gap-4 hover:bg-amber-600 hover:text-white transition-all group"
                   >
                     <Server className="group-hover:animate-pulse" />
-                    <span className="text-xs font-black uppercase tracking-widest">Automatic Selection</span>
+                    <div>
+                      <p className="text-xs font-black uppercase tracking-widest">Automatic Selection</p>
+                      <p className="text-[9px] uppercase tracking-tighter text-white/40 group-hover:text-white/60">System will pick the best available Ready unit</p>
+                    </div>
                   </button>
 
-                  {availableRooms
-                    .filter(r => r.room_type_category === selectedBooking.room_type && r.current_status === 'Ready')
-                    .map(room => (
-                      <button 
-                        key={room._id}
-                        onClick={() => handleConfirm(selectedBooking._id, room.room_name)}
-                        className="bg-white/5 border border-white/10 p-6 rounded-2xl hover:border-amber-500 hover:bg-amber-500/10 transition-all text-center"
-                      >
-                        <p className="text-[10px] uppercase text-white/40 font-bold mb-1">Unit</p>
-                        <p className="text-xl font-mono text-white">{room.room_name}</p>
-                      </button>
-                    ))
-                  }
+                  <div className="grid grid-cols-4 gap-4 max-h-[400px] overflow-y-auto pr-4 custom-scrollbar">
+                    {availableRooms
+                      .filter(r => (r.room_type_category || r.roomType) === selectedBooking.room_type)
+                      .map(room => {
+                        const s = room.current_status;
+                        const rName = room.room_name || room.roomName;
+                        const isAvailable = s === 'Ready';
+                        const isCleaning = s === 'Cleaning';
+                        const isSelectable = isAvailable || isCleaning;
+
+                        return (
+                          <button 
+                            key={room._id}
+                            disabled={!isSelectable}
+                            onClick={() => {
+                              if (isCleaning) {
+                                if (window.confirm("Bilik ni tengah CLEANING boss. Betul ke nak assign jugak? Guest kena tunggu kejap tau.")) {
+                                  handleConfirm(selectedBooking._id, rName);
+                                }
+                              } else {
+                                handleConfirm(selectedBooking._id, rName);
+                              }
+                            }}
+                            className={`p-6 rounded-2xl border transition-all text-center relative group ${
+                              s === 'Ready' ? 'bg-emerald-500/5 border-emerald-500/20 hover:bg-emerald-500/20' :
+                              s === 'Cleaning' ? 'bg-amber-500/5 border-amber-500/20 hover:bg-amber-500/20' :
+                              s === 'Occupied' ? 'bg-red-500/5 border-red-500/20 opacity-50 cursor-not-allowed' :
+                              'bg-white/5 border-white/10 opacity-30 cursor-not-allowed'
+                            }`}
+                          >
+                            <p className="text-xl font-mono text-white mb-1">{rName}</p>
+                            <span className={`text-[8px] font-black uppercase tracking-[0.2em] ${
+                              s === 'Ready' ? 'text-emerald-400' :
+                              s === 'Cleaning' ? 'text-amber-400' :
+                              s === 'Occupied' ? 'text-red-400' : 'text-white/40'
+                            }`}>
+                              {s}
+                            </span>
+                          </button>
+                        );
+                      })
+                    }
+                  </div>
                </div>
 
-               <div className="flex justify-center italic text-xs text-white/20">
-                  ⚠️ Note: Assigning a room locks the inventory but the guest won't be notified until check-in.
+               <div className="mt-10 flex justify-between items-center text-[9px] uppercase tracking-widest font-bold text-white/20 border-t border-white/5 pt-8">
+                  <div className="flex gap-6">
+                    <span className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-emerald-500"></div> Ready</span>
+                    <span className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-amber-500"></div> Cleaning</span>
+                    <span className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-red-500"></div> Occupied</span>
+                  </div>
+                  <span>⚠️ Assigning locks the inventory</span>
                </div>
             </div>
           </div>
@@ -402,34 +441,91 @@ export default function BookingManagement() {
         {/* 🟢 CHECK-IN MODAL (Swap/Confirm) */}
         {isCheckInModalOpen && selectedBooking && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-xl p-6">
-            <div className="bg-[#1a1d17] border border-white/10 p-12 rounded-[40px] w-full max-w-xl shadow-2xl relative text-center">
+            <div className="bg-[#1a1d17] border border-white/10 p-12 rounded-[40px] w-full max-w-4xl shadow-2xl relative">
                <button onClick={() => setIsCheckInModalOpen(false)} className="absolute top-8 right-8 text-white/20 hover:text-white"><X size={24} /></button>
                
-               <div className="w-24 h-24 bg-emerald-500/20 rounded-full flex items-center justify-center mx-auto mb-8">
-                  <UserCheck size={48} className="text-emerald-500" />
-               </div>
+               <div className="grid md:grid-cols-5 gap-12">
+                  <div className="md:col-span-2 text-center border-r border-white/5 pr-12">
+                     <div className="w-24 h-24 bg-emerald-500/20 rounded-full flex items-center justify-center mx-auto mb-8">
+                        <UserCheck size={48} className="text-emerald-500" />
+                     </div>
+                     <h2 className="text-4xl font-serif italic mb-2">Initialize Arrival</h2>
+                     <p className="text-xs text-white/50 mb-10">Verify assignment for {selectedBooking.guest_name}</p>
 
-               <h2 className="text-4xl font-serif italic mb-2">Initialize Arrival</h2>
-               <p className="text-xs text-white/50 mb-10">Verify assignment for {selectedBooking.guest_name}</p>
+                     <div className="bg-white/5 border border-white/10 p-8 rounded-3xl mb-10">
+                        <p className="text-[10px] uppercase tracking-widest text-white/30 font-black mb-1">Active Assignment</p>
+                        <p className="text-4xl font-mono text-amber-500">Room {selectedBooking.assigned_room}</p>
+                     </div>
 
-               <div className="bg-white/5 border border-white/10 p-8 rounded-3xl mb-10">
-                  <p className="text-[10px] uppercase tracking-widest text-white/30 font-black mb-1">Active Assignment</p>
-                  <p className="text-4xl font-mono text-amber-500">Room {selectedBooking.assigned_room}</p>
-               </div>
+                     <div className="flex flex-col gap-4">
+                        {!selectedBooking.assigned_room ? (
+                          <button 
+                            onClick={() => {
+                              const autoRoom = availableRooms.find(r => (r.room_type_category || r.roomType) === selectedBooking.room_type && r.current_status === 'Ready');
+                              if (autoRoom) {
+                                handleCheckIn(selectedBooking._id, autoRoom.room_name || autoRoom.roomName);
+                              } else {
+                                alert("No 'Ready' units available for auto-assignment. Please swap manually or check inventory status.");
+                              }
+                            }}
+                            className="bg-amber-600 hover:bg-amber-500 py-5 rounded-full text-xs font-black uppercase tracking-widest transition-all shadow-xl flex items-center justify-center gap-3"
+                          >
+                            <Server size={14} />
+                            Auto Assign Room
+                          </button>
+                        ) : (
+                          <button 
+                            onClick={() => handleCheckIn(selectedBooking._id)}
+                            className="bg-emerald-600 hover:bg-emerald-500 py-5 rounded-full text-xs font-black uppercase tracking-widest transition-all shadow-xl"
+                          >
+                            Confirm Check-in
+                          </button>
+                        )}
+                        <p className="text-[8px] text-white/20 italic uppercase tracking-wider">
+                          {!selectedBooking.assigned_room ? "Requires active assignment to initialize arrival" : "Guest will receive card access upon confirmation"}
+                        </p>
+                     </div>
+                  </div>
 
-               <div className="grid grid-cols-2 gap-4">
-                  <button 
-                    onClick={() => handleCheckIn(selectedBooking._id)}
-                    className="bg-emerald-600 hover:bg-emerald-500 py-4 rounded-full text-xs font-black uppercase tracking-widest transition-all shadow-xl"
-                  >
-                    Confirm Check-in
-                  </button>
-                  <button 
-                    onClick={() => { setIsCheckInModalOpen(false); setIsConfirmModalOpen(true); }}
-                    className="bg-white/5 border border-white/10 py-4 rounded-full text-xs font-black uppercase tracking-widest hover:border-white/30"
-                  >
-                    Switch Room
-                  </button>
+                  <div className="md:col-span-3">
+                    <div className="flex justify-between items-center mb-6">
+                      <h3 className="text-[10px] uppercase tracking-widest font-black text-white/40">Inventory Awareness / Instant Swap</h3>
+                      <button onClick={() => fetchData()} className="text-white/20 hover:text-white transition-colors" title="Sync Registry"><Server size={14} /></button>
+                    </div>
+                    
+                    <div className="grid grid-cols-3 gap-3 max-h-[400px] overflow-y-auto pr-4 custom-scrollbar">
+                        {availableRooms
+                          .filter(r => (r.room_type_category || r.roomType) === selectedBooking.room_type)
+                          .map(room => {
+                            const rName = room.room_name || room.roomName;
+                            const isCurrent = rName === selectedBooking.assigned_room;
+                            const s = room.current_status;
+                            const isSelectable = s === 'Ready' || s === 'Cleaning';
+
+                            return (
+                              <button 
+                                key={room._id}
+                                disabled={!isSelectable || isCurrent}
+                                onClick={() => {
+                                   if (window.confirm(`Swap to Room ${rName}? Current assignment will be released.`)) {
+                                      handleCheckIn(selectedBooking._id, rName);
+                                   }
+                                }}
+                                className={`p-5 rounded-2xl border transition-all text-center relative ${
+                                  isCurrent ? 'bg-amber-500/20 border-amber-500 ring-1 ring-amber-500/50' : 
+                                  s === 'Ready' ? 'bg-emerald-500/5 border-emerald-500/20 hover:border-emerald-500/40' :
+                                  'bg-white/5 border-white/5 opacity-40 cursor-not-allowed'
+                                }`}
+                              >
+                                {isCurrent && <div className="absolute -top-2 -right-2 bg-amber-500 text-black text-[7px] font-black px-2 py-0.5 rounded-full uppercase">Active</div>}
+                                <p className="text-lg font-mono text-white mb-1">{rName}</p>
+                                <p className={`text-[7px] font-black uppercase ${isCurrent ? 'text-amber-500' : 'text-white/20'}`}>{s}</p>
+                              </button>
+                            );
+                          })
+                        }
+                    </div>
+                  </div>
                </div>
             </div>
           </div>

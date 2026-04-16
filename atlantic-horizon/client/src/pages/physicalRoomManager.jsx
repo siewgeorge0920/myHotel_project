@@ -117,8 +117,8 @@ export default function PhysicalRoomManager() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           department,
-          roomType: roomTypeName,
-          roomName: unitId.toUpperCase()
+          room_type_category: roomTypeName,
+          room_name: unitId.toUpperCase()
         })
       });
       const data = await res.json();
@@ -149,7 +149,7 @@ export default function PhysicalRoomManager() {
       const res = await fetch(`/api/v3/physical-rooms/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ roomName: editName })
+        body: JSON.stringify({ room_name: editName.toUpperCase() })
       });
       if(res.ok) {
         setEditingId(null);
@@ -251,40 +251,45 @@ export default function PhysicalRoomManager() {
                    <div key={dept} className="mb-8">
                      <h2 className="text-sm font-black uppercase tracking-[0.3em] text-white/50 border-b pb-2 mb-4" style={{ borderColor: COLORS.border }}>{dept}</h2>
                      <div className="grid sm:grid-cols-2 gap-4">
-                       {physicalRooms.filter(pr => pr.department === dept).map(unit => (
-                         <div 
-                           key={unit._id} 
-                           id={`unit-${unit.roomName}`}
-                           className={`p-4 border flex items-center justify-between transition-all duration-1000 ${highlightedUnit === unit.roomName ? 'border-amber-500 shadow-[0_0_15px_rgba(251,191,36,0.3)] ring-1 ring-amber-500' : ''}`} 
-                           style={{ backgroundColor: COLORS.bgSurface, borderColor: highlightedUnit === unit.roomName ? '#f59e0b' : COLORS.border }}
-                         >
-                           {editingId === unit._id ? (
-                             <div className="flex w-full items-center gap-3">
-                               <input 
-                                 value={editName} 
-                                 onChange={e => setEditName(e.target.value)} 
-                                 className="bg-white/5 border border-amber-500 text-sm px-2 py-1 text-white uppercase outline-none w-full" 
-                                 autoFocus 
-                               />
-                               <button onClick={() => handleEditSubmit(unit._id)} className="text-[10px] text-green-500 hover:text-green-400 uppercase tracking-widest font-black">Save</button>
-                               <button onClick={() => setEditingId(null)} className="text-[10px] text-white/50 hover:text-white/80 uppercase tracking-widest font-black">Cancel</button>
-                             </div>
-                           ) : (
-                             <div className="flex w-full items-center justify-between">
-                               <div>
-                                 <p className="font-serif text-lg text-amber-500">{unit.roomName}</p>
-                                 <p className="text-[9px] uppercase tracking-widest text-white/40 mt-1">
-                                   {unit.roomType ? unit.roomType : <span className="text-red-500/60 italic font-bold">Unassigned</span>}
-                                 </p>
-                               </div>
-                               <div className="flex gap-2">
-                                 <button onClick={() => { setEditingId(unit._id); setEditName(unit.roomName); }} className="text-[10px] text-blue-500 hover:text-blue-400 uppercase tracking-widest font-black transition-colors px-2">Edit</button>
-                                 <button onClick={() => handleDelete(unit._id)} className="text-[10px] text-red-500 hover:text-red-400 uppercase tracking-widest font-black transition-colors px-2">Delete</button>
-                               </div>
-                             </div>
-                           )}
-                         </div>
-                       ))}
+                       {physicalRooms.filter(pr => pr.department === dept).map(unit => {
+                         const currentName = unit.room_name || unit.roomName;
+                         const currentType = unit.room_type_category || unit.roomType;
+                         
+                         return (
+                          <div 
+                            key={unit._id} 
+                            id={`unit-${currentName}`}
+                            className={`p-4 border flex items-center justify-between transition-all duration-1000 ${highlightedUnit === currentName ? 'border-amber-500 shadow-[0_0_15px_rgba(251,191,36,0.3)] ring-1 ring-amber-500' : ''}`} 
+                            style={{ backgroundColor: COLORS.bgSurface, borderColor: highlightedUnit === currentName ? '#f59e0b' : COLORS.border }}
+                          >
+                            {editingId === unit._id ? (
+                              <div className="flex w-full items-center gap-3">
+                                <input 
+                                  value={editName} 
+                                  onChange={e => setEditName(e.target.value)} 
+                                  className="bg-white/5 border border-amber-500 text-sm px-2 py-1 text-white uppercase outline-none w-full" 
+                                  autoFocus 
+                                />
+                                <button onClick={() => handleEditSubmit(unit._id)} className="text-[10px] text-green-500 hover:text-green-400 uppercase tracking-widest font-black">Save</button>
+                                <button onClick={() => setEditingId(null)} className="text-[10px] text-white/50 hover:text-white/80 uppercase tracking-widest font-black">Cancel</button>
+                              </div>
+                            ) : (
+                              <div className="flex w-full items-center justify-between">
+                                <div>
+                                  <p className="font-serif text-lg text-amber-500">{currentName}</p>
+                                  <p className="text-[9px] uppercase tracking-widest text-white/40 mt-1">
+                                    {currentType ? currentType : <span className="text-red-500/60 italic font-bold">Unassigned</span>}
+                                  </p>
+                                </div>
+                                <div className="flex gap-2">
+                                  <button onClick={() => { setEditingId(unit._id); setEditName(currentName); }} className="text-[10px] text-blue-500 hover:text-blue-400 uppercase tracking-widest font-black transition-colors px-2">Edit</button>
+                                  <button onClick={() => handleDelete(unit._id)} className="text-[10px] text-red-500 hover:text-red-400 uppercase tracking-widest font-black transition-colors px-2">Delete</button>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                         )
+                       })}
                      </div>
                      {physicalRooms.filter(pr => pr.department === dept).length === 0 && <p className="text-xs text-white/20">No units provisioned here yet.</p>}
                    </div>
