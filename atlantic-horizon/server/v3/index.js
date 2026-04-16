@@ -3,7 +3,7 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 import connectDB from './config/db.js';
-import v3Router from './routes/index.js';
+import v3Router from './routes/urlNameRoute.js';
 import { AppError } from './utils/responseHandler.js';
 
 dotenv.config();
