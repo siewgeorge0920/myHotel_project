@@ -14,7 +14,6 @@ export default function ManagementSidebar({ user }) {
   // Strategic Grouping
   const menuItems = [
     { name: 'Dashboard', path: '/staffDashboard', icon: '' },
-    { name: 'Room Management', path: '/roomManagement', icon: '' },
     { name: 'Room Inventory', path: '/roomInventory', icon: '', adminOnly: true },
     { name: 'Gift Cards', path: '/admin/gift-cards', icon: '', adminOnly: true },
     { name: 'Settings', path: '/adminSettings', icon: '', adminOnly: true }

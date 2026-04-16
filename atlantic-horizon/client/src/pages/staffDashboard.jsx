@@ -51,13 +51,13 @@ export default function StaffDashboard() {
 
 
 
-          {/* Action 4: Room Service */}
+          {/* Action 4: Room Management */}
           <ActionCard 
-            title="Room Service (F&B)" 
+            title="Room Management" 
             icon=""
-            desc="Manage inbound culinary orders, update order status, and bill to room."
-            primaryBtn="F&B Interface"
-            onPrimaryClick={() => navigate('/roomService')}
+            desc="Manage room status, cleanliness, and maintenance logs for the sanctuary."
+            primaryBtn="Open Management"
+            onPrimaryClick={() => navigate('/roomManagement')}
             bgGradient="from-purple-900/20 to-transparent border-purple-500/20 hover:border-purple-500/50"
             btnColor="bg-purple-600 hover:bg-purple-500"
           />
