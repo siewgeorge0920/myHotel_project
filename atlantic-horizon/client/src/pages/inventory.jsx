@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { COLORS } from '../colors';
 import ManagementSidebar from '../components/managementSidebar';
 import LuxuryLoader from '../components/luxuryLoader';
-import CustomModal from '../components/CustomModal';
+import comfirmationDelete from '../components/comfirmationDelete';
 
 export default function Inventory() {
   const [rooms, setRooms] = useState([]);
@@ -72,7 +72,7 @@ export default function Inventory() {
         </div>
       </main>
 
-      <CustomModal 
+      <comfirmationDelete 
         isOpen={alertObj.isOpen}
         title="Admin Alert"
         message={alertObj.text}

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import ManagementSidebar from '../components/managementSidebar';
 import { COLORS } from '../colors';
-import CustomModal from '../components/CustomModal';
+import comfirmationDelete from '../components/comfirmationDelete';
 import AdminRoomPackageCreator from './AdminRoomPackageCreator'; 
-import UnitSelectionModal from '../components/UnitSelectionModal'; 
+import RoomInventoryRegisterWindow from '../components/RoomInventoryRegisterWindow'; 
 
 export default function RoomPackage() {
   const user = JSON.parse(localStorage.getItem('user'));
@@ -252,7 +252,7 @@ export default function RoomPackage() {
       </main>
       
       {/* Security Check Modal */}
-      <CustomModal 
+      <comfirmationDelete 
         isOpen={deleteModal.isOpen}
         title="Delete Luxury Package"
         message={`Are you sure you want to permanently delete "${deleteModal.name}"? This will remove all associated physical houses from the database. This action cannot be undone.`}
@@ -263,7 +263,7 @@ export default function RoomPackage() {
         cancelText="Cancel"
       />
 
-      <UnitSelectionModal 
+      <RoomInventoryRegisterWindow 
         isOpen={bulkModal.isOpen}
         onClose={() => setBulkModal({ ...bulkModal, isOpen: false })}
         roomType={bulkModal.roomType}

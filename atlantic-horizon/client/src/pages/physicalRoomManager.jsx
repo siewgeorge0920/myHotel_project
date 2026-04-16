@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import ManagementSidebar from '../components/managementSidebar';
 import { COLORS } from '../colors';
-import UnitSelectionModal from '../components/UnitSelectionModal';
+import RoomInventoryRegisterWindow from '../components/RoomInventoryRegisterWindow';
 
 export default function PhysicalRoomManager() {
   const user = JSON.parse(localStorage.getItem('user'));
@@ -302,7 +302,7 @@ export default function PhysicalRoomManager() {
         </div>
       </main>
 
-      <UnitSelectionModal 
+      <RoomInventoryRegisterWindow 
         isOpen={bulkModal.isOpen}
         onClose={() => setBulkModal({ ...bulkModal, isOpen: false })}
         roomType={bulkModal.roomType}

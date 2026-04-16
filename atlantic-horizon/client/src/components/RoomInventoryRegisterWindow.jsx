@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { COLORS } from '../colors';
 
-export default function UnitSelectionModal({ isOpen, onClose, roomType, department, onComplete }) {
+export default function RoomInventoryRegisterWindow({ isOpen, onClose, roomType, department, onComplete }) {
   // List of physical room records returned by the backend for this department.
   const [physicalRooms, setPhysicalRooms] = useState([]);
   // Names of units currently selected in the modal.

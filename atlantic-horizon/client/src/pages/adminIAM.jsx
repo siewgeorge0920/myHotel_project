@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import ManagementSidebar from '../components/managementSidebar';
 import { COLORS } from '../colors';
-import CustomModal from '../components/CustomModal';
+import comfirmationDelete from '../components/comfirmationDelete';
 
 // Default form shape for creating/editing staff accounts.
 const EMPTY = { _id: '', name: '', password: '', role: 'staff', status: 'Active', permissions: [] };
@@ -290,7 +290,7 @@ const toggleStatus = async (staff) => {
 
       </main>
 
-      <CustomModal 
+      <comfirmationDelete 
         isOpen={deleteModal.isOpen}
         title="Delete Account"
         message={`Are you absolutely sure you want to permanently delete the account "${deleteModal.name}"? This is irreversible.`}
