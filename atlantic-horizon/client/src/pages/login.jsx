@@ -61,9 +61,7 @@ export default function Login() {
         <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/5 rounded-full blur-[60px] pointer-events-none" />
         
         <div className="text-center mb-10 relative z-10">
-          <p className="text-amber-500 text-[10px] uppercase tracking-[0.5em] font-black mb-2 opacity-80">Sanctuary Core</p>
-          <h2 className="font-cinzel text-3xl text-white/90 tracking-[0.2em] uppercase leading-tight">Identity Check</h2>
-          <p className="text-[10px] text-white/30 uppercase tracking-widest mt-2">Identify to standard or kernel tiers</p>
+          <h2 className="font-cinzel text-4xl text-white tracking-[0.2em] uppercase leading-tight">Staff Login</h2>
         </div>
 
         {error && (
