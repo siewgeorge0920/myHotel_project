@@ -380,7 +380,6 @@ class BookingService {
       Booking.countDocuments({ status: 'CheckedIn' })
     ]);
 
-    console.log(`[V3 Dashboard Sync] P:${upcoming} | C:${expectedArrivals} | I:${pendingDepartures} | TS:${new Date().toISOString()}`);
 
     return {
       upcoming,

@@ -1,7 +1,7 @@
 import express from 'express';
 import bookingController from '../controllers/bookingController.js';
 import giftCardController from '../controllers/giftCardController.js';
-import physicalRoomController from '../controllers/physicalRoomController.js';
+import roomInventoryController from '../controllers/roomInventoryController.js';
 import authController from '../controllers/authController.js';
 import settingsController from '../controllers/settingsController.js';
 import cookieController from '../controllers/cookieController.js';
@@ -59,11 +59,11 @@ router.get('/gift-cards/:code/history', protect, restrictTo('admin', 'manager'),
 /**
  * 🏨 Physical Room & Inventory Routes
  */
-router.get('/physical-rooms', protect, physicalRoomController.getAll);
-router.post('/physical-rooms', protect, restrictTo('admin', 'manager'), physicalRoomController.create);
-router.put('/physical-rooms/:id', protect, restrictTo('admin', 'manager', 'staff'), physicalRoomController.update);
-router.put('/physical-rooms/assign', protect, restrictTo('admin', 'manager'), physicalRoomController.assign);
-router.delete('/physical-rooms/:id', protect, restrictTo('admin'), physicalRoomController.delete);
+router.get('/physical-rooms', protect, roomInventoryController.getAll);
+router.post('/physical-rooms', protect, restrictTo('admin', 'manager'), roomInventoryController.create);
+router.put('/physical-rooms/:id', protect, restrictTo('admin', 'manager', 'staff'), roomInventoryController.update);
+router.put('/physical-rooms/assign', protect, restrictTo('admin', 'manager'), roomInventoryController.assign);
+router.delete('/physical-rooms/:id', protect, restrictTo('admin'), roomInventoryController.delete);
 
 /**
  * 🍱 F&B Menu & Ordering Routes (DISABLED: Models Deleted)
