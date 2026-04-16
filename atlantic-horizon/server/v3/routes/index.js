@@ -1,12 +1,9 @@
 import express from 'express';
 import bookingController from '../controllers/bookingController.js';
-import orderController from '../controllers/orderController.js';
-import iotKeyController from '../controllers/iotKeyController.js';
 import giftCardController from '../controllers/giftCardController.js';
 import physicalRoomController from '../controllers/physicalRoomController.js';
 import authController from '../controllers/authController.js';
 import settingsController from '../controllers/settingsController.js';
-
 import cookieController from '../controllers/cookieController.js';
 import { protect, restrictTo } from '../middleware/auth.js';
 
@@ -48,14 +45,6 @@ router.post('/create-payment-intent', bookingController.createPaymentIntent);
 router.post('/resend-payment-link', bookingController.resendPaymentLink);
 
 /**
- * 🍽️ F&B Room Service Routes
- */
-router.post('/room-service/order', orderController.placeOrder);
-router.get('/room-service/all-orders', orderController.getAllOrders);
-router.put('/room-service/order/:id', orderController.updateStatus);
-router.post('/room-service/checkout', orderController.createFbCheckout);
-
-/**
  * 🎫 Gift Card Routes
  */
 router.post('/gift-cards/checkout', giftCardController.startPurchase);
@@ -66,20 +55,12 @@ router.get('/gift-cards/all', protect, restrictTo('admin', 'manager'), giftCardC
 router.get('/gift-cards/:code/history', protect, restrictTo('admin', 'manager'), giftCardController.getGiftCardHistory);
 
 /**
- * 🏨 Physical Room & IoT Inventory Routes
+ * 🏨 Physical Room & Inventory Routes
  */
 router.get('/physical-rooms', protect, physicalRoomController.getAll);
 router.post('/physical-rooms', protect, restrictTo('admin', 'manager'), physicalRoomController.create);
 router.put('/physical-rooms/:id', protect, restrictTo('admin', 'manager', 'staff'), physicalRoomController.update);
 router.delete('/physical-rooms/:id', protect, restrictTo('admin'), physicalRoomController.delete);
-
-
-
-/**
- * 📱 IoT Key Routes
- */
-router.get('/room-card/my-key', iotKeyController.getMyKey);
-router.post('/room-card/regenerate', iotKeyController.regenerateKey);
 
 /**
  * ⚙️ Infrastructure & Settings Routes
