@@ -26,11 +26,16 @@ export default function RoomPackage() {
     setLoading(true);
     try {
       const [resRooms, resUnits] = await Promise.all([
-        fetch('/api/rooms'),
-        fetch('/api/physical-rooms')
+        fetch('/api/v3/rooms'),
+        fetch('/api/v3/physical-rooms', {
+           headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } 
+        })
       ]);
-      const dataRooms = await resRooms.json();
-      const dataUnits = await resUnits.json();
+      const jsonRooms = await resRooms.json();
+      const jsonUnits = await resUnits.json();
+      
+      const dataRooms = jsonRooms.data || jsonRooms; // Handle possible wrapper
+      const dataUnits = jsonUnits.data || jsonUnits;
       
       const combinedRooms = dataRooms.map(r => ({
         ...r,
@@ -68,7 +73,7 @@ export default function RoomPackage() {
 
   const confirmDelete = async () => {
     try {
-      const res = await fetch(`/api/rooms/${deleteModal.id}`, { method: 'DELETE' });
+      const res = await fetch(`/api/v3/rooms/${deleteModal.id}`, { method: 'DELETE' });
       if (res.ok) {
         flash('Luxury Package deleted successfully ✅');
         fetchRooms();

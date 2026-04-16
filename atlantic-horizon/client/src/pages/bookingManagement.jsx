@@ -203,8 +203,8 @@ export default function BookingManagement() {
         case 'pending': 
             return b.status === 'Pending';
         case 'checkin': 
-            // Arrivals: Only shows those who are Confirmed and due to arrive today or earlier.
-            return b.status === 'Confirmed' && bIn <= today;
+            // Arrivals: Now shows ALL Confirmed bookings regardless of date (Overall).
+            return b.status === 'Confirmed';
         case 'checkout': 
             // In-House / Departures: Show all guests currently checked in.
             return b.status === 'CheckedIn';
@@ -240,21 +240,24 @@ export default function BookingManagement() {
 
         <div className="flex gap-4 mb-8">
           {[
-            { id: 'pending', label: 'Pending' },
-            { id: 'checkin', label: 'Check-In' },
-            { id: 'checkout', label: 'Check-Out' },
-            { id: 'completed', label: 'Completed' }
+            { id: 'pending', label: 'Pending', count: bookings.filter(b => b.status === 'Pending').length },
+            { id: 'checkin', label: 'Check-In', count: bookings.filter(b => b.status === 'Confirmed').length },
+            { id: 'checkout', label: 'Check-Out', count: bookings.filter(b => b.status === 'CheckedIn').length },
+            { id: 'completed', label: 'Completed', count: bookings.filter(b => b.status === 'CheckedOut' || b.status === 'Cancelled').length }
           ].map(f => (
             <button
               key={f.id}
               onClick={() => setActiveFilter(f.id)}
-              className={`px-6 py-2 rounded-full text-[11px] font-black uppercase tracking-widest transition-all border ${
+              className={`px-6 py-2 rounded-full text-[11px] font-black uppercase tracking-widest transition-all border flex items-center gap-2 ${
                 activeFilter === f.id 
                   ? 'bg-amber-600 border-amber-600 text-white shadow-lg shadow-amber-600/20' 
                   : 'bg-white/5 border-white/10 text-white/40 hover:text-white hover:border-white/30'
               }`}
             >
-              {f.label}
+              <span>{f.label}</span>
+              <span className={`px-2 py-0.5 rounded-full text-[9px] ${activeFilter === f.id ? 'bg-white/20 text-white' : 'bg-white/5 text-white/30'}`}>
+                {f.count}
+              </span>
             </button>
           ))}
         </div>

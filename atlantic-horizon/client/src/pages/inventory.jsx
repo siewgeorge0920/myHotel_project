@@ -12,9 +12,9 @@ export default function Inventory() {
 
   useEffect(() => {
     // Pull room-type inventory snapshot for management view.
-    fetch('/api/v3/inventory/room-types')
+    fetch('/api/v3/rooms')
       .then(res => res.json())
-      .then(data => { setRooms(data.data || []); setLoading(false); });
+      .then(data => { setRooms(data.data || data); setLoading(false); });
   }, []);
 
   const isAdmin = user?.role === 'admin';

@@ -9,12 +9,12 @@ const orderSchema = new mongoose.Schema({
     price: { type: Number },
     quantity: { type: Number, default: 1 }
   }],
-  totalAmount: { type: Number, required: true },
+  total_amount: { type: Number, required: true },
   paymentMethod: { type: String, enum: ['Stripe', 'ChargeToRoom'], required: true },
   paymentStatus: { type: String, enum: ['Paid', 'Pending', 'Failed'], default: 'Pending' },
-  status: { 
+  order_status: { 
     type: String, 
-    enum: ['Received', 'Preparing', 'Delivering', 'Completed', 'Cancelled'], 
+    enum: ['Received', 'Pending', 'Preparing', 'Delivering', 'Completed', 'Cancelled'], 
     default: 'Received' 
   },
   notes: { type: String }

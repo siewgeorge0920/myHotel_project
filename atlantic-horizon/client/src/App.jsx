@@ -18,7 +18,7 @@ import PrivacyPolicyModal from './components/footer/PrivacyPolicyModal';
 // Guest Pages
 import Home from './pages/Home';
 import RoomInventory from './pages/roomInventory';
-import CalendarPage from './pages/calendarPage';
+import BookingFlow from './pages/BookingFlow';
 import Login from './pages/login';
 import GiftCards from './pages/GiftCards';
 import GiftCardSuccess from './pages/GiftCardSuccess';
@@ -59,7 +59,7 @@ import PhysicalRoomManager from './pages/physicalRoomManager';
 
 
 import PaymentPage from './pages/PaymentPage';
-import ProtectedRoute from './components/ProtectedRoute';
+import Logout24Hours from './components/24hoursLogout';
 
 import LuxuryLoader from './components/luxuryLoader';
 import CookieWindow from './components/CookieWindow';
@@ -223,7 +223,7 @@ export default function App() {
           <Route path="/admin/logs" element={<AdminLogs />} />
           <Route path="/admin/gift-cards" element={<AdminGiftCards />} />
           <Route path="/admin" element={<AdminSettings />} />
-          <Route path="/calendar" element={<CalendarPage />} />
+          <Route path="/calendar" element={<BookingFlow />} />
           <Route path="/login" element={<Login />} />
           <Route path="/secure-payment" element={<PaymentPage />} />
           <Route path="/check-in" element={<SelfCheckIn />} />
@@ -252,18 +252,18 @@ export default function App() {
           <Route path="/hottub" element={<Hottub />} />
 
           {/* Management Portal */}
-          <Route path="/staffDashboard" element={<ProtectedRoute><StaffDashboard /></ProtectedRoute>} />
-          <Route path="/roomInventory" element={<ProtectedRoute><RoomInventory /></ProtectedRoute>} />
-          <Route path="/adminIam" element={<ProtectedRoute><AdminIAM /></ProtectedRoute>} />
-          <Route path="/adminLogs" element={<ProtectedRoute><AdminLogs /></ProtectedRoute>} />
-          <Route path="/roomManagement" element={<ProtectedRoute><RoomManagement /></ProtectedRoute>} />
-          <Route path="/roomPackage" element={<ProtectedRoute><RoomPackage /></ProtectedRoute>} />
-          <Route path="/bookings" element={<ProtectedRoute><BookingManagement /></ProtectedRoute>} />
-          <Route path="/transactions" element={<ProtectedRoute><Transactions /></ProtectedRoute>} />
-          <Route path="/adminCalendar" element={<ProtectedRoute><AdminCalendar /></ProtectedRoute>} />
-          <Route path="/physicalRooms" element={<ProtectedRoute><PhysicalRoomManager /></ProtectedRoute>} />
+          <Route path="/staffDashboard" element={<Logout24Hours><StaffDashboard /></Logout24Hours>} />
+          <Route path="/roomInventory" element={<Logout24Hours><RoomInventory /></Logout24Hours>} />
+          <Route path="/adminIam" element={<Logout24Hours><AdminIAM /></Logout24Hours>} />
+          <Route path="/adminLogs" element={<Logout24Hours><AdminLogs /></Logout24Hours>} />
+          <Route path="/roomManagement" element={<Logout24Hours><RoomManagement /></Logout24Hours>} />
+          <Route path="/roomPackage" element={<Logout24Hours><RoomPackage /></Logout24Hours>} />
+          <Route path="/bookings" element={<Logout24Hours><BookingManagement /></Logout24Hours>} />
+          <Route path="/transactions" element={<Logout24Hours><Transactions /></Logout24Hours>} />
+          <Route path="/adminCalendar" element={<Logout24Hours><AdminCalendar /></Logout24Hours>} />
+          <Route path="/physicalRooms" element={<Logout24Hours><PhysicalRoomManager /></Logout24Hours>} />
           <Route path="/self-check-in" element={<SelfCheckIn />} />
-          <Route path="/booking-management" element={<ProtectedRoute><BookingManagement /></ProtectedRoute>} />
+          <Route path="/booking-management" element={<Logout24Hours><BookingManagement /></Logout24Hours>} />
 
 
         </Routes>

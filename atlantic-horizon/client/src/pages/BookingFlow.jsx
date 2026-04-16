@@ -7,7 +7,7 @@ import { COLORS } from '../colors';
 
 const DatePicker = DatePickerModule.default || DatePickerModule;
 
-export default function CalendarPage() {
+export default function BookingFlow() {
   const navigate = useNavigate();
   const location = useLocation();
   

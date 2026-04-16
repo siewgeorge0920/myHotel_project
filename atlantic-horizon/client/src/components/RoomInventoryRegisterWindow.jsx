@@ -17,8 +17,9 @@ export default function RoomInventoryRegisterWindow({ isOpen, onClose, roomType,
     const fetchRooms = async () => {
       setLoading(true);
       try {
-        const res = await fetch('/api/physical-rooms');
-        const data = await res.json();
+        const res = await fetch('/api/v3/physical-rooms');
+        const json = await res.json();
+        const data = json.data || json; 
         // Keep only units that belong to the active department.
         const filtered = data.filter(r => r.department === department);
         setPhysicalRooms(filtered);
@@ -49,7 +50,7 @@ export default function RoomInventoryRegisterWindow({ isOpen, onClose, roomType,
   const handleSave = async () => {
     setSaving(true);
     try {
-      const res = await fetch('/api/physical-rooms/assign', {
+      const res = await fetch('/api/v3/physical-rooms/assign', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ roomType, unitNames: selectedUnits }),

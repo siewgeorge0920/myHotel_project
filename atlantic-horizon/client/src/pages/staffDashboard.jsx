@@ -90,7 +90,7 @@ export default function StaffDashboard() {
 
         {/* Quick Stats - Simple daily figures */}
         <div className="mt-12 max-w-5xl relative z-10">
-           <h4 className="text-[10px] uppercase tracking-[0.4em] text-white/40 mb-6 font-black">Daily Overview</h4>
+           <h4 className="text-[10px] uppercase tracking-[0.4em] text-white/40 mb-6 font-black">Overall</h4>
            <div className="grid grid-cols-3 gap-6">
               <StatCard label="Pending" value={stats.upcoming} />
               <StatCard label="Check-In" value={stats.expectedArrivals} />

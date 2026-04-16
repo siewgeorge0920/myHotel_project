@@ -8,7 +8,7 @@ import emailService from './emailService.js';
 
 class BookingService {
 
-calculateNights(checkIn, checkOut) {
+  calculateNights(checkIn, checkOut) {
     const start = new Date(checkIn);
     const end = new Date(checkOut);
     const diffTime = Math.abs(end - start);
@@ -31,11 +31,11 @@ calculateNights(checkIn, checkOut) {
     const email = data.guest_email || data.guestEmail;
 
 
-    
+
 
     const bookingId = `ATL-${Math.floor(100000 + Math.random() * 900000)}`;
     const nights = this.calculateNights(data.check_in || data.checkIn, data.check_out || data.checkOut);
-    
+
     const booking = new Booking({
       booking_id: bookingId,
       guest_name: data.guest_name || `${data.guestFirstName} ${data.guestLastName}`,
@@ -56,16 +56,16 @@ calculateNights(checkIn, checkOut) {
     if (data.giftCardCode) {
       const GiftCard = (await import('../models/GiftCard.js')).default;
       const card = await GiftCard.findOne({ code: data.giftCardCode.toUpperCase(), status: 'Active' });
-      
+
       if (card) {
         const originalPrice = data.total_amount || data.price;
         const totalWithAddons = originalPrice; // The price passed in should already be the total
-        
+
         // We calculate how much to deduct
         // If card has 200 and price is 500, deduct 200.
         // If card has 500 and price is 200, deduct 200.
         const deduction = Math.min(card.balance, totalWithAddons);
-        
+
         card.balance -= deduction;
         if (card.balance <= 0) card.status = 'Used';
         await card.save();
@@ -163,10 +163,10 @@ calculateNights(checkIn, checkOut) {
 
     const room = await PhysicalRoom.findOne({ room_name: finalRoomName });
     if (!room) throw new Error("Room not found in sanctuary records.");
-    
+
     // If we're swapping, free up the old one if it was occupied
     if (swapedRoomName && booking.assigned_room && swapedRoomName !== booking.assigned_room) {
-        await PhysicalRoom.findOneAndUpdate({ room_name: booking.assigned_room }, { current_status: 'Ready', active_booking: null });
+      await PhysicalRoom.findOneAndUpdate({ room_name: booking.assigned_room }, { current_status: 'Ready', active_booking: null });
     }
 
     room.current_status = 'Occupied';
@@ -193,15 +193,15 @@ calculateNights(checkIn, checkOut) {
 
     const h = parseInt(hours) || 0;
     const extraCharge = h * 50; // €50 per hour as requested
-    
+
     // Update check-out date
     const currentOut = new Date(booking.check_out);
     currentOut.setHours(currentOut.getHours() + h);
-    
+
     booking.check_out = currentOut;
     booking.extension_hours += h;
     booking.additional_charges += extraCharge;
-    
+
     await booking.save();
     return booking;
   }
@@ -230,7 +230,7 @@ calculateNights(checkIn, checkOut) {
     if (booking.stripe_session_id) {
       const { getStripe } = await import('../config/stripe.js');
       const stripe = await getStripe();
-      
+
       // Retrieve session to get payment intent
       const session = await stripe.checkout.sessions.retrieve(booking.stripe_session_id);
       if (session && session.payment_intent) {
@@ -251,20 +251,20 @@ calculateNights(checkIn, checkOut) {
     if (!booking) throw new Error("Booking not found");
     const oldPaymentStatus = booking.payment_status;
     booking.payment_status = status;
-    
+
     if (status === 'Paid') {
-        // 📧 Confirmation Notification - Send only when transitioning to Paid
-        // Note: Status remains 'Pending' as requested, until staff manually confirms.
-        if (oldPaymentStatus !== 'Paid') {
-            try {
-                console.log(`[Email Trigger] Initiating confirmation email for Paid booking: ${booking.booking_id}`);
-                await emailService.sendBookingEmail(booking.guest_email, booking);
-            } catch (e) {
-                console.error("[Email Notification Failed]", e.message);
-            }
+      // 📧 Confirmation Notification - Send only when transitioning to Paid
+      // Note: Status remains 'Pending' as requested, until staff manually confirms.
+      if (oldPaymentStatus !== 'Paid') {
+        try {
+          console.log(`[Email Trigger] Initiating confirmation email for Paid booking: ${booking.booking_id}`);
+          await emailService.sendBookingEmail(booking.guest_email, booking);
+        } catch (e) {
+          console.error("[Email Notification Failed]", e.message);
         }
+      }
     }
-    
+
     await booking.save();
     return booking;
   }
@@ -275,7 +275,7 @@ calculateNights(checkIn, checkOut) {
     if (existing.status === 'CheckedOut') throw new Error("This stay is finalized and cannot be modified.");
 
     const updateData = { ...data };
-    
+
     // Safety mapping for updates
     if (data.guestEmail) updateData.guest_email = data.guestEmail;
     if (data.checkIn) updateData.check_in = data.checkIn;
@@ -306,14 +306,14 @@ calculateNights(checkIn, checkOut) {
       total_amount: data.total_amount,
       status: 'Pending' // Force Pending for all new entries
     });
-    
+
     console.log(`[V3 Trace] New Admin Booking Created: ${booking.booking_id} | Status: ${booking.status}`);
     await booking.save();
     return booking;
   }
   async selfCheckIn(bookingId, email) {
     // Logic: Support both internal MongoDB ID and the public ATL-XXXXXX code
-    const query = bookingId.length > 20 
+    const query = bookingId.length > 20
       ? { _id: bookingId, guest_email: email }
       : { booking_id: bookingId, guest_email: email };
 
@@ -336,17 +336,17 @@ calculateNights(checkIn, checkOut) {
     if (booking.assigned_room) {
       const PhysicalRoom = (await import('../models/PhysicalRoom.js')).default;
       const room = await PhysicalRoom.findOne({ room_name: booking.assigned_room });
-      
+
       if (room && room.current_status === 'Ready') {
         room.current_status = 'Occupied';
         room.active_booking = booking._id;
         await room.save();
       } else if (room && room.current_status !== 'Occupied') {
-          // If room is Cleaning or Maintenance, we might still lock it but it's risky.
-          // For now, we only auto-occupy if it's Ready.
-          room.current_status = 'Occupied';
-          room.active_booking = booking._id;
-          await room.save();
+        // If room is Cleaning or Maintenance, we might still lock it but it's risky.
+        // For now, we only auto-occupy if it's Ready.
+        room.current_status = 'Occupied';
+        room.active_booking = booking._id;
+        await room.save();
       }
     }
 
@@ -373,34 +373,20 @@ calculateNights(checkIn, checkOut) {
   }
 
   async getDashboardStats() {
-    // Determine the temporal boundaries for 'Today' in the server's context.
-    const now = new Date();
-    const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    const endOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
-
     // Concurrent execution of metric queries for optimized dashboard response times.
     const [upcoming, expectedArrivals, pendingDepartures] = await Promise.all([
-      // 1. Upcoming: Any booking scheduled for future dates (Tomorrow onwards).
-      Booking.countDocuments({ 
-        check_in: { $gte: endOfToday },
-        status: { $in: ['Pending', 'Confirmed'] }
-      }),
-      // 2. Arrivals: Guests expected today or late arrivals who haven't checked in.
-      Booking.countDocuments({ 
-        check_in: { $lt: endOfToday },
-        status: { $in: ['Pending', 'Confirmed'] }
-      }),
-      // 3. Departures: Currently checked-in guests scheduled to depart today or earlier.
-      Booking.countDocuments({ 
-        check_out: { $lt: endOfToday },
-        status: 'CheckedIn'
-      })
+      Booking.countDocuments({ status: 'Pending' }),
+      Booking.countDocuments({ status: 'Confirmed' }),
+      Booking.countDocuments({ status: 'CheckedIn' })
     ]);
+
+    console.log(`[V3 Dashboard Sync] P:${upcoming} | C:${expectedArrivals} | I:${pendingDepartures} | TS:${new Date().toISOString()}`);
 
     return {
       upcoming,
       expectedArrivals,
-      pendingDepartures
+      pendingDepartures,
+      _debug_ts: new Date().toISOString()
     };
   }
 }

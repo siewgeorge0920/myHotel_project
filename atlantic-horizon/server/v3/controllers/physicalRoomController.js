@@ -55,6 +55,28 @@ class PhysicalRoomController {
       res.status(500).json({ error: error.message });
     }
   }
+  /**
+   * 🔗 Assign physical units to a Room Type (Bulk)
+   */
+  async assign(req, res) {
+    const { roomType, unitNames } = req.body;
+    if (!roomType) return res.status(400).json({ success: false, message: "Room Type is required for assignment." });
+
+    try {
+      // 1. Unassign all rooms currently linked to this roomType
+      await PhysicalRoom.updateMany({ roomType: roomType }, { roomType: null });
+
+      // 2. Assign selected rooms to this roomType
+      if (unitNames && unitNames.length > 0) {
+        await PhysicalRoom.updateMany({ roomName: { $in: unitNames } }, { roomType: roomType });
+      }
+
+      await recordLog(req.user, 'ROOM_ASSIGN', roomType, `Bulk assigned ${unitNames?.length || 0} units to package.`);
+      res.status(200).json({ success: true, message: `Successfully updated assignment for ${roomType}` });
+    } catch (err) {
+      res.status(500).json({ success: false, message: "Assignment failed", error: err.message });
+    }
+  }
 }
 
 export default new PhysicalRoomController();
