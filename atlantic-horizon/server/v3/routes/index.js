@@ -5,8 +5,8 @@ import physicalRoomController from '../controllers/physicalRoomController.js';
 import authController from '../controllers/authController.js';
 import settingsController from '../controllers/settingsController.js';
 import cookieController from '../controllers/cookieController.js';
-import roomController from '../controllers/roomController.js';
-import orderController from '../controllers/orderController.js';
+// import roomController from '../controllers/roomController.js';
+// import orderController from '../controllers/orderController.js';
 import { protect, restrictTo } from '../middleware/auth.js';
 
 const router = express.Router();
@@ -66,24 +66,24 @@ router.put('/physical-rooms/assign', protect, restrictTo('admin', 'manager'), ph
 router.delete('/physical-rooms/:id', protect, restrictTo('admin'), physicalRoomController.delete);
 
 /**
- * 🍱 F&B Menu & Ordering Routes
+ * 🍱 F&B Menu & Ordering Routes (DISABLED: Models Deleted)
  */
-router.get('/menu', orderController.getMenu);
-router.post('/menu', protect, restrictTo('admin', 'manager'), orderController.createMenuItem);
-router.put('/menu/:id', protect, restrictTo('admin', 'manager'), orderController.updateMenuItem);
-router.delete('/menu/:id', protect, restrictTo('admin'), orderController.deleteMenuItem);
+// router.get('/menu', orderController.getMenu);
+// router.post('/menu', protect, restrictTo('admin', 'manager'), orderController.createMenuItem);
+// router.put('/menu/:id', protect, restrictTo('admin', 'manager'), orderController.updateMenuItem);
+// router.delete('/menu/:id', protect, restrictTo('admin'), orderController.deleteMenuItem);
 
-router.get('/room-service/all-orders', protect, orderController.getAllOrders);
-router.post('/orders', orderController.placeOrder);
-router.put('/room-service/order/:id', protect, orderController.updateStatus);
+// router.get('/room-service/all-orders', protect, orderController.getAllOrders);
+// router.post('/orders', orderController.placeOrder);
+// router.put('/room-service/order/:id', protect, orderController.updateStatus);
 
 /**
- * 🏛️ Luxury Room Types (Packages) Routes
+ * 🏛️ Luxury Room Types (Packages) Routes (DISABLED: Models Deleted)
  */
-router.get('/rooms', roomController.getAll);
-router.post('/rooms', protect, restrictTo('admin', 'manager'), roomController.create);
-router.put('/rooms/:id', protect, restrictTo('admin', 'manager'), roomController.update);
-router.delete('/rooms/:id', protect, restrictTo('admin'), roomController.delete);
+// router.get('/rooms', roomController.getAll);
+// router.post('/rooms', protect, restrictTo('admin', 'manager'), roomController.create);
+// router.put('/rooms/:id', protect, restrictTo('admin', 'manager'), roomController.update);
+// router.delete('/rooms/:id', protect, restrictTo('admin'), roomController.delete);
 
 /**
  * ⚙️ Infrastructure & Settings Routes

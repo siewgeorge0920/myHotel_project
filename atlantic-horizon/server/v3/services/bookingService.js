@@ -1,5 +1,5 @@
 import Booking from '../models/Booking.js';
-import PhysicalRoom from '../models/PhysicalRoom.js';
+import RoomInventory from '../models/RoomInventory.js';
 
 import Log from '../models/Log.js';
 import inventoryService from './inventoryService.js';
@@ -88,7 +88,7 @@ class BookingService {
     const booking = await this._resolveBooking(idOrBookingId);
     if (!booking) throw new Error("Booking record not found");
 
-    const readyRoom = await PhysicalRoom.findOne({
+    const readyRoom = await RoomInventory.findOne({
       room_type_category: booking.room_type,
       current_status: 'Ready'
     });
@@ -139,7 +139,7 @@ class BookingService {
     if (!booking) throw new Error("Booking record not found");
 
     if (roomName === 'auto') {
-      const readyRoom = await PhysicalRoom.findOne({
+      const readyRoom = await RoomInventory.findOne({
         room_type_category: booking.room_type,
         current_status: 'Ready'
       });
@@ -161,12 +161,12 @@ class BookingService {
     const finalRoomName = swapedRoomName || booking.assigned_room;
     if (!finalRoomName) throw new Error("No room assigned to this booking.");
 
-    const room = await PhysicalRoom.findOne({ room_name: finalRoomName });
+    const room = await RoomInventory.findOne({ room_name: finalRoomName });
     if (!room) throw new Error("Room not found in sanctuary records.");
 
     // If we're swapping, free up the old one if it was occupied
     if (swapedRoomName && booking.assigned_room && swapedRoomName !== booking.assigned_room) {
-      await PhysicalRoom.findOneAndUpdate({ room_name: booking.assigned_room }, { current_status: 'Ready', active_booking: null });
+      await RoomInventory.findOneAndUpdate({ room_name: booking.assigned_room }, { current_status: 'Ready', active_booking: null });
     }
 
     room.current_status = 'Occupied';
@@ -211,7 +211,7 @@ class BookingService {
     if (!booking) throw new Error("Booking not found");
 
     if (booking.assigned_room) {
-      await PhysicalRoom.findOneAndUpdate(
+      await RoomInventory.findOneAndUpdate(
         { room_name: booking.assigned_room },
         { current_status: 'Cleaning', active_booking: null }
       );
@@ -334,8 +334,8 @@ class BookingService {
     // 🔒 ROOM LOCKING LOGIC (New Stage 2 -> 3 transition)
     // If a room was assigned by staff during the 'Confirm' standby stage, lock it now.
     if (booking.assigned_room) {
-      const PhysicalRoom = (await import('../models/PhysicalRoom.js')).default;
-      const room = await PhysicalRoom.findOne({ room_name: booking.assigned_room });
+      const RoomInventory = (await import('../models/RoomInventory.js')).default;
+      const room = await RoomInventory.findOne({ room_name: booking.assigned_room });
 
       if (room && room.current_status === 'Ready') {
         room.current_status = 'Occupied';

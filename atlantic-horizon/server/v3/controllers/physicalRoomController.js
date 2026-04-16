@@ -1,13 +1,13 @@
-import PhysicalRoom from '../models/PhysicalRoom.js';
+import RoomInventory from '../models/RoomInventory.js';
 import { recordLog } from '../utils/logger.js';
 
-class PhysicalRoomController {
+class RoomInventoryController {
   /**
    * 📡 Fetch all units (Inventory View)
    */
   async getAll(req, res) {
     try {
-      const rooms = await PhysicalRoom.find().sort({ room_name: 1 });
+      const rooms = await RoomInventory.find().sort({ room_name: 1 });
       res.status(200).json(rooms);
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -19,7 +19,7 @@ class PhysicalRoomController {
    */
   async create(req, res) {
     try {
-      const room = new PhysicalRoom(req.body);
+      const room = new RoomInventory(req.body);
       await room.save();
       await recordLog(req.user, 'ROOM_CREATE', room.room_name, `Physical unit established in inventory.`);
       res.status(201).json(room);
@@ -33,7 +33,7 @@ class PhysicalRoomController {
    */
   async update(req, res) {
     try {
-      const room = await PhysicalRoom.findByIdAndUpdate(req.params.id, req.body, { new: true });
+      const room = await RoomInventory.findByIdAndUpdate(req.params.id, req.body, { new: true });
       await recordLog(req.user, 'ROOM_UPDATE', room.room_name, `Physical unit parameters modified manually.`);
       res.status(200).json(room);
     } catch (error) {
@@ -46,9 +46,9 @@ class PhysicalRoomController {
    */
   async delete(req, res) {
     try {
-      const room = await PhysicalRoom.findById(req.params.id);
+      const room = await RoomInventory.findById(req.params.id);
       const rName = room?.room_name;
-      await PhysicalRoom.findByIdAndDelete(req.params.id);
+      await RoomInventory.findByIdAndDelete(req.params.id);
       await recordLog(req.user, 'ROOM_DELETE', rName, `Physical unit decommissioned and removed.`);
       res.status(200).json({ message: "Unit decommissioned successfully." });
     } catch (error) {
@@ -64,11 +64,11 @@ class PhysicalRoomController {
 
     try {
       // 1. Unassign all rooms currently linked to this roomType
-      await PhysicalRoom.updateMany({ roomType: roomType }, { roomType: null });
+      await RoomInventory.updateMany({ roomType: roomType }, { roomType: null });
 
       // 2. Assign selected rooms to this roomType
       if (unitNames && unitNames.length > 0) {
-        await PhysicalRoom.updateMany({ roomName: { $in: unitNames } }, { roomType: roomType });
+        await RoomInventory.updateMany({ roomName: { $in: unitNames } }, { roomType: roomType });
       }
 
       await recordLog(req.user, 'ROOM_ASSIGN', roomType, `Bulk assigned ${unitNames?.length || 0} units to package.`);
@@ -79,4 +79,4 @@ class PhysicalRoomController {
   }
 }
 
-export default new PhysicalRoomController();
+export default new RoomInventoryController();

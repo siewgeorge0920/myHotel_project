@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-const physicalRoomSchema = new mongoose.Schema({
+const roomInventorySchema = new mongoose.Schema({
   room_name: { 
     type: String, 
     required: true, 
@@ -23,4 +23,4 @@ const physicalRoomSchema = new mongoose.Schema({
   }
 }, { timestamps: true });
 
-export default mongoose.model('PhysicalRoom', physicalRoomSchema);
+export default mongoose.model('RoomInventory', roomInventorySchema);

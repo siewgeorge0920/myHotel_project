@@ -1,4 +1,4 @@
-import PhysicalRoom from '../models/PhysicalRoom.js';
+import RoomInventory from '../models/RoomInventory.js';
 import Booking from '../models/Booking.js';
 import { AppError } from '../utils/responseHandler.js';
 
@@ -14,7 +14,7 @@ class InventoryService {
       $or: [{ check_in: { $lt: end }, check_out: { $gt: start } }]
     }).countDocuments();
 
-    const totalRooms = await PhysicalRoom.countDocuments({
+    const totalRooms = await RoomInventory.countDocuments({
       room_type_category: roomCategory
     });
 

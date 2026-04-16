@@ -18,7 +18,7 @@ const physSchema = new mongoose.Schema({
 async function migrate() {
   await mongoose.connect(process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/atlantic-horizon');
   const Room = mongoose.model('Room', roomSchema);
-  const PhysicalRoom = mongoose.model('PhysicalRoom', physSchema);
+  const RoomInventory = mongoose.model('RoomInventory', physSchema);
 
   const rooms = await Room.find({});
   console.log(`Found ${rooms.length} room types.`);
@@ -27,9 +27,9 @@ async function migrate() {
   for(const r of rooms) {
     if(r.unitNumbers && r.unitNumbers.length > 0) {
       for(const unit of r.unitNumbers) {
-        const exist = await PhysicalRoom.findOne({ roomName: unit });
+        const exist = await RoomInventory.findOne({ roomName: unit });
         if(!exist) {
-          await PhysicalRoom.create({
+          await RoomInventory.create({
             department: r.department || 'Unassigned',
             roomType: r.name,
             roomName: unit
