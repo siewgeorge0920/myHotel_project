@@ -107,7 +107,7 @@ const LayoutWrapper = ({ children, onOpenCookies, lenisRef }) => {
   const isManagement = [
     '/staffdashboard', '/adminiam', '/inventory', '/adminlogs', 
     '/roommanagement', '/roompackage', '/physicalrooms', '/bookings', '/transactions', 
-    '/admincalendar', '/roomservice', '/admin'
+    '/admincalendar', '/roomservice', '/admin', '/roominventory'
   ].some(p => location.pathname.toLowerCase().startsWith(p));
 
   if (isManagement) {

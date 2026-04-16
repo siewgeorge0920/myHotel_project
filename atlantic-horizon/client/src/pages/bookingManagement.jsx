@@ -222,8 +222,8 @@ export default function BookingManagement() {
       <main className="flex-1 p-12 relative overflow-hidden">
         <header className="mb-8 flex justify-between items-end relative z-10">
           <div>
-            <h1 className="text-4xl font-serif italic mb-2">Manor Fleet Control</h1>
-            <p className="text-[10px] uppercase tracking-widest text-white/40 font-black">Central Bookings Registry (CRUD)</p>
+            <h1 className="text-4xl font-serif italic mb-2">Manage Booking</h1>
+            <p className="text-[10px] uppercase tracking-widest text-white/40 font-black"></p>
           </div>
           {(isAdmin || isManager) && (
             <button 
