@@ -1,6 +1,7 @@
 import Staff from '../models/Staff.js';
 import bcrypt from 'bcrypt';
 import { sendSuccess } from '../utils/responseHandler.js';
+import { recordLog } from '../utils/logger.js';
 
 class AuthController {
   /**
@@ -27,6 +28,8 @@ class AuthController {
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'lax'
       });
+
+      // recordLog(user, 'STAFF_LOGIN', user._id, "Staff member logged in.");
 
       sendSuccess(res, {
         id: user._id,
@@ -114,6 +117,7 @@ class AuthController {
         status: status || 'Active'
       });
       await newStaff.save();
+      await recordLog(req.user, 'STAFF_CREATE', newStaff.username, `New staff account created: ${newStaff.name} (${newStaff.role})`);
       res.status(201).json(newStaff);
     } catch (error) {
       res.status(400).json({ error: error.message });
@@ -133,6 +137,7 @@ class AuthController {
         delete updateData.password;
       }
       const staff = await Staff.findByIdAndUpdate(id, updateData, { new: true }).select('-password');
+      await recordLog(req.user, 'STAFF_UPDATE', staff.username, `Updated identity for ${staff.name}`);
       res.status(200).json(staff);
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -144,7 +149,10 @@ class AuthController {
    */
   async deleteStaff(req, res) {
     try {
+      const staff = await Staff.findById(req.params.id);
+      const uName = staff?.username;
       await Staff.findByIdAndDelete(req.params.id);
+      await recordLog(req.user, 'STAFF_DELETE', uName, `Purged staff account from the matrix.`);
       res.status(200).json({ message: "Identity purged from sanctuary core." });
     } catch (error) {
       res.status(500).json({ error: error.message });

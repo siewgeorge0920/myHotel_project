@@ -1,6 +1,7 @@
 import catchAsync from '../utils/catchAsync.js';
 import { sendSuccess } from '../utils/responseHandler.js';
 import { getSetting, upsertSetting } from '../utils/configHelper.js';
+import { recordLog } from '../utils/logger.js';
 
 class SettingsController {
   /**
@@ -30,6 +31,8 @@ class SettingsController {
     for (const [key, value] of Object.entries(updates)) {
       await upsertSetting(key, value, `System configuration for ${key}`);
     }
+
+    await recordLog(req.user, 'SETTINGS_UPDATE', 'System', `Global email or template configurations were synchronized.`);
 
     sendSuccess(res, null, "Settings synchronized to Sanctuary Core.");
   });
