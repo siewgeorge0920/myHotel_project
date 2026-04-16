@@ -30,6 +30,8 @@ const bookingSchema = new mongoose.Schema({
   stripe_session_id: { type: String, default: null },
   assigned_room: { type: String },
   check_in_time: { type: Date },
+  extension_hours: { type: Number, default: 0 },
+  additional_charges: { type: Number, default: 0 },
   folio_charges: [{ 
     type: mongoose.Schema.Types.ObjectId, 
     ref: 'Order' 

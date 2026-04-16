@@ -45,7 +45,7 @@ calculateNights(checkIn, checkOut) {
       check_out: new Date(data.check_out || data.checkOut),
       total_amount: data.total_amount || data.price,
       payment_status: data.paymentStatus || 'Paid',
-      status: data.status || 'Confirmed',
+      status: data.status || 'Pending',
       nights: nights,
       gift_card_used: data.giftCardCode || null
     });
@@ -140,6 +140,118 @@ calculateNights(checkIn, checkOut) {
     return booking;
   }
 
+  async confirmBooking(id, roomName) {
+    const booking = await this._resolveBooking(id);
+    if (!booking) throw new Error("Booking record not found");
+
+    if (roomName === 'auto') {
+      const readyRoom = await PhysicalRoom.findOne({
+        room_type_category: booking.room_type,
+        current_status: 'Ready'
+      });
+      if (!readyRoom) throw new Error("No rooms currently available for this category.");
+      booking.assigned_room = readyRoom.room_name;
+    } else {
+      booking.assigned_room = roomName;
+    }
+
+    booking.status = 'Confirmed';
+    await booking.save();
+    return booking;
+  }
+
+  async checkInBooking(id, swapedRoomName = null) {
+    const booking = await this._resolveBooking(id);
+    if (!booking) throw new Error("Booking not found");
+
+    const finalRoomName = swapedRoomName || booking.assigned_room;
+    if (!finalRoomName) throw new Error("No room assigned to this booking.");
+
+    const room = await PhysicalRoom.findOne({ room_name: finalRoomName });
+    if (!room) throw new Error("Room not found in sanctuary records.");
+    
+    // If we're swapping, free up the old one if it was occupied
+    if (swapedRoomName && booking.assigned_room && swapedRoomName !== booking.assigned_room) {
+        await PhysicalRoom.findOneAndUpdate({ room_name: booking.assigned_room }, { current_status: 'Ready', active_booking: null });
+    }
+
+    room.current_status = 'Occupied';
+    room.active_booking = booking._id;
+    await room.save();
+
+    booking.assigned_room = finalRoomName;
+    booking.status = 'CheckedIn';
+    booking.check_in_time = new Date();
+    await booking.save();
+
+    try {
+      await emailService.sendCheckInEmail(booking.guest_email, booking);
+    } catch (e) {
+      console.error("[Email Notification Failed]", e.message);
+    }
+
+    return booking;
+  }
+
+  async extendStay(id, hours) {
+    const booking = await this._resolveBooking(id);
+    if (!booking) throw new Error("Booking not found");
+
+    const h = parseInt(hours) || 0;
+    const extraCharge = h * 50; // €50 per hour as requested
+    
+    // Update check-out date
+    const currentOut = new Date(booking.check_out);
+    currentOut.setHours(currentOut.getHours() + h);
+    
+    booking.check_out = currentOut;
+    booking.extension_hours += h;
+    booking.additional_charges += extraCharge;
+    
+    await booking.save();
+    return booking;
+  }
+
+  async finalCheckout(id) {
+    const booking = await this._resolveBooking(id);
+    if (!booking) throw new Error("Booking not found");
+
+    if (booking.assigned_room) {
+      await PhysicalRoom.findOneAndUpdate(
+        { room_name: booking.assigned_room },
+        { current_status: 'Cleaning', active_booking: null }
+      );
+    }
+
+    booking.status = 'CheckedOut';
+    await booking.save();
+    return booking;
+  }
+
+  async refundBooking(id) {
+    const booking = await this._resolveBooking(id);
+    if (!booking) throw new Error("Booking not found");
+
+    // Stripe Refund Logic
+    if (booking.stripe_session_id) {
+      const { getStripe } = await import('../config/stripe.js');
+      const stripe = await getStripe();
+      
+      // Retrieve session to get payment intent
+      const session = await stripe.checkout.sessions.retrieve(booking.stripe_session_id);
+      if (session && session.payment_intent) {
+        await stripe.refunds.create({
+          payment_intent: session.payment_intent
+        });
+      }
+    }
+
+    booking.status = 'Cancelled';
+    booking.payment_status = 'Unpaid'; // Or 'Refunded'
+    await booking.save();
+    return booking;
+  }
+
   async updatePaymentStatus(id, status) {
     const booking = await this._resolveBooking(id);
     if (!booking) throw new Error("Booking not found");
@@ -184,7 +296,7 @@ calculateNights(checkIn, checkOut) {
       check_in: new Date(data.check_in),
       check_out: new Date(data.check_out),
       total_amount: data.total_amount,
-      status: data.status || 'Confirmed'
+      status: data.status || 'Pending'
     });
     await booking.save();
 

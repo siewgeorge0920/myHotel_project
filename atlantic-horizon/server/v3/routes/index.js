@@ -34,7 +34,11 @@ router.post('/bookings/admin-create', protect, restrictTo('admin', 'manager'), b
 router.put('/bookings/:id', protect, restrictTo('admin', 'manager'), bookingController.updateBooking); // Full Update
 router.put('/bookings/:id/status', protect, bookingController.updateStatus); // Restricted Status Transition
 router.put('/bookings/:id/payment-status', bookingController.updatePaymentStatus); // Public Payment Update
-router.put('/bookings/:id/reception-checkin', protect, bookingController.receptionCheckIn); // Manual Reception Check-in
+router.put('/bookings/:id/confirm', protect, bookingController.confirmBooking);
+router.put('/bookings/:id/checkin', protect, bookingController.checkIn);
+router.put('/bookings/:id/extend', protect, bookingController.extendStay);
+router.put('/bookings/:id/complete-checkout', protect, bookingController.completeCheckout);
+router.post('/bookings/:id/refund', protect, bookingController.refund);
 router.delete('/bookings/:id', protect, restrictTo('admin'), bookingController.deleteBooking); // Purge
 
 router.post('/bookings/check-availability', bookingController.checkAvailability);
