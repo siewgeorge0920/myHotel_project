@@ -113,52 +113,52 @@ export default function SelfCheckIn() {
           <div className="space-y-8 relative z-10 animate-fadeIn">
             <div className="grid grid-cols-2 md:grid-cols-3 gap-8 border-b border-white/10 pb-8">
               <div>
-                <p className="text-[9px] uppercase tracking-widest text-white/30 mb-1">Guest Name</p>
-                <p className="text-base font-serif italic text-white uppercase">{booking.guest_name}</p>
+                <p className="text-[11px] uppercase tracking-widest text-white/30 mb-2">Guest Name</p>
+                <p className="text-xl font-serif italic text-white uppercase tracking-wide">{booking.guest_name}</p>
               </div>
               <div>
-                <p className="text-[9px] uppercase tracking-widest text-white/30 mb-1">Booking ID</p>
-                <p className="text-base font-mono text-amber-500 font-bold">{booking.booking_id.toUpperCase()}</p>
+                <p className="text-[11px] uppercase tracking-widest text-white/30 mb-2">Booking ID</p>
+                <p className="text-xl font-mono text-amber-500 font-bold">{booking.booking_id.toUpperCase()}</p>
               </div>
               <div>
-                <p className="text-[9px] uppercase tracking-widest text-white/30 mb-1">Contact Phone</p>
-                <p className="text-base font-sans text-white uppercase">{booking.guest_phone || 'N/A'}</p>
+                <p className="text-[11px] uppercase tracking-widest text-white/30 mb-2">Contact Phone</p>
+                <p className="text-xl font-sans text-white uppercase tracking-wider">{booking.guest_phone || 'N/A'}</p>
               </div>
             </div>
 
-            <div className="bg-white/5 p-6 border border-white/5">
-              <div className="flex justify-between items-start mb-6">
+            <div className="bg-white/5 p-8 border border-white/5">
+              <div className="flex justify-between items-start mb-10">
                 <div>
-                  <p className="text-[9px] uppercase tracking-widest text-amber-500 font-bold mb-1">Accommodation</p>
-                  <p className="text-sm text-white font-CINZEL uppercase tracking-wider">{booking.room_type}</p>
-                  <p className="text-[8px] text-white/30 uppercase mt-1 tracking-widest">{booking.nights || 1} Nights Stay</p>
+                  <p className="text-[11px] uppercase tracking-widest text-amber-500 font-bold mb-2">Accommodation</p>
+                  <p className="text-2xl text-white font-CINZEL uppercase tracking-widest leading-snug">{booking.room_type}</p>
+                  <p className="text-[10px] text-white/30 uppercase mt-2 tracking-[0.3em] font-bold">{booking.nights || 1} Nights Stay</p>
                 </div>
                 <div className="text-right">
-                  <p className="text-[9px] uppercase tracking-widest text-white/30 mb-1">Total Bill</p>
-                  <p className="text-xl font-serif text-white">€{booking.total_amount}</p>
-                  <span className={`text-[8px] uppercase font-bold px-2 py-0.5 rounded border ${booking.payment_status === 'Paid' ? 'border-green-500/40 text-green-400 bg-green-500/5' : 'border-amber-500/40 text-amber-400 bg-amber-500/5'}`}>
+                  <p className="text-[11px] uppercase tracking-widest text-white/30 mb-2">Total Bill</p>
+                  <p className="text-4xl font-serif text-white mb-2">€{booking.total_amount}</p>
+                  <span className={`text-[10px] uppercase font-black px-4 py-1.5 rounded-full border ${booking.payment_status === 'Paid' ? 'border-green-500/40 text-green-400 bg-green-500/10' : 'border-amber-500/40 text-amber-400 bg-amber-500/10'}`}>
                     {booking.payment_status}
                   </span>
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div className="bg-[#1a1d17] p-3 border border-white/5">
-                  <p className="text-[8px] uppercase tracking-widest text-white/30 mb-1">Check-In</p>
-                  <p className="text-[10px] text-white font-bold">{new Date(booking.check_in).toLocaleDateString()}</p>
-                  <p className="text-[8px] text-amber-500/60 uppercase mt-1">From 15:00</p>
+              <div className="grid grid-cols-2 gap-6">
+                <div className="bg-[#1a1d17] p-5 border border-white/5">
+                  <p className="text-[10px] uppercase tracking-widest text-white/30 mb-2">Check-In</p>
+                  <p className="text-lg text-white font-bold tracking-wider">{new Date(booking.check_in).toLocaleDateString()}</p>
+                  <p className="text-[10px] text-amber-500 uppercase mt-2 font-black tracking-widest">From 15:00</p>
                 </div>
-                <div className="bg-[#1a1d17] p-3 border border-white/5">
-                  <p className="text-[8px] uppercase tracking-widest text-white/30 mb-1">Check-Out</p>
-                  <p className="text-[10px] text-white font-bold">{new Date(booking.check_out).toLocaleDateString()}</p>
-                  <p className="text-[8px] text-amber-500/60 uppercase mt-1">Until 11:00</p>
+                <div className="bg-[#1a1d17] p-5 border border-white/5">
+                  <p className="text-[10px] uppercase tracking-widest text-white/30 mb-2">Check-Out</p>
+                  <p className="text-lg text-white font-bold tracking-wider">{new Date(booking.check_out).toLocaleDateString()}</p>
+                  <p className="text-[10px] text-amber-500 uppercase mt-2 font-black tracking-widest">Until 11:00</p>
                 </div>
               </div>
 
               {booking.notes && (
-                <div className="mt-6 pt-4 border-t border-white/5">
-                  <p className="text-[8px] uppercase tracking-widest text-amber-500/50 mb-1">Special Notes</p>
-                  <p className="text-[10px] italic text-white/40 leading-relaxed font-serif uppercase">{booking.notes}</p>
+                <div className="mt-8 pt-6 border-t border-white/5">
+                  <p className="text-[10px] uppercase tracking-widest text-amber-500 font-black mb-2">Special Notes</p>
+                  <p className="text-sm italic text-white/50 leading-relaxed font-serif uppercase tracking-wide">{booking.notes}</p>
                 </div>
               )}
             </div>
