@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ManagementSidebar from '../components/managementSidebar';
 import { COLORS } from '../colors';
@@ -8,7 +8,7 @@ import { COLORS } from '../colors';
  * Simple, action-oriented dashboard for daily operations.
  */
 export default function StaffDashboard() {
-  const user = JSON.parse(localStorage.getItem('user'));
+  const user = useMemo(() => JSON.parse(localStorage.getItem('user')), []);
   const navigate = useNavigate();
   const [stats, setStats] = useState({ upcoming: 0, expectedArrivals: 0, pendingDepartures: 0 });
 
