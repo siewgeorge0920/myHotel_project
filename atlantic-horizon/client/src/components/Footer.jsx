@@ -64,7 +64,7 @@ export default function Footer({
           </div>
 
           <div className="contact-line text-[13px] mt-4 opacity-80">
-            <span>Phone: +353 00 000 0000</span> | <span>Email: info@atlantichorizon.ie</span>
+            <span>Phone: +353 021 773656373</span> | <span>Email: info@theatlantichorizon.ie</span>
           </div>
 
           {/* Invisible Staff Login Button */}
