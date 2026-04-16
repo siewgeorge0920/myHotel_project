@@ -15,6 +15,7 @@ export default function ManagementSidebar({ user }) {
   const menuItems = [
     { name: 'Dashboard', path: '/staffDashboard', icon: '' },
     { name: 'Room Inventory', path: '/roomInventory', icon: '', adminOnly: true },
+    { name: 'Team Management', path: '/adminIam', icon: '', adminStrict: true },
     { name: 'Gift Cards', path: '/admin/gift-cards', icon: '', adminOnly: true },
     { name: 'Settings', path: '/adminSettings', icon: '', adminOnly: true }
   ];
@@ -26,8 +27,12 @@ export default function ManagementSidebar({ user }) {
       </div>
 
       <nav className="space-y-2">
-        {menuItems.map((item) => (
-          (!item.adminOnly || user.role === 'admin' || user.role === 'manager') && (
+        {menuItems.map((item) => {
+          const isVisible = item.adminStrict 
+            ? user.role === 'admin'
+            : (!item.adminOnly || user.role === 'admin' || user.role === 'manager');
+
+          return isVisible && (
             <Link 
               key={item.path}
               to={item.path}
@@ -35,8 +40,8 @@ export default function ManagementSidebar({ user }) {
             >
               <span className="text-[10px] uppercase font-bold tracking-widest">{item.name}</span>
             </Link>
-          )
-        ))}
+          );
+        })}
       </nav>
 
       <div className="mt-auto pt-8 border-t border-white/5">

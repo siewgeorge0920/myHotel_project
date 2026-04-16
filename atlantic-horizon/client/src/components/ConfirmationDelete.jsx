@@ -1,6 +1,6 @@
 import React from 'react';
 //this would be used in the future when we have a Custom section
-export default function comfirmationDelete({ isOpen, title, message, onConfirm, onCancel, confirmText = 'Confirm', cancelText = 'Cancel', isAlert = false, isDestructive = false }) {
+export default function ConfirmationDelete({ isOpen, title, message, onConfirm, onCancel, confirmText = 'Confirm', cancelText = 'Cancel', isAlert = false, isDestructive = false }) {
   if (!isOpen) return null;
 
   return (
@@ -20,6 +20,7 @@ export default function comfirmationDelete({ isOpen, title, message, onConfirm, 
 
           <div className="flex flex-col gap-3">
             <button 
+              type="button"
               onClick={onConfirm}
               className={`w-full ${isDestructive ? 'bg-red-900/40 hover:bg-red-800/60 border border-red-500/30' : 'bg-amber-600 hover:bg-amber-700 shadow-lg shadow-amber-900/20'} text-white py-4 text-[10px] uppercase font-black tracking-[0.3em] transition-all active:scale-[0.98]`}
             >
@@ -27,6 +28,7 @@ export default function comfirmationDelete({ isOpen, title, message, onConfirm, 
             </button>
             {!isAlert && (
               <button 
+                type="button"
                 onClick={onCancel}
                 className="w-full bg-white/5 hover:bg-white/10 text-white/40 border border-white/5 py-3 text-[9px] uppercase tracking-[0.2em] transition-all"
               >

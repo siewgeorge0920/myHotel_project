@@ -1,21 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import ManagementSidebar from '../components/managementSidebar';
 import { COLORS } from '../colors';
-import comfirmationDelete from '../components/comfirmationDelete';
+import ConfirmationDelete from '../components/ConfirmationDelete';
 
 // Default form shape for creating/editing staff accounts.
-const EMPTY = { _id: '', name: '', password: '', role: 'staff', status: 'Active', permissions: [] };
+const EMPTY = { _id: '', name: '', username: '', password: '', role: 'staff', status: 'Active' };
 // Allowed role options shown in role selector.
 const ROLES = ['staff', 'manager', 'admin'];
-// Allowed account statuses.
-const STATUSES = ['Active', 'Suspended'];
-// Permission catalog for optional tool access.
-const PERMISSION_OPTIONS = [
-  { key: 'payment_edit', label: 'Process Payments', desc: 'Generate & resend payment links' },
-  { key: 'booking_manage', label: 'Manage Bookings', desc: 'Edit, cancel, check-in/out' },
-  { key: 'room_manage', label: 'Manage Rooms', desc: 'Create, edit, delete room inventory' },
-  { key: 'iam_manage', label: 'Manage Staff', desc: 'Create and suspend accounts' },
-];
 
 export default function AdminIAM() {
   // Session context used by sidebar rendering.
@@ -32,36 +24,24 @@ export default function AdminIAM() {
 
   // Fetch all staff accounts.
   const fetchStaff = () => {
-    fetch('/api/v3/staff')
+    fetch('/api/v3/staff', {
+      headers: { 'Authorization': `Bearer ${user?.token}` }
+    })
       .then(r => r.json())
-      .then(json => setStaffList(json.data || []));
+      .then(json => setStaffList(json || []));
   };
   
-  // Fetch global hotel settings shown at the bottom panel.
-  const fetchSettings = () => {
-    fetch('/api/v3/settings')
-      .then(r => r.json())
-      .then(json => setSettings(json.data || {}));
-  };
-
-  // Initial data load on first render.
-  useEffect(() => { fetchStaff(); fetchSettings(); }, []);
+  const navigate = useNavigate();
   
-  // Optimistically update one setting and persist it to backend.
-  const updateSetting = async (key, value) => {
-    setSettings(prev => ({ ...prev, [key]: value }));
-    try {
-      await fetch('/api/v3/settings', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ [key]: value })
-      });
-      flash(`Updated ${key}`);
-    } catch {
-      flash(`Failed to update ${key}`, true);
+  // Initial data load on first render + Security Check
+  useEffect(() => { 
+    if (!user || user.role !== 'admin') {
+      navigate('/staffDashboard');
+      return;
     }
-  };
-
+    fetchStaff(); 
+  }, []);
+  
   // Temporary toast-like message helper.
   const flash = (text, isErr = false) => {
     setMsg({ text, isErr });
@@ -78,7 +58,14 @@ export default function AdminIAM() {
     if (!isEdit) delete payload._id;
     
     try {
-      const res = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+      const res = await fetch(url, { 
+        method, 
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${user?.token}`
+        }, 
+        body: JSON.stringify(payload) 
+      });
       if (!res.ok) throw new Error();
     flash(isEdit ? 'Account updated successfully' : 'Account registered successfully');
     setForm(EMPTY);
@@ -103,22 +90,15 @@ const requestDelete = (id, name) => {
 const confirmDelete = async () => {
   const { id } = deleteModal;
   setDeleteModal({ isOpen: false, id: null, name: null });
-  await fetch(`/api/v3/staff/${id}`, { method: 'DELETE' });
+  await fetch(`/api/v3/staff/${id}`, { 
+    method: 'DELETE',
+    headers: { 'Authorization': `Bearer ${user?.token}` }
+  });
   flash('Account removed');
   fetchStaff();
 };
 
-// Toggle Active/Suspended status for a staff account.
-const toggleStatus = async (staff) => {
-  const newStatus = staff.status === 'Active' ? 'Suspended' : 'Active';
-  await fetch(`/api/v3/staff/${staff._id}`, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ status: newStatus })
-  });
-  flash(`${newStatus === 'Active' ? 'Activated' : 'Suspended'}: ${staff.name}`);
-  fetchStaff();
-};
+
 
   // Role-to-color mapping for table badges.
   const ROLE_COLOR = { admin: 'text-red-400', manager: 'text-amber-400', staff: 'text-blue-300' };
@@ -145,10 +125,18 @@ const toggleStatus = async (staff) => {
             <h2 className="text-lg font-serif italic mb-6">{isEdit ? 'Edit Account' : '+ Register New Account'}</h2>
             <form onSubmit={handleSubmit} className="space-y-5">
               <div>
-                <label className="block text-[10px] uppercase tracking-widest text-amber-500 font-bold mb-1">Full Name (Username)</label>
+                <label className="block text-[10px] uppercase tracking-widest text-amber-500 font-bold mb-1">Full Name</label>
                 <input type="text" required value={form.name}
                   onChange={e => setForm({ ...form, name: e.target.value })}
                   placeholder="e.g. Ahmad Razif"
+                  className="w-full bg-white/5 border p-3 text-sm outline-none focus:border-amber-500 transition-colors"
+                  style={{ borderColor: COLORS.border }} />
+              </div>
+              <div>
+                <label className="block text-[10px] uppercase tracking-widest text-amber-500 font-bold mb-1">Username (Login ID)</label>
+                <input type="text" required value={form.username}
+                  onChange={e => setForm({ ...form, username: e.target.value })}
+                  placeholder="razif88"
                   className="w-full bg-white/5 border p-3 text-sm outline-none focus:border-amber-500 transition-colors"
                   style={{ borderColor: COLORS.border }} />
               </div>
@@ -173,45 +161,9 @@ const toggleStatus = async (staff) => {
                   ))}
                 </div>
               </div>
-              <div>
-                <label className="block text-[10px] uppercase tracking-widest text-amber-500 font-bold mb-1">Status</label>
-                <div className="flex gap-2">
-                  {STATUSES.map(s => (
-                    <button type="button" key={s} onClick={() => setForm({ ...form, status: s })}
-                      className={`flex-1 py-2 text-[10px] uppercase font-black tracking-widest border transition-all ${form.status === s ? (s === 'Active' ? 'border-green-600 bg-green-600/20 text-green-400' : 'border-red-600 bg-red-600/20 text-red-400') : 'border-white/10 text-white/30 hover:border-white/30'}`}>
-                      {s}
-                    </button>
-                  ))}
-                </div>
-              </div>
 
-              {/* Permissions and tool access toggles */}
-              <div>
-                <label className="block text-[10px] uppercase tracking-widest text-amber-500 font-bold mb-2">Tool Add-Ons & Permissions</label>
-                <div className="space-y-2">
-                  {PERMISSION_OPTIONS.map(p => {
-                    const hasPerm = (form.permissions || []).includes(p.key);
-                    return (
-                      <button type="button" key={p.key}
-                        onClick={() => {
-                          const perms = form.permissions || [];
-                          setForm({ ...form, permissions: hasPerm ? perms.filter(x => x !== p.key) : [...perms, p.key] });
-                        }}
-                        className={`w-full flex items-start gap-3 text-left px-3 py-2.5 border transition-all ${
-                          hasPerm ? 'border-amber-600/60 bg-amber-600/10' : 'border-white/10 hover:border-white/20'
-                        }`}>
-                        <span className={`mt-0.5 w-4 h-4 border flex-shrink-0 flex items-center justify-center text-[10px] ${
-                          hasPerm ? 'bg-amber-600 border-amber-600 text-white' : 'border-white/30'
-                        }`}>{hasPerm ? '✓' : ''}</span>
-                        <span>
-                          <span className="block text-[10px] uppercase font-black tracking-widest">{p.label}</span>
-                          <span className="text-[9px] text-white/30">{p.desc}</span>
-                        </span>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
+
+
 
               <div className="flex gap-3 pt-2">
                 <button type="submit" disabled={loading} style={{ backgroundColor: COLORS.amber }}
@@ -235,7 +187,6 @@ const toggleStatus = async (staff) => {
                 <tr>
                   <th className="p-5">Name</th>
                   <th className="p-5">Role</th>
-                  <th className="p-5">Status</th>
                   <th className="p-5 text-right">Actions</th>
                 </tr>
               </thead>
@@ -246,16 +197,11 @@ const toggleStatus = async (staff) => {
                     <td className="p-5">
                       <span className={`text-[10px] uppercase font-black ${ROLE_COLOR[s.role] || 'text-white/50'}`}>{s.role}</span>
                     </td>
-                    <td className="p-5">
-                      <button onClick={() => toggleStatus(s)}
-                        className={`text-[9px] px-3 py-1 uppercase font-black tracking-widest border transition-all ${s.status === 'Active' ? 'border-green-500/40 text-green-400 hover:bg-red-500/10 hover:text-red-400 hover:border-red-500/40' : 'border-red-500/40 text-red-400 hover:bg-green-500/10 hover:text-green-400 hover:border-green-500/40'}`}>
-                        {s.status || 'Active'}
-                      </button>
-                    </td>
+
                     <td className="p-5 text-right space-x-4">
-                      <button onClick={() => { setIsEdit(true); setForm({ _id: s._id, name: s.name, password: '', role: s.role || 'staff', status: s.status || 'Active' }); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                      <button type="button" onClick={() => { setIsEdit(true); setForm({ _id: s._id, name: s.name, username: s.username, password: '', role: s.role || 'staff', status: s.status || 'Active' }); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
                         className="text-[10px] uppercase font-black tracking-widest text-amber-500 hover:text-amber-300">Edit</button>
-                      <button onClick={() => requestDelete(s._id, s.name)}
+                      <button type="button" onClick={() => requestDelete(s._id, s.name)}
                         className="text-[10px] uppercase font-black tracking-widest text-red-500/50 hover:text-red-400">Delete</button>
                     </td>
                   </tr>
@@ -265,36 +211,16 @@ const toggleStatus = async (staff) => {
           </div>
         </div>
 
-        {/* Global hotel defaults panel */}
-        <div className="mt-10 p-8 border" style={{ backgroundColor: COLORS.bgSurface, borderColor: COLORS.amber }}>
-          <h2 className="text-lg font-serif italic mb-6">Global Hotel Settings</h2>
-          <div className="flex flex-col md:flex-row gap-10">
-            <div className="flex-1">
-              <label className="block text-[10px] uppercase tracking-widest text-amber-500 font-bold mb-1">Standard Check-In Time</label>
-              <input type="time" value={settings.defaultCheckInTime || "14:00"}
-                onChange={e => updateSetting('defaultCheckInTime', e.target.value)}
-                className="w-full bg-white/5 border p-3 text-sm outline-none focus:border-amber-500 transition-colors"
-                style={{ borderColor: COLORS.border }} />
-              <p className="text-[10px] text-white/30 mt-2">New bookings will use this by default, but staff can override it.</p>
-            </div>
-            <div className="flex-1">
-              <label className="block text-[10px] uppercase tracking-widest text-amber-500 font-bold mb-1">Standard Check-Out Time</label>
-              <input type="time" value={settings.defaultCheckOutTime || "12:00"}
-                onChange={e => updateSetting('defaultCheckOutTime', e.target.value)}
-                className="w-full bg-white/5 border p-3 text-sm outline-none focus:border-amber-500 transition-colors"
-                style={{ borderColor: COLORS.border }} />
-              <p className="text-[10px] text-white/30 mt-2">Automated system prompt will flag any active guest past this time.</p>
-            </div>
-          </div>
-        </div>
+
 
       </main>
 
-      <comfirmationDelete 
+      <ConfirmationDelete 
         isOpen={deleteModal.isOpen}
         title="Delete Account"
         message={`Are you absolutely sure you want to permanently delete the account "${deleteModal.name}"? This is irreversible.`}
-        isAlert={true}
+        isAlert={false}
+        isDestructive={true}
         onConfirm={confirmDelete}
         onCancel={() => setDeleteModal({ isOpen: false, id: null, name: null })}
         confirmText="Yes, Delete Account"
