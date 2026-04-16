@@ -39,6 +39,7 @@ router.put('/bookings/:id/checkin', protect, bookingController.checkIn);
 router.put('/bookings/:id/extend', protect, bookingController.extendStay);
 router.put('/bookings/:id/complete-checkout', protect, bookingController.completeCheckout);
 router.post('/bookings/:id/refund', protect, bookingController.refund);
+router.get('/dashboard/stats', protect, bookingController.getDashboardStats);
 router.delete('/bookings/:id', protect, restrictTo('admin'), bookingController.deleteBooking); // Purge
 
 router.post('/bookings/check-availability', bookingController.checkAvailability);

@@ -44,8 +44,8 @@ calculateNights(checkIn, checkOut) {
       check_in: new Date(data.check_in || data.checkIn),
       check_out: new Date(data.check_out || data.checkOut),
       total_amount: data.total_amount || data.price,
-      payment_status: data.paymentStatus || 'Paid',
-      status: data.status || 'Pending',
+      payment_status: 'Unpaid', // Always start as unpaid for new public bookings
+      status: 'Pending', // Always start as pending
       nights: nights,
       gift_card_used: data.giftCardCode || null
     });
@@ -79,14 +79,6 @@ calculateNights(checkIn, checkOut) {
     }
 
     await booking.save();
-    
-    // 📧 Standard Notification
-    try {
-      await emailService.sendBookingEmail(booking.guest_email, booking);
-    } catch (e) {
-      console.error("[Email Notification Failed]", e.message);
-    }
-
     return booking;
   }
 
@@ -255,8 +247,22 @@ calculateNights(checkIn, checkOut) {
   async updatePaymentStatus(id, status) {
     const booking = await this._resolveBooking(id);
     if (!booking) throw new Error("Booking not found");
+    const oldPaymentStatus = booking.payment_status;
     booking.payment_status = status;
-    if (status === 'Paid') booking.status = 'Confirmed';
+    
+    if (status === 'Paid') {
+        // 📧 Confirmation Notification - Send only when transitioning to Paid
+        // Note: Status remains 'Pending' as requested, until staff manually confirms.
+        if (oldPaymentStatus !== 'Paid') {
+            try {
+                console.log(`[Email Trigger] Initiating confirmation email for Paid booking: ${booking.booking_id}`);
+                await emailService.sendBookingEmail(booking.guest_email, booking);
+            } catch (e) {
+                console.error("[Email Notification Failed]", e.message);
+            }
+        }
+    }
+    
     await booking.save();
     return booking;
   }
@@ -296,17 +302,9 @@ calculateNights(checkIn, checkOut) {
       check_in: new Date(data.check_in),
       check_out: new Date(data.check_out),
       total_amount: data.total_amount,
-      status: data.status || 'Pending'
+      status: 'Pending' // Force Pending for all new entries
     });
     await booking.save();
-
-    // 📧 Administrative Notification
-    try {
-      await emailService.sendBookingEmail(booking.guest_email, booking);
-    } catch (e) {
-      console.error("[Email Notification Failed]", e.message);
-    }
-
     return booking;
   }
   async selfCheckIn(bookingId, email) {
@@ -329,13 +327,27 @@ calculateNights(checkIn, checkOut) {
       throw new Error(`This reservation is currently ${booking.status.toLowerCase()}. Please see reception for help.`);
     }
 
-    // Optional: Only allow check-in on the actual day
-    // const today = new Date().toISOString().split('T')[0];
-    // if (new Date(booking.check_in).toISOString().split('T')[0] !== today) {
-    //   throw new Error("Self Check-in is only available on your day of arrival.");
-    // }
+    // 🔒 ROOM LOCKING LOGIC (New Stage 2 -> 3 transition)
+    // If a room was assigned by staff during the 'Confirm' standby stage, lock it now.
+    if (booking.assigned_room) {
+      const PhysicalRoom = (await import('../models/PhysicalRoom.js')).default;
+      const room = await PhysicalRoom.findOne({ room_name: booking.assigned_room });
+      
+      if (room && room.current_status === 'Ready') {
+        room.current_status = 'Occupied';
+        room.active_booking = booking._id;
+        await room.save();
+      } else if (room && room.current_status !== 'Occupied') {
+          // If room is Cleaning or Maintenance, we might still lock it but it's risky.
+          // For now, we only auto-occupy if it's Ready.
+          room.current_status = 'Occupied';
+          room.active_booking = booking._id;
+          await room.save();
+      }
+    }
 
     booking.status = 'CheckedIn';
+    booking.check_in_time = new Date();
     await booking.save();
 
     // 📧 Self Check-in Welcome
@@ -354,6 +366,38 @@ calculateNights(checkIn, checkOut) {
     });
 
     return booking;
+  }
+
+  async getDashboardStats() {
+    // Determine the temporal boundaries for 'Today' in the server's context.
+    const now = new Date();
+    const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const endOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+
+    // Concurrent execution of metric queries for optimized dashboard response times.
+    const [upcoming, expectedArrivals, pendingDepartures] = await Promise.all([
+      // 1. Upcoming: Any booking scheduled for future dates (Tomorrow onwards).
+      Booking.countDocuments({ 
+        check_in: { $gte: endOfToday },
+        status: { $in: ['Pending', 'Confirmed'] }
+      }),
+      // 2. Arrivals: Guests expected today or late arrivals who haven't checked in.
+      Booking.countDocuments({ 
+        check_in: { $lt: endOfToday },
+        status: { $in: ['Pending', 'Confirmed'] }
+      }),
+      // 3. Departures: Currently checked-in guests scheduled to depart today or earlier.
+      Booking.countDocuments({ 
+        check_out: { $lt: endOfToday },
+        status: 'CheckedIn'
+      })
+    ]);
+
+    return {
+      upcoming,
+      expectedArrivals,
+      pendingDepartures
+    };
   }
 }
 

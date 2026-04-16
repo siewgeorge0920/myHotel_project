@@ -52,6 +52,10 @@ class EmailService {
    * 🏨 Send Booking Confirmation
    */
   async sendBookingEmail(recipientEmail, booking) {
+    // 🔍 DIAGNOSTIC LOGGING - Find where the "Ghost" emails are coming from
+    console.log(`[Diagnostic] sendBookingEmail called for ${booking.booking_id} (${booking.guest_email})`);
+    console.trace("[Diagnostic Stack]");
+
     const dbTemplate = await configHelper.getSetting('email_template_booking');
     
     // Default Fallback Template if DB is empty

@@ -10,9 +10,33 @@ import { COLORS } from '../colors';
 export default function StaffDashboard() {
   const user = JSON.parse(localStorage.getItem('user'));
   const navigate = useNavigate();
+  const [stats, setStats] = useState({ upcoming: 0, expectedArrivals: 0, pendingDepartures: 0 });
+
+  const fetchStats = async () => {
+    try {
+      const res = await fetch('/api/v3/dashboard/stats', {
+        credentials: 'include' // Crucial for sending HttpOnly session cookies
+      });
+      const data = await res.json();
+      
+      if (data.success && data.data) {
+        setStats(data.data);
+      } else {
+        console.warn("[Dashboard] Stats sync returned non-success:", data);
+      }
+    } catch (err) {
+      console.error("[Dashboard] Stats synchronization failed:", err);
+    }
+  };
 
   useEffect(() => {
-    if (!user) navigate('/login');
+    if (!user) {
+      navigate('/login');
+    } else {
+      fetchStats();
+      const interval = setInterval(fetchStats, 60000); // Refresh every minute
+      return () => clearInterval(interval);
+    }
   }, [user, navigate]);
 
   if (!user) return null;
@@ -68,9 +92,9 @@ export default function StaffDashboard() {
         <div className="mt-12 max-w-5xl relative z-10">
            <h4 className="text-[10px] uppercase tracking-[0.4em] text-white/40 mb-6 font-black">Daily Overview</h4>
            <div className="grid grid-cols-3 gap-6">
-              <StatCard label="Expected Arrivals" value="12" />
-              <StatCard label="Pending Departures" value="5" />
-              <StatCard label="Active Orders" value="3" />
+              <StatCard label="Upcoming Bookings" value={stats.upcoming} />
+              <StatCard label="Today's Arrivals" value={stats.expectedArrivals} />
+              <StatCard label="Today's Departures" value={stats.pendingDepartures} />
            </div>
         </div>
 

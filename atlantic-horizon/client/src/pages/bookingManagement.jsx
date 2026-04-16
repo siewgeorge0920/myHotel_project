@@ -19,7 +19,7 @@ import {
 export default function BookingManagement() {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [activeFilter, setActiveFilter] = useState('today');
+  const [activeFilter, setActiveFilter] = useState('pending');
   const [availableRooms, setAvailableRooms] = useState([]);
 
   const user = JSON.parse(localStorage.getItem('user')) || { role: 'staff' };
@@ -196,14 +196,21 @@ export default function BookingManagement() {
     const today = new Date().toISOString().split('T')[0];
     
     return bookings.filter(b => {
-      // Safely ensure date strings for comparison
       const bIn = b.check_in ? new Date(b.check_in).toISOString().split('T')[0] : '';
       const bOut = b.check_out ? new Date(b.check_out).toISOString().split('T')[0] : '';
 
-      if (activeFilter === 'today') return (bIn === today && b.status !== 'CheckedOut') || b.status === 'CheckedIn' || b.status === 'Confirmed';
-      if (activeFilter === 'upcoming') return bIn > today && b.status === 'Pending';
-      if (activeFilter === 'history') return b.status === 'CheckedOut' || b.status === 'Cancelled';
-      return true;
+      switch(activeFilter) {
+        case 'pending': 
+            return b.status === 'Pending';
+        case 'checkin': 
+            return b.status === 'CheckedIn' || (b.status === 'Confirmed' && bIn <= today);
+        case 'checkout': 
+            return b.status === 'CheckedIn' && bOut === today;
+        case 'completed': 
+            return b.status === 'CheckedOut' || b.status === 'Cancelled';
+        default: 
+            return true;
+      }
     });
   };
 
@@ -231,9 +238,10 @@ export default function BookingManagement() {
 
         <div className="flex gap-4 mb-8">
           {[
-            { id: 'upcoming', label: 'Queued Arrivals' },
-            { id: 'today', label: 'Sanctuary Roster' },
-            { id: 'history', label: 'Archived Stays' }
+            { id: 'pending', label: 'Pending' },
+            { id: 'checkin', label: 'Check-In' },
+            { id: 'checkout', label: 'Check-Out' },
+            { id: 'completed', label: 'Completed' }
           ].map(f => (
             <button
               key={f.id}
@@ -307,57 +315,62 @@ export default function BookingManagement() {
                       </span>
                     </td>
                     <td className="p-6 text-right">
-                      <div className="flex justify-end gap-2">
+                        <div className="flex justify-end gap-2">
+                           {/* STEP 1: CONFIRM (PENDING ONLY) */}
                            <button 
                              type="button"
                              disabled={s !== 'Pending'}
                              onClick={() => { setSelectedBooking(b); setIsConfirmModalOpen(true); }}
-                             className={`p-2.5 rounded-full transition-all ${s === 'Pending' ? 'bg-amber-600 text-white hover:scale-110' : 'bg-white/5 text-white/10'}`}
-                             title="Confirm & Assign Room"
+                             className={`p-2.5 rounded-full transition-all ${s === 'Pending' ? 'bg-amber-600 text-white hover:scale-110 shadow-lg shadow-amber-600/20' : 'bg-white/5 text-white/5 cursor-not-allowed opacity-20'}`}
+                             title="Confirm & Assign Standby Room"
                            >
                              <CheckCircle size={16} />
                            </button>
 
+                           {/* STEP 2: CHECK-IN (CONFIRMED ONLY) */}
                            <button 
                              type="button"
                              disabled={s !== 'Confirmed'}
                              onClick={() => { setSelectedBooking(b); setIsCheckInModalOpen(true); }}
-                             className={`p-2.5 rounded-full transition-all ${s === 'Confirmed' ? 'bg-emerald-600 text-white hover:scale-110' : 'bg-white/5 text-white/10'}`}
-                             title="Initiate Check-in"
+                             className={`p-2.5 rounded-full transition-all ${s === 'Confirmed' ? 'bg-emerald-600 text-white hover:scale-110 shadow-lg shadow-emerald-600/20' : 'bg-white/5 text-white/5 cursor-not-allowed opacity-20'}`}
+                             title="Finalize Check-in (Lock Room)"
                            >
                              <UserCheck size={16} />
                            </button>
 
+                           {/* STEP 3: CHECKOUT (CHECKED-IN ONLY) */}
                            <button 
                              type="button"
                              disabled={s !== 'CheckedIn'}
                              onClick={() => { setSelectedBooking(b); setIsCheckoutModalOpen(true); }}
-                             className={`p-2.5 rounded-full transition-all ${s === 'CheckedIn' ? 'bg-white text-black hover:scale-110' : 'bg-white/5 text-white/10'}`}
-                             title="Finalize Checkout"
+                             className={`p-2.5 rounded-full transition-all ${s === 'CheckedIn' ? 'bg-white text-black hover:scale-110 shadow-lg shadow-white/20' : 'bg-white/5 text-white/5 cursor-not-allowed opacity-20'}`}
+                             title="Finalize Checkout & Cleaning"
                            >
                              <LogOut size={16} />
                            </button>
 
+                           {/* UTILITY: EDIT (NOT FOR ARCHIVED) */}
                            <button 
                              type="button"
                              disabled={s === 'CheckedOut' || s === 'Cancelled'}
                              onClick={() => openForm(b)}
-                             className={`p-2.5 rounded-full transition-all ${(s !== 'CheckedOut' && s !== 'Cancelled') ? 'bg-white/10 text-white/40 hover:text-white border border-white/5' : 'bg-white/5 text-white/5'}`}
-                             title="Edit"
+                             className={`p-2.5 rounded-full transition-all ${(s !== 'CheckedOut' && s !== 'Cancelled') ? 'bg-white/10 text-white/40 hover:text-white border border-white/5' : 'bg-white/5 text-white/5 cursor-not-allowed'}`}
+                             title="Edit Details"
                            >
                              <Edit size={16} />
                            </button>
 
+                           {/* UTILITY: REFUND (PENDING OR CONFIRMED) */}
                            <button 
                              type="button"
                              disabled={s !== 'Pending' && s !== 'Confirmed'}
                              onClick={() => handleRefund(b._id)}
-                             className={`p-2.5 rounded-full transition-all ${(s === 'Pending' || s === 'Confirmed') ? 'bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white border border-red-500/20' : 'bg-white/5 text-white/5'}`}
-                             title="Refund & Cancel"
+                             className={`p-2.5 rounded-full transition-all ${(s === 'Pending' || s === 'Confirmed') ? 'bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white border border-red-500/20 shadow-lg shadow-red-500/10' : 'bg-white/5 text-white/5 cursor-not-allowed opacity-20'}`}
+                             title="Refund & Cancel Reservation"
                            >
                              <RotateCcw size={16} />
                            </button>
-                      </div>
+                        </div>
                     </td>
                   </tr>
                 );
