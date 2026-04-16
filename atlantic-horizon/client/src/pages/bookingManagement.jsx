@@ -203,9 +203,11 @@ export default function BookingManagement() {
         case 'pending': 
             return b.status === 'Pending';
         case 'checkin': 
-            return b.status === 'CheckedIn' || (b.status === 'Confirmed' && bIn <= today);
+            // Arrivals: Only shows those who are Confirmed and due to arrive today or earlier.
+            return b.status === 'Confirmed' && bIn <= today;
         case 'checkout': 
-            return b.status === 'CheckedIn' && bOut === today;
+            // In-House / Departures: Show all guests currently checked in.
+            return b.status === 'CheckedIn';
         case 'completed': 
             return b.status === 'CheckedOut' || b.status === 'Cancelled';
         default: 
