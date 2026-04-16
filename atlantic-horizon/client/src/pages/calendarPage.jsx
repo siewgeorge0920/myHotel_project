@@ -628,8 +628,18 @@ export default function CalendarPage() {
                      type="text" 
                      placeholder="ATH-XXXX-XXXX"
                      value={giftCardInfo.code}
-                     onChange={(e) => setGiftCardInfo({...giftCardInfo, code: e.target.value})}
-                     className="flex-1 bg-black/20 border border-white/10 px-4 py-3 rounded-lg text-xs outline-none focus:border-amber-500 uppercase tracking-widest"
+                     onChange={(e) => {
+                        const val = e.target.value.replace(/[^A-Za-z0-9]/g, '').toUpperCase();
+                        let formatted = val;
+                        if (val.length > 3) {
+                          formatted = val.substring(0, 3) + '-' + val.substring(3);
+                        }
+                        if (val.length > 8) { // 3 + 1 + 4 + 1
+                          formatted = formatted.substring(0, 8) + '-' + formatted.substring(8, 12);
+                        }
+                        setGiftCardInfo({...giftCardInfo, code: formatted.substring(0, 13)});
+                      }}
+                     className="flex-1 bg-black/20 border border-white/10 px-4 py-3 rounded-lg text-xs outline-none focus:border-amber-500 uppercase tracking-widest font-mono"
                    />
                    <button 
                      onClick={handleApplyGiftCard}
