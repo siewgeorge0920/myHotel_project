@@ -17,7 +17,7 @@ import PrivacyPolicyModal from './components/footer/PrivacyPolicyModal';
 
 // Guest Pages
 import Home from './pages/Home';
-import InventoryManagement from './pages/inventoryManagement';
+import RoomInventory from './pages/roomInventory';
 import CalendarPage from './pages/calendarPage';
 import Login from './pages/login';
 import GiftCards from './pages/GiftCards';
@@ -50,12 +50,11 @@ import Jacuzzi from './pages/Derrick/Jacuzzi';
 import StaffDashboard from './pages/staffDashboard';
 import Inventory from './pages/inventory';
 import AdminIAM from './pages/adminIAM';
+import AdminCalendar from './pages/adminCalendar';
 import RoomManagement from './pages/roomManagement';
 import RoomPackage from './pages/roomPackage';
 import BookingManagement from './pages/bookingManagement';
 import Transactions from './pages/transactions';
-import AdminCalendar from './pages/adminCalendar';
-import RoomService from './pages/roomService';
 import PhysicalRoomManager from './pages/physicalRoomManager';
 
 
@@ -254,7 +253,7 @@ export default function App() {
 
           {/* Management Portal */}
           <Route path="/staffDashboard" element={<ProtectedRoute><StaffDashboard /></ProtectedRoute>} />
-          <Route path="/inventory" element={<ProtectedRoute><InventoryManagement /></ProtectedRoute>} />
+          <Route path="/roomInventory" element={<ProtectedRoute><RoomInventory /></ProtectedRoute>} />
           <Route path="/adminIam" element={<ProtectedRoute><AdminIAM /></ProtectedRoute>} />
           <Route path="/adminLogs" element={<ProtectedRoute><AdminLogs /></ProtectedRoute>} />
           <Route path="/roomManagement" element={<ProtectedRoute><RoomManagement /></ProtectedRoute>} />
@@ -262,7 +261,6 @@ export default function App() {
           <Route path="/bookings" element={<ProtectedRoute><BookingManagement /></ProtectedRoute>} />
           <Route path="/transactions" element={<ProtectedRoute><Transactions /></ProtectedRoute>} />
           <Route path="/adminCalendar" element={<ProtectedRoute><AdminCalendar /></ProtectedRoute>} />
-          <Route path="/roomService" element={<ProtectedRoute><RoomService /></ProtectedRoute>} />
           <Route path="/physicalRooms" element={<ProtectedRoute><PhysicalRoomManager /></ProtectedRoute>} />
           <Route path="/self-check-in" element={<SelfCheckIn />} />
           <Route path="/booking-management" element={<ProtectedRoute><BookingManagement /></ProtectedRoute>} />

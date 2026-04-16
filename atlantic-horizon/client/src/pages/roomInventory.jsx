@@ -114,11 +114,7 @@ export default function InventoryManagement() {
       <main className="flex-1 p-8 lg:p-20 overflow-x-hidden">
         <header className="mb-12 flex flex-col md:flex-row justify-between items-start md:items-end gap-8">
           <div>
-            <div className="flex items-center gap-3 mb-4">
-               <span className="w-2 h-2 bg-amber-500 rounded-full" />
-               <p className="text-amber-500 uppercase tracking-[0.5em] text-[10px] font-black">Core Inventory Tier</p>
-            </div>
-            <h1 className="text-5xl font-serif italic text-white/90">Sanctuary Capacity Controller</h1>
+            <h1 className="text-5xl font-serif italic text-white/90">Room Inventory</h1>
           </div>
           <button 
             onClick={handleOpenCreate}

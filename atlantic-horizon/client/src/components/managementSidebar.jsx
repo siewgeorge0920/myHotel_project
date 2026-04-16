@@ -14,10 +14,8 @@ export default function ManagementSidebar({ user }) {
   // Strategic Grouping
   const menuItems = [
     { name: 'Dashboard', path: '/staffDashboard', icon: '' },
-
-    { name: 'Room Service', path: '/roomService', icon: '' },
-
-    { name: 'Inventory', path: '/inventory', icon: '' },
+    { name: 'Room Management', path: '/roomManagement', icon: '' },
+    { name: 'Room Inventory', path: '/roomInventory', icon: '', adminOnly: true },
     { name: 'Gift Cards', path: '/admin/gift-cards', icon: '', adminOnly: true },
     { name: 'Settings', path: '/adminSettings', icon: '', adminOnly: true }
   ];
@@ -31,7 +29,7 @@ export default function ManagementSidebar({ user }) {
 
       <nav className="space-y-2">
         {menuItems.map((item) => (
-          (!item.adminOnly || user.role === 'admin' || (item.name === 'Gift Cards' && user.role === 'manager')) && (
+          (!item.adminOnly || user.role === 'admin' || user.role === 'manager') && (
             <Link 
               key={item.path}
               to={item.path}
