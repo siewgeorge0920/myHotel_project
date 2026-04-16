@@ -158,7 +158,7 @@ export default function QuickBook() {
             onClick={handleCheckAvailability}
             className="w-full md:w-auto bg-amber-600 text-white md:rounded-full rounded-2xl px-12 py-4 md:py-4 text-[11px] uppercase tracking-[0.4em] font-black transition-all hover:bg-amber-500 hover:scale-[1.02] hover:shadow-[0_0_30px_rgba(217,119,6,0.3)] md:ml-2 mt-2 md:mt-0"
           >
-            Explore
+            Book Now
           </button>
         </div>
       </div>

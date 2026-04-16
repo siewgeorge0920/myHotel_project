@@ -321,7 +321,7 @@ export default function BookingManagement() {
                              type="button"
                              disabled={s !== 'Pending'}
                              onClick={() => { setSelectedBooking(b); setIsConfirmModalOpen(true); }}
-                             className={`p-2.5 rounded-full transition-all ${s === 'Pending' ? 'bg-amber-600 text-white hover:scale-110 shadow-lg shadow-amber-600/20' : 'bg-white/5 text-white/5 cursor-not-allowed opacity-20'}`}
+                             className={`p-2.5 rounded-full transition-all ${s === 'Pending' ? 'bg-amber-600 text-white hover:scale-110 shadow-lg shadow-amber-600/20' : 'bg-white/5 text-white/20 cursor-not-allowed opacity-20'}`}
                              title="Confirm & Assign Standby Room"
                            >
                              <CheckCircle size={16} />
@@ -332,7 +332,7 @@ export default function BookingManagement() {
                              type="button"
                              disabled={s !== 'Confirmed'}
                              onClick={() => { setSelectedBooking(b); setIsCheckInModalOpen(true); }}
-                             className={`p-2.5 rounded-full transition-all ${s === 'Confirmed' ? 'bg-emerald-600 text-white hover:scale-110 shadow-lg shadow-emerald-600/20' : 'bg-white/5 text-white/5 cursor-not-allowed opacity-20'}`}
+                             className={`p-2.5 rounded-full transition-all ${s === 'Confirmed' ? 'bg-emerald-600 text-white hover:scale-110 shadow-lg shadow-emerald-600/20' : 'bg-white/5 text-white/20 cursor-not-allowed opacity-20'}`}
                              title="Finalize Check-in (Lock Room)"
                            >
                              <UserCheck size={16} />
@@ -343,7 +343,7 @@ export default function BookingManagement() {
                              type="button"
                              disabled={s !== 'CheckedIn'}
                              onClick={() => { setSelectedBooking(b); setIsCheckoutModalOpen(true); }}
-                             className={`p-2.5 rounded-full transition-all ${s === 'CheckedIn' ? 'bg-white text-black hover:scale-110 shadow-lg shadow-white/20' : 'bg-white/5 text-white/5 cursor-not-allowed opacity-20'}`}
+                             className={`p-2.5 rounded-full transition-all ${s === 'CheckedIn' ? 'bg-white text-black hover:scale-110 shadow-lg shadow-white/20' : 'bg-white/5 text-white/20 cursor-not-allowed opacity-20'}`}
                              title="Finalize Checkout & Cleaning"
                            >
                              <LogOut size={16} />
@@ -354,7 +354,7 @@ export default function BookingManagement() {
                              type="button"
                              disabled={s === 'CheckedOut' || s === 'Cancelled'}
                              onClick={() => openForm(b)}
-                             className={`p-2.5 rounded-full transition-all ${(s !== 'CheckedOut' && s !== 'Cancelled') ? 'bg-white/10 text-white/40 hover:text-white border border-white/5' : 'bg-white/5 text-white/5 cursor-not-allowed'}`}
+                             className={`p-2.5 rounded-full transition-all ${(s !== 'CheckedOut' && s !== 'Cancelled') ? 'bg-white/10 text-white/40 hover:text-white border border-white/5' : 'bg-white/5 text-white/10 cursor-not-allowed opacity-20'}`}
                              title="Edit Details"
                            >
                              <Edit size={16} />
@@ -365,7 +365,7 @@ export default function BookingManagement() {
                              type="button"
                              disabled={s !== 'Pending' && s !== 'Confirmed'}
                              onClick={() => handleRefund(b._id)}
-                             className={`p-2.5 rounded-full transition-all ${(s === 'Pending' || s === 'Confirmed') ? 'bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white border border-red-500/20 shadow-lg shadow-red-500/10' : 'bg-white/5 text-white/5 cursor-not-allowed opacity-20'}`}
+                             className={`p-2.5 rounded-full transition-all ${(s === 'Pending' || s === 'Confirmed') ? 'bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white border border-red-500/20 shadow-lg shadow-red-500/10' : 'bg-white/5 text-white/20 cursor-not-allowed opacity-20'}`}
                              title="Refund & Cancel Reservation"
                            >
                              <RotateCcw size={16} />

@@ -7,7 +7,7 @@ import Newsletter from '../components/Newsletter';
 
 export default function Home() {
   return (
-    <main id="top" className="relative bg-white font-sans">
+    <main id="top" className="relative bg-[#0c0e0a] font-sans">
       {/* Hero-first landing sequence for visual storytelling. */}
       <HeroSlider />
 

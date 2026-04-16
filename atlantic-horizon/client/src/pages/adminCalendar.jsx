@@ -15,13 +15,13 @@ export default function AdminCalendar() {
   // Load booking records and physical-unit inventory in parallel on first render.
   useEffect(() => {
     Promise.all([
-      fetch('/api/bookings'),
-      fetch('/api/physical-rooms')
+      fetch('/api/v3/bookings'),
+      fetch('/api/v3/physical-rooms')
     ])
       .then(([resB, resP]) => Promise.all([resB.json(), resP.json()]))
       .then(([dataB, dataP]) => {
-        setBookings(dataB);
-        setPhysicalRooms(dataP);
+        setBookings(dataB.data || []);
+        setPhysicalRooms(dataP.data || []);
         setLoading(false);
       });
   }, []);
@@ -76,22 +76,23 @@ export default function AdminCalendar() {
                       // Find bookings that overlap this unit and day.
                       const dayBookings = bookings.filter(b => {
                         // Booking must be assigned to this exact physical unit.
-                        if (b.assignedUnit !== unit.roomName) return false;
+                        if (b.assigned_room !== unit.roomName) return false;
 
                         // Occupancy spans check-in day (inclusive) to check-out day (exclusive).
-                        const start = new Date(b.checkInDate).setHours(0,0,0,0);
-                        const end = new Date(b.checkOutDate).setHours(0,0,0,0);
+                        const start = new Date(b.check_in).setHours(0,0,0,0);
+                        const end = new Date(b.check_out).setHours(0,0,0,0);
                         return d.getTime() >= start && d.getTime() < end; 
                       });
                       return (
                         <div key={i} className="flex-1 p-1 border-r flex flex-col gap-1 min-h-[60px]" style={{ borderColor: COLORS.border }}>
                           {dayBookings.map((b, idx) => (
                             <div key={idx} className={`p-1 text-[8px] uppercase tracking-widest truncate border ${
-                              b.bookingStatus === 'CheckedIn' ? 'bg-green-500/10 border-green-500/40 text-green-400' :
-                              b.bookingStatus === 'Confirmed' ? 'bg-amber-600/10 border-amber-600/40 text-amber-400' :
+                              b.status === 'CheckedIn' ? 'bg-green-500/10 border-green-500/40 text-green-400' :
+                              b.status === 'Confirmed' ? 'bg-amber-600/10 border-amber-600/40 text-amber-400' :
+                              b.status === 'Pending' ? 'bg-blue-600/10 border-blue-600/40 text-blue-400' :
                               'bg-white/5 border-white/20 text-white/40'
                             }`}>
-                              <span className="font-bold">{b.bookingId}</span> ({b.bookingStatus})
+                              <span className="font-bold">{b.booking_id}</span> ({b.status})
                               {b.guest_name && (
                                 <div className="mt-0.5 text-[7px] text-white/80 lowercase capitalize-first">
                                   {b.guest_name}

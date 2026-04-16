@@ -50,6 +50,8 @@ calculateNights(checkIn, checkOut) {
       gift_card_used: data.giftCardCode || null
     });
 
+    console.log(`[V3 Trace] New Public Booking Created: ${bookingId} | Status: ${booking.status} | Payment: ${booking.payment_status}`);
+
     // Handle Gift Card Redemption
     if (data.giftCardCode) {
       const GiftCard = (await import('../models/GiftCard.js')).default;
@@ -304,6 +306,8 @@ calculateNights(checkIn, checkOut) {
       total_amount: data.total_amount,
       status: 'Pending' // Force Pending for all new entries
     });
+    
+    console.log(`[V3 Trace] New Admin Booking Created: ${booking.booking_id} | Status: ${booking.status}`);
     await booking.save();
     return booking;
   }
