@@ -79,9 +79,16 @@ export default function SelfCheckIn() {
               <input 
                 type="text" 
                 value={formData.bookingId}
-                className="w-full bg-white/5 border border-white/10 px-4 py-4 text-white focus:border-amber-500 outline-none transition-all placeholder:text-white/20 uppercase font-mono tracking-widest"
-                onChange={(e) => setFormData({ ...formData, bookingId: e.target.value.toUpperCase() })}
-                placeholder="ATL-XXXXXX"
+                className="w-full bg-white/5 border border-white/10 px-4 py-4 text-white focus:border-amber-500 outline-none transition-all placeholder:text-white/20 uppercase font-mono tracking-widest text-lg"
+                onChange={(e) => {
+                  const val = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+                  let formatted = val;
+                  if (val.length > 3) {
+                    formatted = val.substring(0, 3) + '-' + val.substring(3);
+                  }
+                  setFormData({ ...formData, bookingId: formatted.substring(0, 10) });
+                }}
+                placeholder="ATL-123456"
                 required
               />
             </div>
