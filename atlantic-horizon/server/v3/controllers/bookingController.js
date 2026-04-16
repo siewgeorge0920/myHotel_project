@@ -3,12 +3,14 @@ import catchAsync from '../utils/catchAsync.js';
 import { sendSuccess } from '../utils/responseHandler.js';
 import { getStripe } from '../config/stripe.js';
 import { getSetting } from '../utils/configHelper.js';
+import { recordLog } from '../utils/logger.js';
 
 const bookingController = {
   createBooking: catchAsync(async (req, res) => {
     let booking;
     if (req.body.check_in && req.body.check_out) {
       booking = await bookingService.adminCreate(req.body);
+      await recordLog(req.user, 'ADMIN_BOOKING_CREATE', booking.booking_id, `Manual reservation created for ${booking.guest_name}`);
     } else {
       booking = await bookingService.createBooking(req.body);
     }
@@ -19,12 +21,14 @@ const bookingController = {
     const { id } = req.params;
     const { status } = req.body;
     const updated = await bookingService.transitionStatus(id, status);
+    await recordLog(req.user, 'BOOKING_STATUS_CHANGE', updated.booking_id, `Status set to ${status}`);
     sendSuccess(res, updated, `Status transitioned to ${status}`);
   }),
 
   updatePaymentStatus: catchAsync(async (req, res) => {
     const { id } = req.params;
     const updated = await bookingService.updatePaymentStatus(id, req.body.payment_status || req.body.status);
+    await recordLog(req.user, 'PAYMENT_STATUS_UPDATE', updated.booking_id, `Payment status updated manually.`);
     sendSuccess(res, updated, "Payment status updated successfully.");
   }),
 
@@ -35,11 +39,16 @@ const bookingController = {
 
   updateBooking: catchAsync(async (req, res) => {
     const updated = await bookingService.update(req.params.id, req.body);
+    await recordLog(req.user, 'BOOKING_UPDATE', updated.booking_id, `Reservation details modified by staff.`);
     sendSuccess(res, updated, "Reservation updated by custodian.");
   }),
 
   deleteBooking: catchAsync(async (req, res) => {
+    // Resolve booking first for logging context before purging
+    const booking = await bookingService._resolveBooking(req.params.id);
+    const bId = booking?.booking_id;
     await bookingService.delete(req.params.id);
+    await recordLog(req.user, 'BOOKING_PURGE', bId, `Reservation record deleted from database.`);
     sendSuccess(res, null, "Reservation record purged.");
   }),
 
@@ -47,6 +56,7 @@ const bookingController = {
     const { id } = req.params;
     const { assigned_room } = req.body;
     const booking = await bookingService.confirmBooking(id, assigned_room || 'auto');
+    await recordLog(req.user, 'BOOKING_CONFIRMED', booking.booking_id, `Room ${booking.assigned_room} assigned and confirmed.`);
     sendSuccess(res, booking, "Sanctuary assignment confirmed.");
   }),
 
@@ -54,6 +64,7 @@ const bookingController = {
     const { id } = req.params;
     const { swaped_room } = req.body;
     const booking = await bookingService.checkInBooking(id, swaped_room);
+    await recordLog(req.user, 'BOOKING_CHECKIN', booking.booking_id, `Guest reached the sanctuary.`);
     sendSuccess(res, booking, "Guest has entered the sanctuary.");
   }),
 
@@ -61,18 +72,21 @@ const bookingController = {
     const { id } = req.params;
     const { hours } = req.body;
     const booking = await bookingService.extendStay(id, hours);
+    await recordLog(req.user, 'BOOKING_EXTENSION', booking.booking_id, `Stay extended by ${hours} hours.`);
     sendSuccess(res, booking, "Sanctuary stay has been extended.");
   }),
 
   completeCheckout: catchAsync(async (req, res) => {
     const { id } = req.params;
     const booking = await bookingService.finalCheckout(id);
+    await recordLog(req.user, 'BOOKING_CHECKOUT', booking.booking_id, `Final departure processed.`);
     sendSuccess(res, booking, "Stay finalized. Farewell.");
   }),
 
   refund: catchAsync(async (req, res) => {
     const { id } = req.params;
     const booking = await bookingService.refundBooking(id);
+    await recordLog(req.user, 'BOOKING_REFUND', booking.booking_id, `Financial reversal initiated.`);
     sendSuccess(res, booking, "Financial reversal initiated. Transaction cancelled.");
   }),
 
