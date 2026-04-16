@@ -103,11 +103,11 @@ export default function Header() {
           <Link 
             to="/check-in"
             className="flex items-center"
-            title="Self Check-In"
+            title="Manage Booking"
           >
             {/* Desktop: Button Style */}
             <span className="hidden lg:inline-block border border-manorGold text-manorGold px-4 py-2 text-[10px] uppercase tracking-wider transition-all duration-300 hover:bg-manorGold hover:text-manorGreen hover:-translate-y-0.5 hover:shadow-lg">
-              Self Check-In
+              Manage Booking
             </span>
 
             {/* Mobile: Custom Icon Design */}

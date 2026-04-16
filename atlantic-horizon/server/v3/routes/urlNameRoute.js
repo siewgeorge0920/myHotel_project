@@ -29,7 +29,8 @@ router.delete('/staff/:id', protect, restrictTo('admin'), authController.deleteS
 router.get('/bookings', protect, bookingController.getAllBookings);
 router.post('/bookings/create', bookingController.createBooking); // Public Booking
 router.post('/bookings/self-check-in', bookingController.selfCheckIn);
-router.post('/bookings/admin-create', protect, restrictTo('admin', 'manager'), bookingController.createBooking); // Dashboard Booking
+router.post('/bookings/manage-lookup', bookingController.manageLookup);
+router.get('/dashboard-stats', protect, restrictTo('admin', 'manager'), bookingController.getDashboardStats); // Dashboard Booking
 router.put('/bookings/:id', protect, restrictTo('admin', 'manager'), bookingController.updateBooking); // Full Update
 router.put('/bookings/:id/status', protect, bookingController.updateStatus); // Restricted Status Transition
 router.put('/bookings/:id/payment-status', bookingController.updatePaymentStatus); // Public Payment Update

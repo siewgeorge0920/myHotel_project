@@ -3,27 +3,45 @@ import axios from 'axios';
 import { COLORS } from '../colors';
 
 export default function SelfCheckIn() {
-  // Guest-entered check-in credentials.
+  // Stages: 'search', 'view', 'success'
+  const [stage, setStage] = useState('search');
   const [formData, setFormData] = useState({ bookingId: '', email: '' });
-  // Inline feedback banner state (success/error).
+  const [booking, setBooking] = useState(null);
   const [status, setStatus] = useState({ type: '', msg: '' });
-  // Submit/loading state to prevent duplicate requests.
   const [isLoading, setIsLoading] = useState(false);
 
-  // Validate reservation details against backend self-check-in endpoint.
-  const handleCheckIn = async (e) => {
+  const flash = (msg, type = 'error') => {
+    setStatus({ type, msg });
+    if (type === 'error') setTimeout(() => setStatus({ type: '', msg: '' }), 5000);
+  };
+
+  // Stage 1: Lookup Booking
+  const handleLookup = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     setStatus({ type: '', msg: '' });
 
     try {
-      const res = await axios.post('/api/v3/bookings/self-check-in', formData);
-      setStatus({ type: 'success', msg: res.data.message });
+      const res = await axios.post('/api/v3/bookings/manage-lookup', formData);
+      setBooking(res.data.data.booking);
+      setStage('view');
     } catch (err) {
-      setStatus({ 
-        type: 'error', 
-        msg: err.response?.data?.message || 'Check-in failed. Please verify your details or ask reception for help.' 
-      });
+      flash(err.response?.data?.message || 'We couldn\'t find your reservation. Please check your details.', 'error');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Stage 2: Perform Check-In
+  const handleCheckIn = async () => {
+    setIsLoading(true);
+    try {
+      const res = await axios.post('/api/v3/bookings/self-check-in', formData);
+      setBooking(res.data.data.booking);
+      setStage('success');
+      flash('Check-in successful! Welcome to the Manor.', 'success');
+    } catch (err) {
+      flash(err.response?.data?.message || 'Check-in failed. Please see reception.');
     } finally {
       setIsLoading(false);
     }
@@ -31,65 +49,171 @@ export default function SelfCheckIn() {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-6 bg-[#1a1d17]">
-      <div className="max-w-md w-full p-12 border shadow-2xl relative overflow-hidden animate-fadeIn" style={{ backgroundColor: COLORS.bgSurface, borderColor: COLORS.border }}>
+      <div className="max-w-xl w-full p-8 md:p-12 border shadow-2xl relative overflow-hidden animate-fadeIn" style={{ backgroundColor: COLORS.bgSurface, borderColor: COLORS.border }}>
         
-        {/* Background accent glows for depth */}
+        {/* Decorative Elements */}
         <div className="absolute top-0 right-0 w-32 h-32 bg-amber-600/5 blur-3xl" />
         <div className="absolute bottom-0 left-0 w-32 h-32 bg-amber-600/5 blur-3xl" />
 
         <div className="text-center mb-10 relative z-10">
           <p className="text-amber-500 text-[9px] uppercase tracking-[0.4em] font-black mb-2">Guest Portal</p>
-          <h2 className="font-serif italic text-3xl tracking-wide mb-2 text-white">Self Check-In</h2>
-          <p className="text-white/40 text-[10px] uppercase tracking-widest leading-relaxed">
-            Please enter your reservation details to complete your arrival process.
-          </p>
+          <h2 className="font-CINZEL text-3xl tracking-wide mb-2 text-white uppercase">
+            {stage === 'search' ? 'Manage Booking' : (stage === 'view' ? 'Reservation Details' : 'Welcome Home')}
+          </h2>
+          <div className="w-12 h-[1px] bg-amber-600/30 mx-auto mt-4" />
         </div>
 
-        {/* Result banner displayed after submit attempt */}
         {status.msg && (
-          <div className={`mb-8 p-4 text-center border text-[11px] leading-relaxed uppercase tracking-widest font-black animate-slideUp z-10 relative ${
+          <div className={`mb-8 p-4 text-center border text-[10px] leading-relaxed uppercase tracking-widest font-black animate-slideUp z-10 relative ${
             status.type === 'success' ? 'bg-green-500/10 border-green-500/30 text-green-400' : 'bg-red-500/10 border-red-500/30 text-red-400'
           }`}>
             {status.msg}
           </div>
         )}
 
-        {/* Self check-in form */}
-        <form onSubmit={handleCheckIn} className="space-y-6 relative z-10">
-          <div>
-            <label className="block text-[9px] uppercase tracking-widest text-amber-500 font-bold mb-2">Booking Reference Number</label>
-            <input 
-              type="text" 
-              value={formData.bookingId}
-              className="w-full bg-white/5 border border-white/10 px-4 py-3 text-white focus:border-amber-500 outline-none transition-all placeholder:text-white/20 uppercase"
-              onChange={(e) => setFormData({ ...formData, bookingId: e.target.value.toUpperCase() })}
-              placeholder="e.g. BKG-1A2B3C"
-              required
-            />
+        {/* --- STAGE 1: SEARCH --- */}
+        {stage === 'search' && (
+          <form onSubmit={handleLookup} className="space-y-6 relative z-10">
+            <div>
+              <label className="block text-[9px] uppercase tracking-widest text-amber-500 font-bold mb-2">Booking ID / Reference</label>
+              <input 
+                type="text" 
+                value={formData.bookingId}
+                className="w-full bg-white/5 border border-white/10 px-4 py-4 text-white focus:border-amber-500 outline-none transition-all placeholder:text-white/20 uppercase font-mono tracking-widest"
+                onChange={(e) => setFormData({ ...formData, bookingId: e.target.value.toUpperCase() })}
+                placeholder="ATL-XXXXXX"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-[9px] uppercase tracking-widest text-amber-500 font-bold mb-2">Email Address</label>
+              <input 
+                type="email" 
+                value={formData.email}
+                className="w-full bg-white/5 border border-white/10 px-4 py-4 text-white focus:border-amber-500 outline-none transition-all placeholder:text-white/20"
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                placeholder="guest@example.com"
+                required
+              />
+            </div>
+
+            <button 
+              type="submit" 
+              disabled={isLoading}
+              className="w-full mt-4 bg-amber-600 hover:bg-amber-500 text-white py-4 text-[11px] uppercase font-black tracking-[0.3em] transition-all hover:shadow-[0_0_20px_rgba(217,119,6,0.2)]"
+            >
+              {isLoading ? 'Searching Records...' : 'Find Reservation'}
+            </button>
+          </form>
+        )}
+
+        {/* --- STAGE 2: VIEW DETAILS --- */}
+        {stage === 'view' && booking && (
+          <div className="space-y-8 relative z-10 animate-fadeIn">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-8 border-b border-white/10 pb-8">
+              <div>
+                <p className="text-[9px] uppercase tracking-widest text-white/30 mb-1">Guest Name</p>
+                <p className="text-base font-serif italic text-white uppercase">{booking.guest_name}</p>
+              </div>
+              <div>
+                <p className="text-[9px] uppercase tracking-widest text-white/30 mb-1">Booking ID</p>
+                <p className="text-base font-mono text-amber-500 font-bold">{booking.booking_id.toUpperCase()}</p>
+              </div>
+              <div>
+                <p className="text-[9px] uppercase tracking-widest text-white/30 mb-1">Contact Phone</p>
+                <p className="text-base font-sans text-white uppercase">{booking.guest_phone || 'N/A'}</p>
+              </div>
+            </div>
+
+            <div className="bg-white/5 p-6 border border-white/5">
+              <div className="flex justify-between items-start mb-6">
+                <div>
+                  <p className="text-[9px] uppercase tracking-widest text-amber-500 font-bold mb-1">Accommodation</p>
+                  <p className="text-sm text-white font-CINZEL uppercase tracking-wider">{booking.room_type}</p>
+                  <p className="text-[8px] text-white/30 uppercase mt-1 tracking-widest">{booking.nights || 1} Nights Stay</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-[9px] uppercase tracking-widest text-white/30 mb-1">Total Bill</p>
+                  <p className="text-xl font-serif text-white">€{booking.total_amount}</p>
+                  <span className={`text-[8px] uppercase font-bold px-2 py-0.5 rounded border ${booking.payment_status === 'Paid' ? 'border-green-500/40 text-green-400 bg-green-500/5' : 'border-amber-500/40 text-amber-400 bg-amber-500/5'}`}>
+                    {booking.payment_status}
+                  </span>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="bg-[#1a1d17] p-3 border border-white/5">
+                  <p className="text-[8px] uppercase tracking-widest text-white/30 mb-1">Check-In</p>
+                  <p className="text-[10px] text-white font-bold">{new Date(booking.check_in).toLocaleDateString()}</p>
+                  <p className="text-[8px] text-amber-500/60 uppercase mt-1">From 15:00</p>
+                </div>
+                <div className="bg-[#1a1d17] p-3 border border-white/5">
+                  <p className="text-[8px] uppercase tracking-widest text-white/30 mb-1">Check-Out</p>
+                  <p className="text-[10px] text-white font-bold">{new Date(booking.check_out).toLocaleDateString()}</p>
+                  <p className="text-[8px] text-amber-500/60 uppercase mt-1">Until 11:00</p>
+                </div>
+              </div>
+
+              {booking.notes && (
+                <div className="mt-6 pt-4 border-t border-white/5">
+                  <p className="text-[8px] uppercase tracking-widest text-amber-500/50 mb-1">Special Notes</p>
+                  <p className="text-[10px] italic text-white/40 leading-relaxed font-serif uppercase">{booking.notes}</p>
+                </div>
+              )}
+            </div>
+
+            <div className="flex flex-col gap-4">
+              {booking.status === 'CheckedIn' ? (
+                <div className="text-center p-6 border border-amber-600/30 bg-amber-600/5">
+                  <p className="text-3xl font-serif text-white">Room {booking.assigned_room}</p>
+                </div>
+              ) : (
+                <>
+                  <button 
+                    onClick={handleCheckIn}
+                    disabled={isLoading}
+                    className="w-full bg-amber-600 hover:bg-amber-500 text-white py-4 text-[11px] uppercase font-black tracking-[0.3em] transition-all"
+                  >
+                    {isLoading ? 'Processing Arrival...' : 'Complete Self Check-In'}
+                  </button>
+                  <button 
+                    onClick={() => setStage('search')}
+                    className="w-full text-white/30 text-[9px] uppercase tracking-[0.2em] hover:text-white transition-all underline underline-offset-4"
+                  >
+                    Not your booking? Search again
+                  </button>
+                </>
+              )}
+            </div>
           </div>
+        )}
 
-          <div>
-            <label className="block text-[9px] uppercase tracking-widest text-amber-500 font-bold mb-2">Email Address</label>
-            <input 
-              type="email" 
-              value={formData.email}
-              className="w-full bg-white/5 border border-white/10 px-4 py-3 text-white focus:border-amber-500 outline-none transition-all placeholder:text-white/20"
-              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              placeholder="guest@example.com"
-              required
-            />
+        {/* --- STAGE 3: SUCCESS --- */}
+        {stage === 'success' && booking && (
+          <div className="text-center space-y-8 animate-fadeIn py-4 relative z-10">
+            <div className="w-20 h-20 border border-amber-600/20 bg-amber-600/5 rounded-full flex items-center justify-center mx-auto mb-6 shadow-[0_0_30px_rgba(217,119,6,0.1)]">
+              <span className="text-amber-500 text-3xl font-serif">✓</span>
+            </div>
+            
+            <div className="space-y-2">
+              <p className="text-xs text-white/40 uppercase tracking-[0.2em]">Sanctuary Assignment</p>
+              <p className="text-5xl font-CINZEL text-white tracking-widest">ROOM {booking.assigned_room}</p>
+            </div>
+
+            <p className="text-[10px] text-white/40 leading-relaxed uppercase tracking-widest max-w-[280px] mx-auto">
+              Your digital key has been activated. Please proceed to your room. Our staff is available if you need further assistance.
+            </p>
+
+            <button 
+              onClick={() => window.location.href = '/'}
+              className="w-full border border-white/10 hover:border-amber-500/50 text-white/50 hover:text-amber-500 py-4 text-[10px] uppercase font-bold tracking-[0.3em] transition-all"
+            >
+              Return to Website
+            </button>
           </div>
+        )}
 
-          <button 
-            type="submit" 
-            disabled={isLoading || status.type === 'success'}
-            className="w-full mt-4 bg-amber-600 hover:bg-amber-500 text-white py-4 text-[10px] uppercase font-bold tracking-[0.2em] transition-all disabled:opacity-50"
-          >
-            {isLoading ? 'Verifying...' : (status.type === 'success' ? 'Checked In' : 'Complete Check-In')}
-          </button>
-        </form>
-
-      
       </div>
     </div>
   );

@@ -175,6 +175,11 @@ const bookingController = {
     const booking = await bookingService.selfCheckIn(bookingId, email);
     sendSuccess(res, { booking }, `Welcome to The Atlantic Horizon, ${booking.guest_name}!`);
   }),
+  manageLookup: catchAsync(async (req, res) => {
+    const { bookingId, email } = req.body;
+    const booking = await bookingService.lookupBooking(bookingId, email);
+    sendSuccess(res, { booking }, "Reservation details retrieved.");
+  }),
   getDashboardStats: catchAsync(async (req, res) => {
     const stats = await bookingService.getDashboardStats();
     sendSuccess(res, stats, "Dashboard metrics calculated.");

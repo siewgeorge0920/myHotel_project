@@ -334,7 +334,6 @@ class BookingService {
     // 🔒 ROOM LOCKING LOGIC (New Stage 2 -> 3 transition)
     // If a room was assigned by staff during the 'Confirm' standby stage, lock it now.
     if (booking.assigned_room) {
-      const RoomInventory = (await import('../models/RoomInventory.js')).default;
       const room = await RoomInventory.findOne({ room_name: booking.assigned_room });
 
       if (room && room.current_status === 'Ready') {
@@ -343,7 +342,6 @@ class BookingService {
         await room.save();
       } else if (room && room.current_status !== 'Occupied') {
         // If room is Cleaning or Maintenance, we might still lock it but it's risky.
-        // For now, we only auto-occupy if it's Ready.
         room.current_status = 'Occupied';
         room.active_booking = booking._id;
         await room.save();
@@ -368,6 +366,21 @@ class BookingService {
       targetId: booking.booking_id,
       timestamp: new Date()
     });
+
+    return booking;
+  }
+
+  /**
+   * 🔍 Manage Booking Lookup
+   * Finds a booking by ID/Ref and Email for guest self-management.
+   */
+  async lookupBooking(bookingId, email) {
+    const query = bookingId.length > 20
+      ? { _id: bookingId, guest_email: email }
+      : { booking_id: bookingId, guest_email: email };
+
+    const booking = await Booking.findOne(query);
+    if (!booking) throw new Error("Reservation not found.");
 
     return booking;
   }
