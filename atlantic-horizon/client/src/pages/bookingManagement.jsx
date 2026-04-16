@@ -320,61 +320,71 @@ export default function BookingManagement() {
                       </span>
                     </td>
                     <td className="p-6 text-right">
-                        <div className="flex justify-end gap-2">
+                        <div className="flex justify-end gap-4">
                            {/* STEP 1: CONFIRM (PENDING ONLY) */}
-                           <button 
-                             type="button"
-                             disabled={s !== 'Pending'}
-                             onClick={() => { setSelectedBooking(b); setIsConfirmModalOpen(true); }}
-                             className={`p-2.5 rounded-full transition-all ${s === 'Pending' ? 'bg-amber-600 text-white hover:scale-110 shadow-lg shadow-amber-600/20' : 'bg-white/5 text-white/20 cursor-not-allowed opacity-20'}`}
-                             title="Confirm & Assign Standby Room"
-                           >
-                             <CheckCircle size={16} />
-                           </button>
+                           <div className="flex flex-col items-center gap-1.5">
+                             <button 
+                               type="button"
+                               disabled={s !== 'Pending'}
+                               onClick={() => { setSelectedBooking(b); setIsConfirmModalOpen(true); }}
+                               className={`p-2.5 rounded-full transition-all ${s === 'Pending' ? 'bg-amber-600 text-white hover:scale-110 shadow-lg shadow-amber-600/20' : 'bg-white/5 text-white/20 cursor-not-allowed opacity-20'}`}
+                             >
+                               <CheckCircle size={14} />
+                             </button>
+                             <span className={`text-[8px] uppercase font-black tracking-tighter ${s === 'Pending' ? 'text-amber-500' : 'text-white/10'}`}>Confirm</span>
+                           </div>
 
                            {/* STEP 2: CHECK-IN (CONFIRMED ONLY) */}
-                           <button 
-                             type="button"
-                             disabled={s !== 'Confirmed'}
-                             onClick={() => { setSelectedBooking(b); setIsCheckInModalOpen(true); }}
-                             className={`p-2.5 rounded-full transition-all ${s === 'Confirmed' ? 'bg-emerald-600 text-white hover:scale-110 shadow-lg shadow-emerald-600/20' : 'bg-white/5 text-white/20 cursor-not-allowed opacity-20'}`}
-                             title="Finalize Check-in (Lock Room)"
-                           >
-                             <UserCheck size={16} />
-                           </button>
+                           <div className="flex flex-col items-center gap-1.5">
+                             <button 
+                               type="button"
+                               disabled={s !== 'Confirmed'}
+                               onClick={() => { setSelectedBooking(b); setIsCheckInModalOpen(true); }}
+                               className={`p-2.5 rounded-full transition-all ${s === 'Confirmed' ? 'bg-emerald-600 text-white hover:scale-110 shadow-lg shadow-emerald-600/20' : 'bg-white/5 text-white/20 cursor-not-allowed opacity-20'}`}
+                             >
+                               <UserCheck size={14} />
+                             </button>
+                             <span className={`text-[8px] uppercase font-black tracking-tighter ${s === 'Confirmed' ? 'text-emerald-500' : 'text-white/10'}`}>Check-In</span>
+                           </div>
 
                            {/* STEP 3: CHECKOUT (CHECKED-IN ONLY) */}
-                           <button 
-                             type="button"
-                             disabled={s !== 'CheckedIn'}
-                             onClick={() => { setSelectedBooking(b); setIsCheckoutModalOpen(true); }}
-                             className={`p-2.5 rounded-full transition-all ${s === 'CheckedIn' ? 'bg-white text-black hover:scale-110 shadow-lg shadow-white/20' : 'bg-white/5 text-white/20 cursor-not-allowed opacity-20'}`}
-                             title="Finalize Checkout & Cleaning"
-                           >
-                             <LogOut size={16} />
-                           </button>
+                           <div className="flex flex-col items-center gap-1.5">
+                             <button 
+                               type="button"
+                               disabled={s !== 'CheckedIn'}
+                               onClick={() => { setSelectedBooking(b); setIsCheckoutModalOpen(true); }}
+                               className={`p-2.5 rounded-full transition-all ${s === 'CheckedIn' ? 'bg-white text-black hover:scale-110 shadow-lg shadow-white/20' : 'bg-white/5 text-white/20 cursor-not-allowed opacity-20'}`}
+                             >
+                               <LogOut size={14} />
+                             </button>
+                             <span className={`text-[8px] uppercase font-black tracking-tighter ${s === 'CheckedIn' ? 'text-white' : 'text-white/10'}`}>Check-Out</span>
+                           </div>
 
                            {/* UTILITY: EDIT (NOT FOR ARCHIVED) */}
-                           <button 
-                             type="button"
-                             disabled={s === 'CheckedOut' || s === 'Cancelled'}
-                             onClick={() => openForm(b)}
-                             className={`p-2.5 rounded-full transition-all ${(s !== 'CheckedOut' && s !== 'Cancelled') ? 'bg-white/10 text-white/40 hover:text-white border border-white/5' : 'bg-white/5 text-white/10 cursor-not-allowed opacity-20'}`}
-                             title="Edit Details"
-                           >
-                             <Edit size={16} />
-                           </button>
+                           <div className="flex flex-col items-center gap-1.5">
+                             <button 
+                               type="button"
+                               disabled={s === 'CheckedOut' || s === 'Cancelled'}
+                               onClick={() => openForm(b)}
+                               className={`p-2.5 rounded-full transition-all ${(s !== 'CheckedOut' && s !== 'Cancelled') ? 'bg-white/10 text-white/40 hover:text-white border border-white/5' : 'bg-white/5 text-white/10 cursor-not-allowed opacity-20'}`}
+                             >
+                               <Edit size={14} />
+                             </button>
+                             <span className={`text-[8px] uppercase font-black tracking-tighter ${(s !== 'CheckedOut' && s !== 'Cancelled') ? 'text-white/40' : 'text-white/10'}`}>Edit</span>
+                           </div>
 
                            {/* UTILITY: REFUND (PENDING OR CONFIRMED) */}
-                           <button 
-                             type="button"
-                             disabled={s !== 'Pending' && s !== 'Confirmed'}
-                             onClick={() => handleRefund(b._id)}
-                             className={`p-2.5 rounded-full transition-all ${(s === 'Pending' || s === 'Confirmed') ? 'bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white border border-red-500/20 shadow-lg shadow-red-500/10' : 'bg-white/5 text-white/20 cursor-not-allowed opacity-20'}`}
-                             title="Refund & Cancel Reservation"
-                           >
-                             <RotateCcw size={16} />
-                           </button>
+                           <div className="flex flex-col items-center gap-1.5">
+                             <button 
+                               type="button"
+                               disabled={s !== 'Pending' && s !== 'Confirmed'}
+                               onClick={() => handleRefund(b._id)}
+                               className={`p-2.5 rounded-full transition-all ${(s === 'Pending' || s === 'Confirmed') ? 'bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white border border-red-500/20 shadow-lg shadow-red-500/10' : 'bg-white/5 text-white/20 cursor-not-allowed opacity-20'}`}
+                             >
+                               <RotateCcw size={14} />
+                             </button>
+                             <span className={`text-[8px] uppercase font-black tracking-tighter ${(s === 'Pending' || s === 'Confirmed') ? 'text-red-500' : 'text-white/10'}`}>Refund</span>
+                           </div>
                         </div>
                     </td>
                   </tr>
