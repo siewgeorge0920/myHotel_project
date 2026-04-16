@@ -69,7 +69,7 @@ router.get('/gift-cards/:code/history', protect, restrictTo('admin', 'manager'),
  */
 router.get('/physical-rooms', protect, physicalRoomController.getAll);
 router.post('/physical-rooms', protect, restrictTo('admin', 'manager'), physicalRoomController.create);
-router.put('/physical-rooms/:id', protect, restrictTo('admin', 'manager'), physicalRoomController.update);
+router.put('/physical-rooms/:id', protect, restrictTo('admin', 'manager', 'staff'), physicalRoomController.update);
 router.delete('/physical-rooms/:id', protect, restrictTo('admin'), physicalRoomController.delete);
 
 

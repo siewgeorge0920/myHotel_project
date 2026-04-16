@@ -21,8 +21,8 @@ export default function SanctuaryOperations() {
         axios.get('/api/v3/physical-rooms'),
         axios.get('/api/v3/room-service/all-orders')
       ]);
-      setUnits(resUnits.data.data || []);
-      setOrders(resOrders.data.data || []);
+      setUnits(resUnits.data || []);
+      setOrders(resOrders.data || []);
     } catch (err) {
       console.error('Data sync failed:', err);
     } finally {
@@ -130,33 +130,64 @@ export default function SanctuaryOperations() {
                 )}
                 {departments.map(dept => (
                   <div key={dept} className="space-y-8">
-                    <h2 className="text-xl font-serif text-amber-500 italic border-l-2 border-amber-500 pl-6">{dept}</h2>
+                    <h2 className="text-xl font-serif text-amber-500 italic border-l-2 border-amber-500 pl-6 uppercase tracking-widest">{dept || "Uncategorized"}</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                      {units.filter(u => u.department === dept).map(unit => (
-                        <div key={unit._id} className="bg-white/[0.02] border border-white/5 p-8 group hover:border-white/10 transition-all">
-                          <div className="flex justify-between items-start mb-8">
-                            <div>
-                               <h3 className="text-2xl font-serif text-white/80">{unit.room_name}</h3>
-                               <p className="text-[10px] text-white/20 uppercase tracking-widest mt-2">{unit.room_type_category}</p>
+                      {units.filter(u => u.department === dept).map(unit => {
+                        const rName = unit.room_name || unit.roomName;
+                        const rType = unit.room_type_category || unit.roomType;
+                        const s = unit.current_status;
+
+                        return (
+                          <div key={unit._id} className="bg-white/[0.02] border border-white/5 p-8 group hover:border-white/10 transition-all relative overflow-hidden">
+                            {s === 'Cleaning' && <div className="absolute top-0 right-0 w-24 h-24 bg-sky-500/10 rotate-45 translate-x-12 -translate-y-12 border border-sky-500/20" />}
+                            
+                            <div className="flex justify-between items-start mb-8 relative z-10">
+                              <div>
+                                 <h3 className="text-2xl font-serif text-white/80">{rName}</h3>
+                                 <p className="text-[10px] text-white/20 uppercase tracking-widest mt-2">{rType}</p>
+                              </div>
+                              <span className={`px-3 py-1.5 border text-[9px] font-black uppercase tracking-widest ${getStatusStyle(s)}`}>
+                                {s}
+                              </span>
                             </div>
-                            <span className={`px-3 py-1.5 border text-[9px] font-black uppercase tracking-widest ${getStatusStyle(unit.current_status)}`}>
-                              {unit.current_status}
-                            </span>
+                            
+                            <div className="grid grid-cols-2 gap-2 relative z-10">
+                               {s !== 'Ready' && (
+                                 <button 
+                                   onClick={() => updateCleaningStatus(unit._id, 'Ready')}
+                                   className="col-span-2 py-3 text-[9px] uppercase tracking-[0.3em] font-black bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500 hover:text-white transition-all mb-2"
+                                 >
+                                   Mark as Ready
+                                 </button>
+                               )}
+
+                               {s === 'Ready' && (
+                                 <button 
+                                   onClick={() => updateCleaningStatus(unit._id, 'Cleaning')}
+                                   className="py-3 text-[9px] uppercase tracking-[0.2em] font-black border border-sky-500/20 hover:border-sky-500/60 text-sky-400/60 hover:text-sky-400 transition-all bg-sky-500/5 flex items-center justify-center gap-2"
+                                 >
+                                   Apply Cleaning
+                                 </button>
+                               )}
+
+                               {(s === 'Ready' || s === 'Cleaning') && (
+                                 <button 
+                                   onClick={() => updateCleaningStatus(unit._id, 'Maintenance')}
+                                   className={`py-3 text-[9px] uppercase tracking-[0.2em] font-black border border-red-500/20 hover:border-red-500/60 text-red-400/60 hover:text-red-400 transition-all bg-red-500/5 ${s !== 'Ready' ? 'col-span-1' : 'col-span-1'}`}
+                                 >
+                                   Set Maintenance
+                                 </button>
+                               )}
+
+                               {s === 'Occupied' && (
+                                 <p className="col-span-2 text-[9px] uppercase text-white/20 italic text-center py-3 border border-dashed border-white/5">
+                                   Unit Managed by Front Desk
+                                 </p>
+                               )}
+                            </div>
                           </div>
-                          
-                          <div className="grid grid-cols-2 gap-2">
-                             {['Ready', 'Cleaning', 'Maintenance'].filter(s => s !== unit.current_status).map(s => (
-                               <button 
-                                 key={s}
-                                 onClick={() => updateCleaningStatus(unit._id, s)}
-                                 className="py-2.5 text-[8px] uppercase tracking-[0.2em] font-black border border-white/5 hover:border-amber-500/40 text-white/20 hover:text-white transition-all bg-white/[0.01]"
-                               >
-                                 Set {s}
-                               </button>
-                             ))}
-                          </div>
-                        </div>
-                      ))}
+                        )
+                      })}
                     </div>
                   </div>
                 ))}
