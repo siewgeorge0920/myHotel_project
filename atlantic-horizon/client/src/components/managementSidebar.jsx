@@ -23,7 +23,6 @@ export default function ManagementSidebar({ user }) {
     <aside className="w-64 min-h-screen border-r border-white/5 flex flex-col p-8 sticky top-0" style={{ backgroundColor: COLORS.bgDeep }}>
       <div className="mb-16">
         <h2 className="text-xl font-serif italic tracking-tighter">Horizon Manor</h2>
-        <p className="text-[8px] uppercase tracking-[0.5em] text-white/20 font-black mt-2">Front Desk V3</p>
       </div>
 
       <nav className="space-y-2">
