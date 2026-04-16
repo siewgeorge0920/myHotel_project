@@ -11,6 +11,10 @@ class EmailService {
     const host = await configHelper.getSetting('email_host', 'smtp.zoho.com');
     const port = parseInt(await configHelper.getSetting('email_port', '465'));
 
+    if (!user || !pass) {
+      console.warn("⚠️ SMTP Credentials missing. Email system initialization deferred.");
+    }
+
     return nodemailer.createTransport({
       host,
       port,
@@ -20,63 +24,117 @@ class EmailService {
   }
 
   /**
+   * 🎨 Premium Manor HTML Wrapper
+   * Wraps raw content in a branded, high-end sanctuary frame.
+   */
+  _wrapInManorTheme(content, title = 'Official Communication') {
+    return `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <meta charset="utf-8">
+          <style>
+            @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;600&display=swap');
+            body { margin: 0; padding: 0; background-color: #0d0f0b; font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
+            .container { max-width: 600px; margin: 40px auto; background-color: #0d0f0b; border: 1px solid rgba(212, 175, 55, 0.2); border-radius: 8px; overflow: hidden; }
+            .header { background: linear-gradient(to bottom, #1a1d17, #0d0f0b); padding: 50px 20px; text-align: center; border-bottom: 1px solid rgba(212, 175, 55, 0.1); }
+            .logo { height: 70px; width: auto; opacity: 0.9; margin-bottom: 20px; }
+            .title { font-family: 'Cinzel', serif; color: #d4af37; text-transform: uppercase; letter-spacing: 5px; font-size: 14px; margin: 0; }
+            .content { padding: 50px 40px; color: rgba(255, 255, 255, 0.85); line-height: 1.8; font-size: 15px; }
+            .content b, .content strong { color: #d4af37; font-weight: 600; }
+            .footer { padding: 30px; text-align: center; background-color: #080a07; font-size: 11px; color: rgba(255, 255, 255, 0.3); border-top: 1px solid rgba(255, 255, 255, 0.05); }
+            .footer p { margin: 5px 0; text-transform: uppercase; letter-spacing: 2px; }
+            .divider { height: 1px; width: 60px; background: #d4af37; margin: 30px auto; opacity: 0.3; }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <img src="https://theatlantichorizon.ie/images/Logo.png" alt="Manor Crest" class="logo">
+              <p class="title">${title}</p>
+            </div>
+            <div class="content">
+              ${content}
+              <div class="divider"></div>
+              <p style="font-style: italic; font-size: 14px; color: rgba(212, 175, 55, 0.6);">Warmest Regards,<br/><b>The Atlantic Horizon Management</b></p>
+            </div>
+            <div class="footer">
+              <p>The Atlantic Horizon Manor</p>
+              <p>Ireland's Southwest Coast • Established for Perfection</p>
+            </div>
+          </div>
+        </body>
+      </html>
+    `;
+  }
+
+  /**
    * 🧠 Template Parser
-   * Replaces {{key}} with data[key]
+   * Replaces {{key}} and converts newlines to <br/>
    */
   _parseTemplate(html, data) {
     if (!html) return '';
-    return html.replace(/\{\{(.*?)\}\}/g, (match, key) => {
+    
+    // 1. Placeholder injection
+    let parsed = html.replace(/\{\{(.*?)\}\}/g, (match, key) => {
       const value = data[key.trim()];
       return value !== undefined ? value : match;
     });
+
+    // 2. Format newlines to HTML breaks if no HTML block tags are already present
+    if (!parsed.includes('<p>') && !parsed.includes('<div>')) {
+      parsed = parsed.replace(/\n/g, '<br/>');
+    }
+
+    return parsed;
   }
 
   /**
    * 📬 Generic Send Helper
    */
   async _send(to, subject, html) {
-    const transporter = await this.getTransporter();
-    const fromUser = await configHelper.getSetting('email_user');
-    
-    const mailOptions = {
-      from: `"The Atlantic Horizon Manor" <${fromUser}>`,
-      to,
-      subject,
-      html
-    };
+    try {
+      const transporter = await this.getTransporter();
+      const fromUser = await configHelper.getSetting('email_user');
+      
+      const mailOptions = {
+        from: `"The Atlantic Horizon Manor" <${fromUser}>`,
+        to,
+        subject,
+        html
+      };
 
-    return transporter.sendMail(mailOptions);
+      return await transporter.sendMail(mailOptions);
+    } catch (error) {
+      console.error(`🛑 Email Transmission Failure to ${to}:`, error.message);
+      throw error;
+    }
   }
 
   /**
    * 🏨 Send Booking Confirmation
    */
   async sendBookingEmail(recipientEmail, booking) {
-    // 🔍 DIAGNOSTIC LOGGING - Find where the "Ghost" emails are coming from
-    console.log(`[Diagnostic] sendBookingEmail called for ${booking.booking_id} (${booking.guest_email})`);
-    console.trace("[Diagnostic Stack]");
+    console.log(`[Diagnostic] sendBookingEmail for ${booking.booking_id}`);
 
     const dbTemplate = await configHelper.getSetting('email_template_booking');
-    
-    // Default Fallback Template if DB is empty
     const defaultTemplate = `
-      <div style="font-family: serif; color: #333; max-width: 600px; margin: auto; border: 1px solid #d4af37; padding: 40px;">
-        <h1 style="color: #d4af37; text-align: center;">RESERVATION CONFIRMED</h1>
-        <p>Dear {{guest_name}},</p>
-        <p>Your stay at The Atlantic Horizon Manor is confirmed. We look forward to welcoming you.</p>
-        <div style="background: #fdfcf8; padding: 20px; border-left: 4px solid #d4af37;">
-          <p><strong>Booking ID:</strong> {{booking_id}}</p>
-          <p><strong>Room:</strong> {{room_type}}</p>
-          <p><strong>Check-in:</strong> {{check_in}}</p>
-        </div>
-        <p>Warmest Regards,<br/>The Atlantic Horizon Team</p>
-      </div>
+Dear {{guest_name}},
+
+Your stay at The Atlantic Horizon Manor is confirmed. We look forward to welcoming you to our sanctuary.
+
+Booking Details:
+ID: {{booking_id}}
+Room: {{room_type}}
+Dates: {{stay_range}}
+
+See you soon.
     `;
 
     const checkInStr = new Date(booking.check_in).toLocaleDateString();
     const checkOutStr = new Date(booking.check_out).toLocaleDateString();
 
-    const html = this._parseTemplate(dbTemplate || defaultTemplate, {
+    const bodyContent = this._parseTemplate(dbTemplate || defaultTemplate, {
       guest_name: booking.guest_name,
       booking_id: booking.booking_id,
       room_type: booking.room_type,
@@ -85,6 +143,7 @@ class EmailService {
       stay_range: `${checkInStr} to ${checkOutStr}`
     });
 
+    const html = this._wrapInManorTheme(bodyContent, 'Reservation Confirmed');
     return this._send(recipientEmail, `Reservation Confirmed: ${booking.booking_id}`, html);
   }
 
@@ -96,27 +155,27 @@ class EmailService {
     const { code, amount, recipientName, purchaserName } = details;
 
     const defaultTemplate = `
-        <div style="font-family: serif; max-width: 600px; margin: auto; border: 1px solid #d4af37; padding: 40px; background-color: #0d0f0b; color: white;">
-          <h1 style="color: #d4af37; text-align: center; letter-spacing: 4px;">THE ATLANTIC HORIZON</h1>
-          <h2 style="text-align: center; font-weight: 300; border-bottom: 1px solid #333; padding-bottom: 20px;">GIFT VOUCHER</h2>
-          <p>Dear {{recipient_name}},</p>
-          <p>{{purchaser_name}} has sent you a luxury experience at The Atlantic Horizon Manor.</p>
-          <div style="background-color: #1a1d17; border: 1px dashed #d4af37; padding: 30px; text-align: center; margin: 30px 0;">
-            <p style="margin: 0; font-size: 14px; text-transform: uppercase; color: #888;">Your Unique Code</p>
-            <h1 style="margin: 10px 0; color: #d4af37; font-size: 32px; letter-spacing: 5px;">{{code}}</h1>
-            <p style="margin: 0; font-size: 20px;">Value: €{{amount}}</p>
-          </div>
-          <p style="font-size: 14px; color: #aaa; font-style: italic;">This code can be used for online bookings or at check-in.</p>
-        </div>
-    `;
+Dear {{recipient_name}},
 
-    const html = this._parseTemplate(dbTemplate || defaultTemplate, {
+{{purchaser_name}} has sent you a luxury experience at The Atlantic Horizon Manor.
+
+Your Unique Code:
+{{code}}
+
+Value:
+€{{amount}}
+
+This code can be used for online bookings or at check-in.
+    `.trim();
+
+    const bodyContent = this._parseTemplate(dbTemplate || defaultTemplate, {
       recipient_name: recipientName || 'Valued Guest',
       purchaser_name: purchaserName || 'Someone special',
       code: code,
       amount: amount.toFixed(2)
     });
 
+    const html = this._wrapInManorTheme(bodyContent, 'Gift Voucher Issued');
     return this._send(recipientEmail, 'A Luxury Gift for You - Atlantic Horizon Manor', html);
   }
 
@@ -125,29 +184,29 @@ class EmailService {
    */
   async sendCheckInEmail(recipientEmail, booking) {
     const dbTemplate = await configHelper.getSetting('email_template_checkin');
-
     const defaultTemplate = `
-      <div style="font-family: serif; color: #333; max-width: 600px; margin: auto; border: 1px solid #d4af37; padding: 40px;">
-        <h1 style="color: #d4af37; text-align: center;">WELCOME TO THE MANOR</h1>
-        <p>Dear {{guest_name}},</p>
-        <p>Your stay has officially begun. We are delighted to have you.</p>
-        <p>Your assigned sanctuary: <strong>{{room_number}}</strong></p>
-        <p>Enjoy your luxury experience.</p>
-      </div>
-    `;
+Dear {{guest_name}},
+
+Welcome to the Manor. Your stay has officially begun. 
+
+Your assigned sanctuary: {{room_number}}
+
+Enjoy your luxury experience.
+    `.trim();
 
     const checkOutDate = new Date(booking.check_out);
     const checkoutDay = checkOutDate.toLocaleDateString('en-US', { weekday: 'long' });
 
-    const html = this._parseTemplate(dbTemplate || defaultTemplate, {
+    const bodyContent = this._parseTemplate(dbTemplate || defaultTemplate, {
       guest_name: booking.guest_name,
       room_number: booking.assigned_room || 'Pending Assignment',
       room_type: booking.room_type,
       department_name: 'Reception Desk',
       checkout_day: checkoutDay,
-      checkout_time: '11:00 AM' // Default hotel standard
+      checkout_time: '11:00 AM'
     });
 
+    const html = this._wrapInManorTheme(bodyContent, 'Welcome to the Manor');
     return this._send(recipientEmail, `Welcome to The Manor, ${booking.guest_name}!`, html);
   }
 }

@@ -109,55 +109,89 @@ export default function AdminSettings() {
 
 // 🟢 FIX: Define sub-components OUTSIDE to prevent focus loss on re-render
 const TemplateField = ({ label, value, onChange, placeholders }) => {
+  const [showPreview, setShowPreview] = useState(false);
   const textareaRef = React.useRef(null);
 
   useEffect(() => {
-    if (textareaRef.current) {
+    if (!showPreview && textareaRef.current) {
       textareaRef.current.style.height = 'auto';
-      textareaRef.current.style.height = textareaRef.current.scrollHeight + 'px';
+      textareaRef.current.style.height = Math.max(200, textareaRef.current.scrollHeight) + 'px';
     }
-  }, [value]);
+  }, [value, showPreview]);
 
-  const handleKeyDown = (e) => {
-    if ((e.ctrlKey || e.metaKey) && (e.key === 'b' || e.key === 'i')) {
-      e.preventDefault();
-      const textarea = textareaRef.current;
-      if (!textarea) return;
+  const handleInsert = (placeholder) => {
+    const textarea = textareaRef.current;
+    if (!textarea) return;
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const newValue = value.substring(0, start) + placeholder + value.substring(end);
+    onChange(newValue);
+    setTimeout(() => {
+      textarea.focus();
+      textarea.setSelectionRange(start + placeholder.length, start + placeholder.length);
+    }, 10);
+  };
 
-      const start = textarea.selectionStart;
-      const end = textarea.selectionEnd;
-      const selectedText = value.substring(start, end);
-      const tag = e.key === 'b' ? 'b' : 'i';
-      
-      const before = value.substring(0, start);
-      const after = value.substring(end);
-      const newValue = `${before}<${tag}>${selectedText}</${tag}>${after}`;
-      
-      onChange(newValue);
-
-      // Restore focus and selection
-      setTimeout(() => {
-        textarea.focus();
-        textarea.setSelectionRange(start + tag.length + 2, end + tag.length + 2);
-      }, 10);
-    }
+  const generatePreview = () => {
+    // Mimic the backend's _wrapInManorTheme for the browser
+    const formattedBody = value.replace(/\n/g, '<br/>');
+    return `
+      <div style="background-color: #0d0f0b; padding: 40px 20px; font-family: sans-serif; border-radius: 8px;">
+        <div style="max-width: 600px; margin: auto; border: 1px solid rgba(212, 175, 55, 0.2); border-radius: 8px; overflow: hidden; background-color: #0d0f0b;">
+          <div style="background: linear-gradient(to bottom, #1a1d17, #0d0f0b); padding: 40px 20px; text-align: center; border-bottom: 1px solid rgba(212, 175, 55, 0.1);">
+            <p style="font-family: serif; color: #d4af37; text-transform: uppercase; letter-spacing: 5px; font-size: 12px; margin: 0;">OFFICIAL COMMUNICATION</p>
+          </div>
+          <div style="padding: 40px; color: rgba(255, 255, 255, 0.9); line-height: 1.8; font-size: 16px;">
+            ${formattedBody || '<p style="opacity: 0.3; font-style: italic;">No content provided...</p>'}
+            <div style="height: 1px; width: 60px; background: #d4af37; margin: 30px auto; opacity: 0.3;"></div>
+            <p style="font-style: italic; font-size: 14px; color: rgba(212, 175, 55, 0.6);">The Atlantic Horizon Management</p>
+          </div>
+        </div>
+      </div>
+    `;
   };
 
   return (
-    <div className="space-y-4 pt-6 border-t border-white/5">
-      <div className="flex justify-between items-end">
-        <label className="text-[10px] uppercase tracking-widest text-amber-500 font-bold">{label}</label>
-        <span className="text-[9px] text-gray-500 italic">Placeholders: {placeholders.join(', ')}</span>
+    <div className="space-y-4 pt-8 border-t border-white/5">
+      <div className="flex justify-between items-start">
+        <div>
+          <label className="text-[10px] uppercase tracking-widest text-amber-500 font-black block mb-2">{label}</label>
+          <div className="flex flex-wrap gap-2">
+            {placeholders.map(p => (
+              <button 
+                key={p}
+                type="button"
+                onClick={() => handleInsert(p)}
+                className="text-[9px] bg-white/5 border border-white/10 hover:border-amber-500/50 px-2 py-1 rounded-sm text-gray-400 transition-all"
+              >
+                {p}
+              </button>
+            ))}
+          </div>
+        </div>
+        <button 
+          type="button"
+          onClick={() => setShowPreview(!showPreview)}
+          className={`px-4 py-2 border text-[9px] uppercase tracking-widest font-bold transition-all ${showPreview ? 'bg-amber-600 border-amber-600 text-white' : 'border-white/10 text-gray-400 hover:border-white/20'}`}
+        >
+          {showPreview ? 'Close Preview' : 'Live Preview'}
+        </button>
       </div>
-      <textarea
-        ref={textareaRef}
-        rows={6}
-        className="w-full bg-white/5 border border-white/10 p-4 font-mono text-[12px] focus:border-amber-500 outline-none transition-all text-gray-300 leading-relaxed rounded-sm resize-none overflow-hidden"
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        onKeyDown={handleKeyDown}
-        placeholder="Enter HTML template content here..."
-      />
+
+      {showPreview ? (
+        <div className="rounded-lg overflow-hidden border border-white/5 shadow-2xl animate-fadeIn">
+          <div className="bg-white/5 p-2 text-[8px] uppercase tracking-widest text-gray-500 border-b border-white/5 px-4">Branded Guest View (Draft)</div>
+          <div dangerouslySetInnerHTML={{ __html: generatePreview() }} />
+        </div>
+      ) : (
+        <textarea
+          ref={textareaRef}
+          className="w-full bg-white/5 border border-white/10 p-6 font-mono text-[15px] focus:border-amber-500 outline-none transition-all text-gray-200 leading-relaxed rounded-sm resize-none overflow-hidden"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder="Enter notification content here..."
+        />
+      )}
     </div>
   );
 };
