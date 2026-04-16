@@ -1,3 +1,4 @@
+import crypto from 'crypto';
 import GiftCard from '../models/GiftCard.js';
 import Log from '../models/Log.js';
 import { getStripe } from '../config/stripe.js';
@@ -98,20 +99,29 @@ class GiftCardService {
   async instantActivate(data) {
     const { amount, purchaserName, purchaserEmail, recipientName, recipientEmail, notes, stripeSessionId } = data;
 
-    // 1. Generate Unique Code (ATH-XXXX-XXXX)
-    const generateCode = () => {
+    // 1. Generate Unique Code (ATH-XXXX-XXXX) using SHA-256 for idempotency
+    const generateCode = (seed) => {
+      const hash = crypto.createHash('sha256').update(seed).digest('hex');
       const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
       let res = 'ATH-';
+
+      // Map 64 bits of the hash to 8 base32 characters
+      let hashInt = BigInt('0x' + hash.substring(0, 16));
       for (let i = 0; i < 8; i++) {
         if (i === 4) res += '-';
-        res += chars.charAt(Math.floor(Math.random() * chars.length));
+        res += chars.charAt(Number(hashInt % 32n));
+        hashInt /= 32n;
       }
       return res;
     };
 
-    let newCode = generateCode();
+    // Use the stripeSessionId as the deterministic seed, or fallback to a random one for manual issues.
+    const generationSeed = stripeSessionId || `MANUAL-${Date.now()}-${Math.random()}`;
+    let newCode = generateCode(generationSeed);
+    
+    // Collision check (still good practice)
     while (await GiftCard.findOne({ code: newCode })) {
-      newCode = generateCode();
+      newCode = generateCode(generationSeed + Math.random());
     }
 
     const sessionIdToUse = stripeSessionId || `INST-${Date.now()}-${Math.random()}`;
