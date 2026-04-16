@@ -159,7 +159,7 @@ const bookingController = {
   selfCheckIn: catchAsync(async (req, res) => {
     const { bookingId, email } = req.body;
     const booking = await bookingService.selfCheckIn(bookingId, email);
-    sendSuccess(res, { booking }, `Welcome to The Atlantic Horizon, ${booking.guest_name}! Your stay has officially begun.`);
+    sendSuccess(res, { booking }, `Welcome to The Atlantic Horizon, ${booking.guest_name}!`);
   }),
   getDashboardStats: catchAsync(async (req, res) => {
     const stats = await bookingService.getDashboardStats();

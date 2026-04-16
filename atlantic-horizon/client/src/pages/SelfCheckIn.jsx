@@ -18,7 +18,7 @@ export default function SelfCheckIn() {
 
     try {
       const res = await axios.post('/api/v3/bookings/self-check-in', formData);
-      setStatus({ type: 'success', msg: `Welcome! ${res.data.message}` });
+      setStatus({ type: 'success', msg: res.data.message });
     } catch (err) {
       setStatus({ 
         type: 'error', 
@@ -39,7 +39,7 @@ export default function SelfCheckIn() {
 
         <div className="text-center mb-10 relative z-10">
           <p className="text-amber-500 text-[9px] uppercase tracking-[0.4em] font-black mb-2">Guest Portal</p>
-          <h2 className="font-serif italic text-3xl tracking-wide mb-2">Self Check-In</h2>
+          <h2 className="font-serif italic text-3xl tracking-wide mb-2 text-white">Self Check-In</h2>
           <p className="text-white/40 text-[10px] uppercase tracking-widest leading-relaxed">
             Please enter your reservation details to complete your arrival process.
           </p>
@@ -89,9 +89,7 @@ export default function SelfCheckIn() {
           </button>
         </form>
 
-        <div className="mt-8 text-center relative z-10">
-           <p className="text-[10px] text-white/30 truncate">For immediate assistance, dial 0.</p>
-        </div>
+      
       </div>
     </div>
   );
