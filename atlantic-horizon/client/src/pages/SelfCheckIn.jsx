@@ -75,7 +75,7 @@ export default function SelfCheckIn() {
         {stage === 'search' && (
           <form onSubmit={handleLookup} className="space-y-6 relative z-10">
             <div>
-              <label className="block text-[9px] uppercase tracking-widest text-amber-500 font-bold mb-2">Booking ID / Reference</label>
+              <label className="block text-[11px] uppercase tracking-widest text-amber-500 font-bold mb-2">Booking ID / Reference</label>
               <input 
                 type="text" 
                 value={formData.bookingId}
@@ -87,7 +87,7 @@ export default function SelfCheckIn() {
             </div>
 
             <div>
-              <label className="block text-[9px] uppercase tracking-widest text-amber-500 font-bold mb-2">Email Address</label>
+              <label className="block text-[11px] uppercase tracking-widest text-amber-500 font-bold mb-2">Email Address</label>
               <input 
                 type="email" 
                 value={formData.email}
@@ -122,7 +122,13 @@ export default function SelfCheckIn() {
               </div>
               <div>
                 <p className="text-[11px] uppercase tracking-widest text-white/30 mb-2">Contact Phone</p>
-                <p className="text-xl font-sans text-white uppercase tracking-wider">{booking.guest_phone || 'N/A'}</p>
+                {booking.guest_phone ? (
+                  <a href={`tel:${booking.guest_phone}`} className="text-xl font-sans text-white uppercase tracking-wider hover:text-amber-500 transition-colors">
+                    {booking.guest_phone}
+                  </a>
+                ) : (
+                  <p className="text-xl font-sans text-white/20 uppercase tracking-wider italic">N/A</p>
+                )}
               </div>
             </div>
 
@@ -173,7 +179,7 @@ export default function SelfCheckIn() {
                   <button 
                     onClick={handleCheckIn}
                     disabled={isLoading}
-                    className="w-full bg-amber-600 hover:bg-amber-500 text-white py-4 text-[11px] uppercase font-black tracking-[0.3em] transition-all"
+                    className="w-full bg-amber-600 hover:bg-amber-700 text-white py-4 text-[11px] uppercase font-black tracking-[0.3em] transition-all shadow-xl"
                   >
                     {isLoading ? 'Processing Arrival...' : 'Complete Self Check-In'}
                   </button>
@@ -198,7 +204,7 @@ export default function SelfCheckIn() {
             
             <div className="space-y-2">
               <p className="text-xs text-white/40 uppercase tracking-[0.2em]">Sanctuary Assignment</p>
-              <p className="text-5xl font-CINZEL text-white tracking-widest">ROOM {booking.assigned_room}</p>
+              <p className="text-5xl font-CINZEL text-white tracking-widest uppercase">ROOM {booking.assigned_room}</p>
             </div>
 
             <p className="text-[10px] text-white/40 leading-relaxed uppercase tracking-widest max-w-[280px] mx-auto">

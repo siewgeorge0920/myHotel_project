@@ -180,6 +180,11 @@ const bookingController = {
     const booking = await bookingService.lookupBooking(bookingId, email);
     sendSuccess(res, { booking }, "Reservation details retrieved.");
   }),
+  manageUpdatePhone: catchAsync(async (req, res) => {
+    const { bookingId, email, newPhone } = req.body;
+    const booking = await bookingService.updateGuestPhone(bookingId, email, newPhone);
+    sendSuccess(res, { booking }, "Contact information captured successfully.");
+  }),
   getDashboardStats: catchAsync(async (req, res) => {
     const stats = await bookingService.getDashboardStats();
     sendSuccess(res, stats, "Dashboard metrics calculated.");

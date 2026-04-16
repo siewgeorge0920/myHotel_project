@@ -30,6 +30,7 @@ router.get('/bookings', protect, bookingController.getAllBookings);
 router.post('/bookings/create', bookingController.createBooking); // Public Booking
 router.post('/bookings/self-check-in', bookingController.selfCheckIn);
 router.post('/bookings/manage-lookup', bookingController.manageLookup);
+router.put('/bookings/manage-update-phone', bookingController.manageUpdatePhone);
 router.get('/dashboard-stats', protect, restrictTo('admin', 'manager'), bookingController.getDashboardStats); // Dashboard Booking
 router.put('/bookings/:id', protect, restrictTo('admin', 'manager'), bookingController.updateBooking); // Full Update
 router.put('/bookings/:id/status', protect, bookingController.updateStatus); // Restricted Status Transition

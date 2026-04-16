@@ -40,6 +40,7 @@ class BookingService {
       booking_id: bookingId,
       guest_name: data.guest_name || `${data.guestFirstName} ${data.guestLastName}`,
       guest_email: email,
+      guest_phone: data.guest_phone || data.guestPhone || null,
       room_type: data.room_type || data.roomName,
       check_in: new Date(data.check_in || data.checkIn),
       check_out: new Date(data.check_out || data.checkOut),
@@ -300,6 +301,7 @@ class BookingService {
       booking_id: data.booking_id || bookingId,
       guest_name: data.guest_name,
       guest_email: data.guestEmail || data.guest_email || 'guest@example.com',
+      guest_phone: data.guestPhone || data.guest_phone || null,
       room_type: data.room_type,
       check_in: new Date(data.check_in),
       check_out: new Date(data.check_out),
@@ -382,6 +384,25 @@ class BookingService {
     const booking = await Booking.findOne(query);
     if (!booking) throw new Error("Reservation not found.");
 
+    return booking;
+  }
+
+  /**
+   * 📲 Update Guest Phone
+   * Allows guests to self-update their phone number.
+   */
+  async updateGuestPhone(bookingId, email, newPhone) {
+    const query = bookingId.length > 20
+      ? { _id: bookingId, guest_email: email }
+      : { booking_id: bookingId, guest_email: email };
+
+    const booking = await Booking.findOneAndUpdate(
+      query,
+      { guest_phone: newPhone },
+      { new: true }
+    );
+
+    if (!booking) throw new Error("Reservation not found or credentials mismatch.");
     return booking;
   }
 

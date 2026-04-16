@@ -201,7 +201,11 @@ export default function BookingFlow() {
 
       // Step 2: Navigate to payment or show success
       if (calculateTotal() <= 0) {
-        goToStep(5);
+        navigate('/booking-success', { 
+          state: { 
+            bookingId: bookingData.data.booking_id 
+          } 
+        });
       } else {
         navigate('/secure-payment', {
           state: {
