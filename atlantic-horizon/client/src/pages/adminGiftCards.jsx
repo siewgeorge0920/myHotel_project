@@ -48,11 +48,7 @@ export default function AdminGiftCards() {
 
         <header className="mb-10 border-b pb-8 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6" style={{ borderColor: COLORS.border }}>
           <div>
-            <p className="text-amber-500 uppercase tracking-[0.4em] text-[10px] font-black mb-2">Inventory Control</p>
-            <h1 className="text-4xl font-serif italic">Gift Voucher History</h1>
-            <p className="text-white/30 text-xs mt-2 uppercase tracking-widest">
-              Manage and track all issued luxury vouchers
-            </p>
+            <h1 className="text-4xl font-serif italic">Gift card Vouchers</h1>
           </div>
           
           <div className="flex items-center gap-4">
