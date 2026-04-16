@@ -51,15 +51,15 @@ export default function BookingManagement() {
     status: 'Pending'
   });
 
-  const fetchData = async () => {
+  const fetchData = async (silent = false) => {
     try {
-      setLoading(true);
+      if (!silent) setLoading(true);
       const res = await axios.get('/api/v3/bookings');
       setBookings(res.data.data || []);
     } catch (err) {
       console.error("Error fetching bookings:", err);
     } finally {
-      setLoading(false);
+      if (!silent) setLoading(false);
     }
   };
 
@@ -84,7 +84,7 @@ export default function BookingManagement() {
     try {
       await axios.put(`/api/v3/bookings/${id}/confirm`, { assigned_room: roomName });
       setIsConfirmModalOpen(false);
-      fetchData();
+      fetchData(true);
     } catch (err) {
       alert(err.response?.data?.error || "Confirmation failed");
     }
@@ -94,7 +94,7 @@ export default function BookingManagement() {
     try {
       await axios.put(`/api/v3/bookings/${id}/checkin`, { swaped_room: swapedRoom });
       setIsCheckInModalOpen(false);
-      fetchData();
+      fetchData(true);
     } catch (err) {
       alert(err.response?.data?.error || "Check-in failed");
     }
@@ -104,7 +104,7 @@ export default function BookingManagement() {
     try {
       await axios.put(`/api/v3/bookings/${id}/extend`, { hours: extensionHours });
       setIsCheckoutModalOpen(false);
-      fetchData();
+      fetchData(true);
     } catch (err) {
       alert(err.response?.data?.error || "Extension failed");
     }
@@ -114,7 +114,7 @@ export default function BookingManagement() {
     try {
       await axios.put(`/api/v3/bookings/${id}/complete-checkout`);
       setIsCheckoutModalOpen(false);
-      fetchData();
+      fetchData(true);
     } catch (err) {
       alert(err.response?.data?.error || "Checkout failed");
     }
@@ -124,7 +124,7 @@ export default function BookingManagement() {
     if (window.confirm("CRITICAL: This will trigger a REAL financial refund via Stripe. Proceed?")) {
       try {
         await axios.post(`/api/v3/bookings/${id}/refund`);
-        fetchData();
+        fetchData(true);
       } catch (err) {
         alert(err.response?.data?.error || "Refund failed");
       }
@@ -186,7 +186,7 @@ export default function BookingManagement() {
         });
       }
       setIsModalOpen(false);
-      fetchData();
+      fetchData(true);
     } catch (err) {
       alert(err.response?.data?.error || "Operation failed.");
     }
@@ -220,6 +220,7 @@ export default function BookingManagement() {
           </div>
           {(isAdmin || isManager) && (
             <button 
+              type="button"
               onClick={() => openForm()}
               className="bg-amber-600 hover:bg-amber-500 text-white px-6 py-3 rounded-full text-[10px] font-black uppercase tracking-widest transition-colors shadow-lg"
             >
@@ -271,6 +272,7 @@ export default function BookingManagement() {
                   <tr key={b._id} className="border-t border-white/5 hover:bg-white/[0.01] transition-colors">
                     <td className="p-6">
                       <button 
+                        type="button"
                         onClick={() => openDetails(b)}
                         className="font-bold text-white/90 hover:text-amber-500 transition-colors text-left"
                       >
@@ -306,50 +308,55 @@ export default function BookingManagement() {
                     </td>
                     <td className="p-6 text-right">
                       <div className="flex justify-end gap-2">
-                          <button 
-                            disabled={s !== 'Pending'}
-                            onClick={() => { setSelectedBooking(b); setIsConfirmModalOpen(true); }}
-                            className={`p-2.5 rounded-full transition-all ${s === 'Pending' ? 'bg-amber-600 text-white hover:scale-110' : 'bg-white/5 text-white/10'}`}
-                            title="Confirm & Assign Room"
-                          >
-                            <CheckCircle size={16} />
-                          </button>
+                           <button 
+                             type="button"
+                             disabled={s !== 'Pending'}
+                             onClick={() => { setSelectedBooking(b); setIsConfirmModalOpen(true); }}
+                             className={`p-2.5 rounded-full transition-all ${s === 'Pending' ? 'bg-amber-600 text-white hover:scale-110' : 'bg-white/5 text-white/10'}`}
+                             title="Confirm & Assign Room"
+                           >
+                             <CheckCircle size={16} />
+                           </button>
 
-                          <button 
-                            disabled={s !== 'Confirmed'}
-                            onClick={() => { setSelectedBooking(b); setIsCheckInModalOpen(true); }}
-                            className={`p-2.5 rounded-full transition-all ${s === 'Confirmed' ? 'bg-emerald-600 text-white hover:scale-110' : 'bg-white/5 text-white/10'}`}
-                            title="Initiate Check-in"
-                          >
-                            <UserCheck size={16} />
-                          </button>
+                           <button 
+                             type="button"
+                             disabled={s !== 'Confirmed'}
+                             onClick={() => { setSelectedBooking(b); setIsCheckInModalOpen(true); }}
+                             className={`p-2.5 rounded-full transition-all ${s === 'Confirmed' ? 'bg-emerald-600 text-white hover:scale-110' : 'bg-white/5 text-white/10'}`}
+                             title="Initiate Check-in"
+                           >
+                             <UserCheck size={16} />
+                           </button>
 
-                          <button 
-                            disabled={s !== 'CheckedIn'}
-                            onClick={() => { setSelectedBooking(b); setIsCheckoutModalOpen(true); }}
-                            className={`p-2.5 rounded-full transition-all ${s === 'CheckedIn' ? 'bg-white text-black hover:scale-110' : 'bg-white/5 text-white/10'}`}
-                            title="Finalize Checkout"
-                          >
-                            <LogOut size={16} />
-                          </button>
+                           <button 
+                             type="button"
+                             disabled={s !== 'CheckedIn'}
+                             onClick={() => { setSelectedBooking(b); setIsCheckoutModalOpen(true); }}
+                             className={`p-2.5 rounded-full transition-all ${s === 'CheckedIn' ? 'bg-white text-black hover:scale-110' : 'bg-white/5 text-white/10'}`}
+                             title="Finalize Checkout"
+                           >
+                             <LogOut size={16} />
+                           </button>
 
-                          <button 
-                            disabled={s === 'CheckedOut' || s === 'Cancelled'}
-                            onClick={() => openForm(b)}
-                            className={`p-2.5 rounded-full transition-all ${(s !== 'CheckedOut' && s !== 'Cancelled') ? 'bg-white/10 text-white/40 hover:text-white border border-white/5' : 'bg-white/5 text-white/5'}`}
-                            title="Edit"
-                          >
-                            <Edit size={16} />
-                          </button>
+                           <button 
+                             type="button"
+                             disabled={s === 'CheckedOut' || s === 'Cancelled'}
+                             onClick={() => openForm(b)}
+                             className={`p-2.5 rounded-full transition-all ${(s !== 'CheckedOut' && s !== 'Cancelled') ? 'bg-white/10 text-white/40 hover:text-white border border-white/5' : 'bg-white/5 text-white/5'}`}
+                             title="Edit"
+                           >
+                             <Edit size={16} />
+                           </button>
 
-                          <button 
-                            disabled={s !== 'Pending' && s !== 'Confirmed'}
-                            onClick={() => handleRefund(b._id)}
-                            className={`p-2.5 rounded-full transition-all ${(s === 'Pending' || s === 'Confirmed') ? 'bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white border border-red-500/20' : 'bg-white/5 text-white/5'}`}
-                            title="Refund & Cancel"
-                          >
-                            <RotateCcw size={16} />
-                          </button>
+                           <button 
+                             type="button"
+                             disabled={s !== 'Pending' && s !== 'Confirmed'}
+                             onClick={() => handleRefund(b._id)}
+                             className={`p-2.5 rounded-full transition-all ${(s === 'Pending' || s === 'Confirmed') ? 'bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white border border-red-500/20' : 'bg-white/5 text-white/5'}`}
+                             title="Refund & Cancel"
+                           >
+                             <RotateCcw size={16} />
+                           </button>
                       </div>
                     </td>
                   </tr>
@@ -364,13 +371,14 @@ export default function BookingManagement() {
         {isConfirmModalOpen && selectedBooking && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-xl p-6">
             <div className="bg-[#1a1d17] border border-white/10 p-12 rounded-[40px] w-full max-w-4xl shadow-2xl relative">
-               <button onClick={() => setIsConfirmModalOpen(false)} className="absolute top-8 right-8 text-white/20 hover:text-white"><X size={24} /></button>
+               <button type="button" onClick={() => setIsConfirmModalOpen(false)} className="absolute top-8 right-8 text-white/20 hover:text-white"><X size={24} /></button>
                <h2 className="text-4xl font-serif italic mb-2">Sanctuary Assignment</h2>
                <p className="text-[10px] uppercase tracking-widest text-white/40 mb-10">Select a physical unit for {selectedBooking.guest_name}</p>
 
                <div className="flex flex-col gap-6">
                   {/* Auto Selection */}
                   <button 
+                    type="button"
                     onClick={() => handleConfirm(selectedBooking._id, 'auto')}
                     className="w-full bg-amber-600/20 border border-amber-600/30 p-6 rounded-2xl flex items-center justify-center gap-4 hover:bg-amber-600 hover:text-white transition-all group"
                   >
@@ -393,6 +401,7 @@ export default function BookingManagement() {
 
                         return (
                           <button 
+                            type="button"
                             key={room._id}
                             disabled={!isSelectable}
                             onClick={() => {
@@ -460,6 +469,7 @@ export default function BookingManagement() {
                      <div className="flex flex-col gap-4">
                         {!selectedBooking.assigned_room ? (
                           <button 
+                            type="button"
                             onClick={() => {
                               const autoRoom = availableRooms.find(r => (r.room_type_category || r.roomType) === selectedBooking.room_type && r.current_status === 'Ready');
                               if (autoRoom) {
@@ -475,6 +485,7 @@ export default function BookingManagement() {
                           </button>
                         ) : (
                           <button 
+                            type="button"
                             onClick={() => handleCheckIn(selectedBooking._id)}
                             className="bg-emerald-600 hover:bg-emerald-500 py-5 rounded-full text-xs font-black uppercase tracking-widest transition-all shadow-xl"
                           >
