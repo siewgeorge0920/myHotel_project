@@ -26,7 +26,7 @@ export const getSettings = async (keysMap) => {
 };
 
 /**
- * 💾 Mutation Utility: Create or Update Setting
+ *  Mutation Utility: Create or Update Setting
  */
 export const upsertSetting = async (key, value, description = '') => {
   try {

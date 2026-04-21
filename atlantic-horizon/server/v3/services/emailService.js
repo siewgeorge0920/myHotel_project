@@ -3,7 +3,7 @@ import configHelper from '../utils/configHelper.js';
 
 class EmailService {
   /**
-   * 🏗️ Initialize Transporter
+   *  Initialize Transporter
    */
   async getTransporter() {
     const user = await configHelper.getSetting('email_user');
@@ -24,7 +24,7 @@ class EmailService {
   }
 
   /**
-   * 🎨 Premium Manor HTML Wrapper
+   *  Premium Manor HTML Wrapper
    * Wraps raw content in a branded, high-end sanctuary frame.
    */
   _wrapInManorTheme(content, title = 'Official Communication') {
@@ -69,7 +69,7 @@ class EmailService {
   }
 
   /**
-   * 🧠 Template Parser
+   *  Template Parser
    * Replaces {{key}} and converts newlines to <br/>
    */
   _parseTemplate(html, data) {
@@ -90,7 +90,7 @@ class EmailService {
   }
 
   /**
-   * 📬 Generic Send Helper
+   *  Generic Send Helper
    */
   async _send(to, subject, html) {
     try {
@@ -112,7 +112,7 @@ class EmailService {
   }
 
   /**
-   * 🏨 Send Booking Confirmation
+   *  Send Booking Confirmation
    */
   async sendBookingEmail(recipientEmail, booking) {
     console.log(`[Diagnostic] sendBookingEmail for ${booking.booking_id}`);
@@ -148,7 +148,7 @@ See you soon.
   }
 
   /**
-   * 🎫 Send Gift Card Confirmation
+   *  Send Gift Card Confirmation
    */
   async sendGiftCardEmail(recipientEmail, details) {
     const dbTemplate = await configHelper.getSetting('email_template_giftcard');
@@ -180,7 +180,7 @@ This code can be used for online bookings or at check-in.
   }
 
   /**
-   * 🛎️ Send Check-in Welcome
+   *  Send Check-in Welcome
    */
   async sendCheckInEmail(recipientEmail, booking) {
     const dbTemplate = await configHelper.getSetting('email_template_checkin');

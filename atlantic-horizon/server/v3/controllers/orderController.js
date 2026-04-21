@@ -6,7 +6,7 @@ import { AppError } from '../utils/responseHandler.js';
 
 class OrderController {
   /**
-   * 🍽️ Fetch all available menu items
+   *  Fetch all available menu items
    */
   async getMenu(req, res) {
     try {
@@ -18,7 +18,7 @@ class OrderController {
   }
 
   /**
-   * ➕ Add new menu item
+   *  Add new menu item
    */
   async createMenuItem(req, res) {
     try {
@@ -31,7 +31,7 @@ class OrderController {
   }
 
   /**
-   * ✏️ Update menu item
+   *  Update menu item
    */
   async updateMenuItem(req, res) {
     try {
@@ -44,7 +44,7 @@ class OrderController {
   }
 
   /**
-   * 🗑️ Delete menu item
+   *  Delete menu item
    */
   async deleteMenuItem(req, res) {
     try {
@@ -57,7 +57,7 @@ class OrderController {
   }
 
   /**
-   * 📦 Place a new room service order
+   *  Place a new room service order
    */
   async placeOrder(req, res) {
     const { bookingId, roomName, items, paymentMethod, notes } = req.body;
@@ -138,7 +138,7 @@ class OrderController {
   }
 
   /**
-   * 🛒 Fetch ALL orders (for Dashboard)
+   *  Fetch ALL orders (for Dashboard)
    */
   async getAllOrders(req, res) {
     try {
@@ -150,7 +150,7 @@ class OrderController {
   }
 
   /**
-   * 📈 Update order status (Staff only)
+   *  Update order status (Staff only)
    */
   async updateStatus(req, res) {
     try {

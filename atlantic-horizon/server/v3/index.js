@@ -24,12 +24,12 @@ const allowedOrigins = [
 
 app.use(cors({
   origin: function (origin, callback) {
-    // 💡 Logic: Allow requests with no origin (like mobile apps or curl) 
+    // Logic: Allow requests with no origin (like mobile apps or curl) 
     // or if the origin is in our whitelist
     if (!origin || allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
     } else {
-      console.warn(`🛑 CORS Blocked: Origin "${origin}" is not in the whitelist.`);
+      console.warn(` CORS Blocked: Origin "${origin}" is not in the whitelist.`);
       callback(new Error('Not allowed by CORS'));
     }
   },

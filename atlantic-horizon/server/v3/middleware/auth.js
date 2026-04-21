@@ -1,7 +1,7 @@
 import Staff from '../models/Staff.js';
 
 /**
- * 🔐 Authentication Middleware
+ *  Authentication Middleware
  */
 export const protect = async (req, res, next) => {
   try {
@@ -33,7 +33,7 @@ export const protect = async (req, res, next) => {
 };
 
 /**
- * 🛂 Role Authorization Middleware
+ *  Role Authorization Middleware
  */
 export const restrictTo = (...roles) => {
   return (req, res, next) => {

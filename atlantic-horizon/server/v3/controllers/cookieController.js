@@ -3,7 +3,7 @@ import { sendSuccess } from '../utils/responseHandler.js';
 
 class CookieController {
   /**
-   * 🍪 Save Cookie Consent Preference
+   *  Save Cookie Consent Preference
    */
   async saveConsent(req, res) {
     try {
@@ -27,7 +27,7 @@ class CookieController {
   }
 
   /**
-   * 📊 Get All Consent Records (Admin Only)
+   *  Get All Consent Records (Admin Only)
    */
   async getAllConsents(req, res) {
     try {

@@ -3,7 +3,7 @@ import { recordLog } from '../utils/logger.js';
 
 class RoomInventoryController {
   /**
-   * 📡 Fetch all units (Inventory View)
+   *  Fetch all units (Inventory View)
    */
   async getAll(req, res) {
     try {
@@ -15,7 +15,7 @@ class RoomInventoryController {
   }
 
   /**
-   * ➕ Add new Physical Device/Room
+   *  Add new Physical Device/Room
    */
   async create(req, res) {
     try {
@@ -29,7 +29,7 @@ class RoomInventoryController {
   }
 
   /**
-   * ✏️ Update status or Device ID
+   *  Update status or Device ID
    */
   async update(req, res) {
     try {
@@ -42,7 +42,7 @@ class RoomInventoryController {
   }
 
   /**
-   * 🗑️ Delete Physical Unit
+   *  Delete Physical Unit
    */
   async delete(req, res) {
     try {
@@ -56,7 +56,7 @@ class RoomInventoryController {
     }
   }
   /**
-   * 🔗 Assign physical units to a Room Type (Bulk)
+   *  Assign physical units to a Room Type (Bulk)
    */
   async assign(req, res) {
     const { roomType, unitNames } = req.body;

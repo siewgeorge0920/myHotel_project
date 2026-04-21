@@ -5,7 +5,7 @@ import { recordLog } from '../utils/logger.js';
 
 class AuthController {
   /**
-   * 🔐 Secure Login Logic
+   *  Secure Login Logic
    */
   async login(req, res) {
     const { username, password } = req.body;
@@ -43,7 +43,7 @@ class AuthController {
   }
 
   /**
-   * 🛠️ Seed Admin, Manager, and Staff (Initial Setup Helper)
+   *  Seed Admin, Manager, and Staff (Initial Setup Helper)
    * Supports ?force=true to reset credentials
    */
   async seed(req, res) {
@@ -90,7 +90,7 @@ class AuthController {
   }
 
   /**
-   * 📋 List all staff (Admin/Manager only)
+   *  List all staff (Admin/Manager only)
    */
   async getAllStaff(req, res) {
     try {
@@ -102,7 +102,7 @@ class AuthController {
   }
 
   /**
-   * ➕ Create New Staff Account
+   *  Create New Staff Account
    */
   async createStaff(req, res) {
     const { name, username, password, role, status } = req.body;
@@ -125,7 +125,7 @@ class AuthController {
   }
 
   /**
-   * ✏️ Update Staff Details
+   *  Update Staff Details
    */
   async updateStaff(req, res) {
     const { id } = req.params;
@@ -145,7 +145,7 @@ class AuthController {
   }
 
   /**
-   * 🗑️ Delete Staff Account
+   *  Delete Staff Account
    */
   async deleteStaff(req, res) {
     try {

@@ -3,7 +3,7 @@ import Log from '../models/Log.js';
 
 class FolioService {
   /**
-   * 💰 Add Manual Charge (The "Concierge Add-on" logic)
+   *  Add Manual Charge (The "Concierge Add-on" logic)
    */
   async addManualCharge(bookingId, description, amount, performedBy) {
     const booking = await Booking.findOne({ booking_id: bookingId });

@@ -4,7 +4,7 @@ import { AppError } from '../utils/responseHandler.js';
 
 class RoomController {
   /**
-   * 📡 Fetch all luxury room types/packages
+   *  Fetch all luxury room types/packages
    */
   async getAll(req, res) {
     try {
@@ -16,7 +16,7 @@ class RoomController {
   }
 
   /**
-   * ➕ Create new luxury room type
+   *  Create new luxury room type
    */
   async create(req, res) {
     const { department, name, pricePerNight, maxGuests } = req.body;
@@ -50,7 +50,7 @@ class RoomController {
   }
 
   /**
-   * ✏️ Update existing luxury room type
+   *  Update existing luxury room type
    */
   async update(req, res) {
     try {
@@ -71,7 +71,7 @@ class RoomController {
   }
 
   /**
-   * 🗑️ Delete luxury room type
+   *  Delete luxury room type
    */
   async delete(req, res) {
     try {

@@ -3,7 +3,7 @@ import { sendSuccess } from '../utils/responseHandler.js';
 
 class GiftCardController {
   /**
-   * 💳 Start Purchase (Stripe Session)
+   *  Start Purchase (Stripe Session)
    */
   async startPurchase(req, res) {
     try {
@@ -16,7 +16,7 @@ class GiftCardController {
   }
 
   /**
-   * 🛡️ Verify Purchase (Called from Success Page)
+   *  Verify Purchase (Called from Success Page)
    */
   async verifyPurchase(req, res) {
     const { sessionId } = req.body;
@@ -32,7 +32,7 @@ class GiftCardController {
   }
 
   /**
-   * 🎫 Validate Code for usage
+   *  Validate Code for usage
    */
   async validate(req, res) {
     const { code } = req.body;
@@ -49,7 +49,7 @@ class GiftCardController {
   }
 
   /**
-   * ⚡ Instant/Manual Purchase (Bypass Stripe)
+   *  Instant/Manual Purchase (Bypass Stripe)
    */
   async instantPurchase(req, res) {
     try {
@@ -62,7 +62,7 @@ class GiftCardController {
   }
 
   /**
-   * 📜 Get All Gift Cards (Admin Only)
+   *  Get All Gift Cards (Admin Only)
    */
   async getAllGiftCards(req, res) {
     try {
@@ -75,7 +75,7 @@ class GiftCardController {
   }
 
   /**
-   * 🕰️ Get Detailed History for a single Code
+   *  Get Detailed History for a single Code
    */
   async getGiftCardHistory(req, res) {
     const { code } = req.params;

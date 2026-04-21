@@ -12,7 +12,7 @@ import { protect, restrictTo } from '../middleware/auth.js';
 const router = express.Router();
 
 /**
- * 🔐 Authentication & Staff IAM Routes
+ *  Authentication & Staff IAM Routes
  */
 router.post('/auth/login', authController.login);
 router.post('/auth/seed-admin', authController.seed);
@@ -24,7 +24,7 @@ router.put('/staff/:id', protect, restrictTo('admin'), authController.updateStaf
 router.delete('/staff/:id', protect, restrictTo('admin'), authController.deleteStaff);
 
 /**
- * 🏨 Booking & Availability Routes
+ *  Booking & Availability Routes
  */
 router.get('/bookings', protect, bookingController.getAllBookings);
 router.post('/bookings/create', bookingController.createBooking); // Public Booking
@@ -49,7 +49,7 @@ router.post('/create-payment-intent', bookingController.createPaymentIntent);
 router.post('/resend-payment-link', bookingController.resendPaymentLink);
 
 /**
- * 🎫 Gift Card Routes
+ *  Gift Card Routes
  */
 router.post('/gift-cards/checkout', giftCardController.startPurchase);
 router.post('/gift-cards/verify-purchase', giftCardController.verifyPurchase);
@@ -59,7 +59,7 @@ router.get('/gift-cards/all', protect, restrictTo('admin', 'manager'), giftCardC
 router.get('/gift-cards/:code/history', protect, restrictTo('admin', 'manager'), giftCardController.getGiftCardHistory);
 
 /**
- * 🏨 Physical Room & Inventory Routes
+ *  Physical Room & Inventory Routes
  */
 router.get('/physical-rooms', protect, roomInventoryController.getAll);
 router.post('/physical-rooms', protect, restrictTo('admin', 'manager'), roomInventoryController.create);
@@ -68,7 +68,7 @@ router.put('/physical-rooms/assign', protect, restrictTo('admin', 'manager'), ro
 router.delete('/physical-rooms/:id', protect, restrictTo('admin'), roomInventoryController.delete);
 
 /**
- * 🍱 F&B Menu & Ordering Routes (DISABLED: Models Deleted)
+ *  F&B Menu & Ordering Routes (DISABLED: Models Deleted)
  */
 // router.get('/menu', orderController.getMenu);
 // router.post('/menu', protect, restrictTo('admin', 'manager'), orderController.createMenuItem);
@@ -88,13 +88,13 @@ router.delete('/physical-rooms/:id', protect, restrictTo('admin'), roomInventory
 // router.delete('/rooms/:id', protect, restrictTo('admin'), roomController.delete);
 
 /**
- * ⚙️ Infrastructure & Settings Routes
+ *  Infrastructure & Settings Routes
  */
 router.get('/settings/email', protect, restrictTo('admin', 'manager'), settingsController.getEmailSettings);
 router.post('/settings/email', protect, restrictTo('admin', 'manager'), settingsController.updateEmailSettings);
 
 /**
- * 🍪 Cookie Consent Routes
+ *  Cookie Consent Routes
  */
 router.post('/cookie-consent', cookieController.saveConsent);
 router.get('/cookie-consents', protect, restrictTo('admin', 'manager'), cookieController.getAllConsents);

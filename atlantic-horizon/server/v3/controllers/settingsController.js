@@ -5,7 +5,7 @@ import { recordLog } from '../utils/logger.js';
 
 class SettingsController {
   /**
-   * 📧 Get All Email Related Settings including Templates
+   *  Get All Email Related Settings including Templates
    */
   getEmailSettings = catchAsync(async (req, res) => {
     const keys = [
@@ -22,7 +22,7 @@ class SettingsController {
   });
 
   /**
-   * 💾 Update Email Config & Templates
+   *  Update Email Config & Templates
    */
   updateEmailSettings = catchAsync(async (req, res) => {
     const updates = req.body;

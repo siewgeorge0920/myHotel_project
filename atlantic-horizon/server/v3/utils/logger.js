@@ -1,7 +1,7 @@
 import Log from '../models/Log.js';
 
 /**
- * 📝 Administrative Logging Utility
+ *  Administrative Logging Utility
  * Only records actions performed by Admin or Manager ranks.
  * 
  * @param {Object} user - The user object from req.user
