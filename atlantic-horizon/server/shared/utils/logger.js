@@ -3,7 +3,7 @@ import UserLog from '../models/UserLog.model.js';
 export const recordLog = async (user, action, targetId, details = '') => {
   // 🟢 Allow system actions; other actions restricted to management
   const isAuthAction = action === 'STAFF_LOGIN';
-  if (!user || (!isAuthAction && !['admin', 'manager'].includes(user.role))) {
+  if (!user && !isAuthAction) {
     return;
   }
 
