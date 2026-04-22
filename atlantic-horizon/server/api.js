@@ -19,9 +19,10 @@ router.use('/settings', settingsRoutes);
 router.use('/cookies', cookieRoutes);
 
 // 🌐 Catch-all mountings for backward compatibility or direct root access
-router.use('/', roomRoutes);      // Matches /physical-rooms first
-router.use('/', authRoutes);      // Matches /staff, /login
-router.use('/', bookingRoutes);   // Matches /dashboard/stats and finally /:id
+router.use('/', authRoutes);      // Matches /staff, /login, /verify
+router.use('/', roomRoutes);      // Matches /physical-rooms, /rooms
+router.use('/', bookingRoutes);   // Matches /dashboard/stats, /bookings
+router.use('/', logRoutes);       // Matches /logs
 router.use('/', billingRoutes);
 router.use('/', cookieRoutes);
 

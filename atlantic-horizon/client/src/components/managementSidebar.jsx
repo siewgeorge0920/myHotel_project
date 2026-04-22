@@ -16,7 +16,7 @@ export default function ManagementSidebar({ user }) {
     { name: 'Dashboard', path: '/staffDashboard', roles: ['staff', 'manager', 'admin'] },
     { name: 'Room Inventory', path: '/roomInventory', roles: ['manager', 'admin'] },
     { name: 'Team Management', path: '/adminIam', roles: ['admin'] },
-    { name: 'Audit Logs', path: '/auditLogs', roles: ['admin'] },
+    { name: 'Audit Logs', path: '/adminLogs', roles: ['admin'] },
     { name: 'Gift Cards', path: '/admin/gift-cards', roles: ['manager', 'admin'] },
     { name: 'Settings', path: '/adminSettings', roles: ['admin'] }
   ];
