@@ -59,7 +59,7 @@ import PhysicalRoomManager from './pages/physicalRoomManager';
 
 
 import PaymentPage from './pages/PaymentPage';
-import Logout24Hours from './components/24hoursLogout';
+import axios from 'axios';
 
 import LuxuryLoader from './components/luxuryLoader';
 import CookieWindow from './components/CookieWindow';
@@ -157,6 +157,22 @@ export default function App() {
   const lenisRef = useRef(null);
 
   useEffect(() => {
+    // 🛡️ GLOBAL SECURITY INTERCEPTOR
+    // This catches ANY 401/403 error from the backend (like 24h session expiry)
+    // and automatically initiates a logout and redirect.
+    const interceptor = axios.interceptors.response.use(
+      (response) => response,
+      (error) => {
+        if (error.response?.status === 401 || error.response?.status === 403) {
+          localStorage.removeItem('user');
+          localStorage.removeItem('loginTimestamp');
+          localStorage.removeItem('managerMode');
+          window.location.href = '/login?expired=1';
+        }
+        return Promise.reject(error);
+      }
+    );
+
     // Initialize Lenis Smooth Scroll
     const lenis = new Lenis({
       duration: 1.2,
@@ -182,6 +198,7 @@ export default function App() {
     return () => {
       lenis.destroy();
       lenisRef.current = null;
+      axios.interceptors.response.eject(interceptor);
     };
   }, []);
 
@@ -252,18 +269,18 @@ export default function App() {
           <Route path="/hottub" element={<Hottub />} />
 
           {/* Management Portal */}
-          <Route path="/staffDashboard" element={<Logout24Hours><StaffDashboard /></Logout24Hours>} />
-          <Route path="/roomInventory" element={<Logout24Hours><RoomInventory /></Logout24Hours>} />
-          <Route path="/adminIam" element={<Logout24Hours><AdminIAM /></Logout24Hours>} />
-          <Route path="/adminLogs" element={<Logout24Hours><AdminLogs /></Logout24Hours>} />
-          <Route path="/roomManagement" element={<Logout24Hours><RoomManagement /></Logout24Hours>} />
-          <Route path="/roomPackage" element={<Logout24Hours><RoomPackage /></Logout24Hours>} />
-          <Route path="/bookings" element={<Logout24Hours><BookingManagement /></Logout24Hours>} />
-          <Route path="/transactions" element={<Logout24Hours><Transactions /></Logout24Hours>} />
-          <Route path="/adminCalendar" element={<Logout24Hours><AdminCalendar /></Logout24Hours>} />
-          <Route path="/physicalRooms" element={<Logout24Hours><PhysicalRoomManager /></Logout24Hours>} />
+          <Route path="/staffDashboard" element={<StaffDashboard />} />
+          <Route path="/roomInventory" element={<RoomInventory />} />
+          <Route path="/adminIam" element={<AdminIAM />} />
+          <Route path="/adminLogs" element={<AdminLogs />} />
+          <Route path="/roomManagement" element={<RoomManagement />} />
+          <Route path="/roomPackage" element={<RoomPackage />} />
+          <Route path="/bookings" element={<BookingManagement />} />
+          <Route path="/transactions" element={<Transactions />} />
+          <Route path="/adminCalendar" element={<AdminCalendar />} />
+          <Route path="/physicalRooms" element={<PhysicalRoomManager />} />
           <Route path="/self-check-in" element={<SelfCheckIn />} />
-          <Route path="/booking-management" element={<Logout24Hours><BookingManagement /></Logout24Hours>} />
+          <Route path="/booking-management" element={<BookingManagement />} />
 
 
         </Routes>

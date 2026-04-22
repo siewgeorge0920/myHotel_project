@@ -25,12 +25,24 @@ class AuthController {
       path: '/' // 🟢 Crucial: Ensure cookie is sent for all /api/* routes
     });
 
+    // 🛡️ Record Audit Log for entrance
+    await recordLog(user, 'STAFF_LOGIN', user.username, `Successful session established for ${user.name} (${user.role})`);
+
     sendSuccess(res, {
       id: user._id,
       name: user.name,
       role: user.role,
       token: token
     }, "Welcome back.");
+  });
+
+  verify = catchAsync(async (req, res) => {
+    // 🛡️ If the 'protect' middleware passed, the session is valid
+    sendSuccess(res, {
+      id: req.user._id,
+      name: req.user.name,
+      role: req.user.role
+    }, "Session active.");
   });
 
   seed = catchAsync(async (req, res) => {

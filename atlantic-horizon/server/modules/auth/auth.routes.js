@@ -5,12 +5,11 @@ import { protect, restrictTo } from '../../shared/middleware/auth.js';
 const router = express.Router();
 
 router.post('/login', authController.login);
-router.post('/seed-admin', authController.seed);
-
-// Full Staff CRUD (Admin Only)
-router.get('/staff', protect, restrictTo('admin'), authController.getAllStaff);
-router.post('/staff', protect, restrictTo('admin'), authController.createStaff);
-router.put('/staff/:id', protect, restrictTo('admin'), authController.updateStaff);
-router.delete('/staff/:id', protect, restrictTo('admin'), authController.deleteStaff);
+router.post('/seed', authController.seed);
+router.get('/verify', protect, authController.verify);
+router.get('/', protect, restrictTo('admin', 'manager'), authController.getAllStaff);
+router.post('/', protect, restrictTo('admin'), authController.createStaff);
+router.put('/:id', protect, restrictTo('admin', 'manager'), authController.updateStaff);
+router.delete('/:id', protect, restrictTo('admin'), authController.deleteStaff);
 
 export default router;

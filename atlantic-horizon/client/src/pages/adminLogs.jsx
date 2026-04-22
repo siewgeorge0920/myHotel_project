@@ -4,9 +4,10 @@ import { COLORS } from '../colors';
 
 // Optional action-to-color mapping for quick visual scanning in the table.
 const ACTION_COLOR = {
-  STAFF_CREATED: 'text-green-400',
-  STAFF_UPDATED: 'text-amber-400',
-  STAFF_DELETED: 'text-red-400',
+  STAFF_LOGIN: 'text-green-400',
+  STAFF_CREATE: 'text-amber-400',
+  STAFF_UPDATE: 'text-blue-400',
+  STAFF_DELETE: 'text-red-400',
 };
 
 export default function AdminLogs() {
@@ -21,14 +22,20 @@ export default function AdminLogs() {
 
   // Fetch audit logs and update refresh timestamp.
   const fetchLogs = () => {
-    fetch('/api/logs')
+    fetch('/api/logs/logins', {
+      headers: { 'Authorization': `Bearer ${user?.token}` },
+      credentials: 'include'
+    })
       .then(r => r.json())
       .then(data => {
         setLogs(data.data || []);
         setLastRefreshed(new Date().toLocaleTimeString());
         setLoading(false);
       })
-      .catch(() => setLoading(false));
+      .catch((err) => {
+        console.error("Audit fetch failed:", err);
+        setLoading(false);
+      });
   };
 
   // Initial fetch + background polling every 10 seconds.
@@ -83,8 +90,8 @@ export default function AdminLogs() {
                         {log.action}
                       </span>
                     </td>
-                    <td className="p-5 text-sm font-serif">{log.performedBy}</td>
-                    <td className="p-5 font-mono text-xs text-white/30">{log.targetId || '—'}</td>
+                    <td className="p-5 text-sm font-serif">{log.performed_by || 'System'}</td>
+                    <td className="p-5 font-mono text-xs text-white/30">{log.target_id || '—'}</td>
                   </tr>
                 ))}
               </tbody>

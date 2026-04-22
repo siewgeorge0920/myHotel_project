@@ -1,7 +1,9 @@
 import Log from '../models/Log.model.js';
 
 export const recordLog = async (user, action, targetId, details = '') => {
-  if (!user || !['admin', 'manager'].includes(user.role)) {
+  // 🟢 Allow login logs for ALL users; other actions restricted to management
+  const isAuthAction = action === 'STAFF_LOGIN';
+  if (!user || (!isAuthAction && !['admin', 'manager'].includes(user.role))) {
     return;
   }
 
