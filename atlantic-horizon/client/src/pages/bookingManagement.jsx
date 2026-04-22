@@ -14,7 +14,9 @@ import {
   Clock, 
   Euro, 
   Server,
-  HelpCircle
+  HelpCircle,
+  Zap,
+  ArrowRightCircle
 } from 'lucide-react';
 import ConfirmationWindow from '../components/ConfirmationWindow';
 
@@ -518,32 +520,33 @@ export default function BookingManagement() {
 
                      <div className="bg-white/5 border border-white/10 p-8 rounded-3xl mb-10">
                         <p className="text-[10px] uppercase tracking-widest text-white/30 font-black mb-1">Active Assignment</p>
-                        <p className="text-4xl font-mono text-amber-500">Room {selectedBooking.assigned_room}</p>
+                        <p className="text-2xl font-mono text-amber-500 tracking-tight">{selectedBooking.assigned_room}</p>
                      </div>
 
                      <div className="flex flex-col gap-4">
-                        {!selectedBooking.assigned_room ? (
-                          <button 
-                            type="button"
-                            onClick={() => {
-                              const autoRoom = availableRooms.find(r => (r.room_type_category || r.roomType) === selectedBooking.room_type && r.current_status === 'Ready');
-                              if (autoRoom) {
-                                handleCheckIn(selectedBooking._id, autoRoom.room_name || autoRoom.roomName);
-                              } else {
-                                alert("No 'Ready' units available for auto-assignment. Please swap manually or check inventory status.");
-                              }
-                            }}
-                            className="bg-amber-600 hover:bg-amber-500 py-5 rounded-full text-xs font-black uppercase tracking-widest transition-all shadow-xl flex items-center justify-center gap-3"
-                          >
-                            <Server size={14} />
-                            Auto Assign Room
-                          </button>
-                        ) : (
+                        <button 
+                          type="button"
+                          onClick={() => {
+                            const autoRoom = availableRooms.find(r => (r.room_type_category || r.roomType) === selectedBooking.room_type && r.current_status === 'Ready');
+                            if (autoRoom) {
+                              handleCheckIn(selectedBooking._id, autoRoom.room_name || autoRoom.roomName);
+                            } else {
+                              alert("No 'Ready' units available for auto-assignment. Please swap manually or check inventory status.");
+                            }
+                          }}
+                          className="bg-amber-600 hover:bg-amber-500 py-4 rounded-full text-[10px] font-black uppercase tracking-widest transition-all shadow-xl flex items-center justify-center gap-3 mb-2"
+                        >
+                          <Zap size={14} fill="currentColor" />
+                          {selectedBooking.assigned_room ? "Auto Swap Assignment" : "Auto Assign Room"}
+                        </button>
+
+                        {selectedBooking.assigned_room && (
                           <button 
                             type="button"
                             onClick={() => handleCheckIn(selectedBooking._id)}
-                            className="bg-emerald-600 hover:bg-emerald-500 py-5 rounded-full text-xs font-black uppercase tracking-widest transition-all shadow-xl"
+                            className="bg-emerald-600 hover:bg-emerald-500 py-4 rounded-full text-[10px] font-black uppercase tracking-widest transition-all shadow-xl border border-white/10 flex items-center justify-center gap-3"
                           >
+                            <ArrowRightCircle size={14} />
                             Confirm Check-in
                           </button>
                         )}
@@ -554,12 +557,7 @@ export default function BookingManagement() {
                   </div>
 
                   <div className="md:col-span-3">
-                    <div className="flex justify-between items-center mb-6">
-                      <h3 className="text-[10px] uppercase tracking-widest font-black text-white/40">Inventory Awareness / Instant Swap</h3>
-                      <button onClick={() => fetchData()} className="text-white/20 hover:text-white transition-colors" title="Sync Registry"><Server size={14} /></button>
-                    </div>
-                    
-                    <div className="grid grid-cols-3 gap-3 max-h-[400px] overflow-y-auto pr-4 custom-scrollbar">
+                    <div className="grid grid-cols-3 gap-3 max-h-[400px] overflow-y-auto pr-4 pt-8 custom-scrollbar">
                         {availableRooms
                           .filter(r => (r.room_type_category || r.roomType) === selectedBooking.room_type)
                           .map(room => {
