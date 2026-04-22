@@ -1,6 +1,6 @@
 import crypto from 'crypto';
 import GiftCard from './GiftCard.model.js';
-import Log from '../../shared/models/Log.model.js';
+import UserLog from '../../shared/models/UserLog.model.js';
 import { getStripe } from '../../config/stripe.js';
 import configHelper from '../../shared/utils/configHelper.js';
 import emailService from '../../shared/services/emailService.js';
@@ -134,7 +134,7 @@ class GiftCardService {
         });
       } catch (e) {}
 
-      await Log.create({
+      await UserLog.create({
         action: `GIFT_CARD_ISSUE`,
         details: `Issued Gift Card: ${giftCard.code} (€${amount})`,
         performed_by: purchaserName || 'Direct Issue',
@@ -161,7 +161,7 @@ class GiftCardService {
     const card = await GiftCard.findOne({ code: code.toUpperCase() });
     if (!card) throw new Error("Voucher not found.");
 
-    const logs = await Log.find({ target_id: card.code }).sort({ createdAt: -1 });
+    const logs = await UserLog.find({ target_id: card.code }).sort({ createdAt: -1 });
     let stripeStatus = 'N/A';
     if (card.stripe_session_id && !card.stripe_session_id.startsWith('INST-')) {
       try {

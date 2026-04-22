@@ -1,6 +1,6 @@
 import Booking from './Booking.model.js';
 import RoomInventory from '../room/RoomInventory.model.js';
-import Log from '../../shared/models/Log.model.js';
+import UserLog from '../../shared/models/UserLog.model.js';
 import inventoryService from '../room/inventory.service.js';
 import emailService from '../../shared/services/emailService.js';
 
@@ -52,11 +52,11 @@ class BookingService {
         if (card.balance <= 0) card.status = 'Used';
         await card.save();
 
-        await Log.create({
+        await UserLog.create({
           action: 'GIFT_CARD_REDEEM',
           details: `Redeemed €${deduction} from ${card.code} for booking ${bookingId}`,
-          performedBy: data.guest_name || `${data.guestFirstName} ${data.guestLastName}`,
-          targetId: card.code,
+          performed_by: data.guest_name || `${data.guestFirstName} ${data.guestLastName}`,
+          target_id: card.code,
           timestamp: new Date()
         });
       }
@@ -92,7 +92,7 @@ class BookingService {
       console.error("[Email Notification Failed]", e.message);
     }
 
-    await Log.create({
+    await UserLog.create({
       action: `RECEPTION CHECK-IN`,
       details: `Guest ${booking.guest_name} ${readyRoom ? `assigned to ${readyRoom.room_name}` : '(No room available/assigned)'}`,
       performed_by: 'Reception Staff',
@@ -309,10 +309,10 @@ class BookingService {
       console.error("[Email Notification Failed]", e.message);
     }
 
-    await Log.create({
+    await UserLog.create({
       action: 'SELF_CHECK_IN',
-      performedBy: 'GUEST',
-      targetId: booking.booking_id,
+      performed_by: 'GUEST',
+      target_id: booking.booking_id,
       timestamp: new Date()
     });
 

@@ -1,4 +1,5 @@
 import Staff from './Staff.model.js';
+import LoginLog from '../../shared/models/LoginLog.model.js';
 import bcrypt from 'bcrypt';
 import { sendSuccess } from '../../shared/utils/responseHandler.js';
 import { recordLog } from '../../shared/utils/logger.js';
@@ -25,8 +26,29 @@ class AuthController {
       path: '/' // 🟢 Crucial: Ensure cookie is sent for all /api/* routes
     });
 
-    // 🛡️ Record Audit Log for entrance
-    await recordLog(user, 'STAFF_LOGIN', user.username, `Successful session established for ${user.name} (${user.role})`);
+    // 🛡️ Record the Entrance Session (Login Log)
+    try {
+      const userAgent = req.headers['user-agent'] || 'Unknown';
+      const ip = req.ip || req.headers['x-forwarded-for'] || '127.0.0.1';
+      
+      await LoginLog.create({
+        user_id: user._id,
+        name: user.name,
+        role: user.role,
+        location: {
+          ip: ip,
+          device: userAgent.split(')')[0].split('(')[1] || 'Unknown', // Simplified OS/Device
+          raw: userAgent
+        },
+        login_at: new Date(),
+        expires_at: new Date(Date.now() + 24 * 60 * 60 * 1000)
+      });
+
+      // Also record standard audit log
+      await recordLog(user, 'STAFF_LOGIN', user.username, `Successful session established for ${user.name}`);
+    } catch (logErr) {
+      console.error("[Login Log Error] Failed to record entrance:", logErr.message);
+    }
 
     sendSuccess(res, {
       id: user._id,

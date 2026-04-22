@@ -1,5 +1,5 @@
 import Booking from '../booking/Booking.model.js';
-import Log from '../../shared/models/Log.model.js';
+import UserLog from '../../shared/models/UserLog.model.js';
 
 class BillingService {
   /**
@@ -12,7 +12,7 @@ class BillingService {
     booking.total_amount += parseFloat(amount);
     await booking.save();
 
-    await Log.create({
+    await UserLog.create({
       action: `Manual Add-on`,
       details: `${description} (€${amount})`,
       performed_by: performedBy || 'Concierge',

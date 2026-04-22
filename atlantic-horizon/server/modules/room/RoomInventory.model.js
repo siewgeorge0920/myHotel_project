@@ -23,4 +23,4 @@ const roomInventorySchema = new mongoose.Schema({
   }
 }, { timestamps: true });
 
-export default mongoose.model('RoomInventory', roomInventorySchema);
+export default mongoose.model('RoomInventory', roomInventorySchema, 'roomManagement');
