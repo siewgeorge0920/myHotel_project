@@ -53,7 +53,7 @@ app.use((req, res, next) => {
 app.use((err, req, res, next) => {
   err.statusCode = err.statusCode || 500;
   
-  // Logic: In production, we don't show "scary" stack traces to guests
+  // Logic: In production, we don't show stack traces to guests
   res.status(err.statusCode).json({
     success: false,
     message: err.message,

@@ -12,7 +12,7 @@ class EmailService {
     const port = parseInt(await configHelper.getSetting('email_port', '465'));
 
     if (!user || !pass) {
-      console.warn("⚠️ SMTP Credentials missing. Email system initialization deferred.");
+      console.warn(" SMTP Credentials missing. Email system initialization deferred.");
     }
 
     return nodemailer.createTransport({
@@ -106,7 +106,7 @@ class EmailService {
 
       return await transporter.sendMail(mailOptions);
     } catch (error) {
-      console.error(`🛑 Email Transmission Failure to ${to}:`, error.message);
+      console.error(` Email Transmission Failure to ${to}:`, error.message);
       throw error;
     }
   }

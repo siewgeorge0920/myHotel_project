@@ -12,7 +12,7 @@ import { protect, restrictTo } from '../middleware/auth.js';
 const router = express.Router();
 
 /**
- *  Authentication & Staff IAM Routes
+ *  Authentication & Staff Identity Management Routes
  */
 router.post('/auth/login', authController.login);
 router.post('/auth/seed-admin', authController.seed);
@@ -80,7 +80,7 @@ router.delete('/physical-rooms/:id', protect, restrictTo('admin'), roomInventory
 // router.put('/room-service/order/:id', protect, orderController.updateStatus);
 
 /**
- * 🏛️ Luxury Room Types (Packages) Routes (DISABLED: Models Deleted)
+ *  Luxury Room Types (Packages) Routes (DISABLED: Models Deleted)
  */
 // router.get('/rooms', roomController.getAll);
 // router.post('/rooms', protect, restrictTo('admin', 'manager'), roomController.create);

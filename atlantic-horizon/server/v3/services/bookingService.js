@@ -333,7 +333,7 @@ class BookingService {
       throw new Error(`This reservation is currently ${booking.status.toLowerCase()}. Please see reception for help.`);
     }
 
-    // 🔒 ROOM LOCKING LOGIC (New Stage 2 -> 3 transition)
+    //  ROOM LOCKING LOGIC (New Stage 2 -> 3 transition)
     // If a room was assigned by staff during the 'Confirm' standby stage, lock it now.
     if (booking.assigned_room) {
       const room = await RoomInventory.findOne({ room_name: booking.assigned_room });
@@ -354,7 +354,7 @@ class BookingService {
     booking.check_in_time = new Date();
     await booking.save();
 
-    // 📧 Self Check-in Welcome
+    //  Self Check-in Welcome
     try {
       await emailService.sendCheckInEmail(booking.guest_email, booking);
     } catch (e) {
@@ -373,7 +373,7 @@ class BookingService {
   }
 
   /**
-   * 🔍 Manage Booking Lookup
+   *  Manage Booking Lookup
    * Finds a booking by ID/Ref and Email for guest self-management.
    */
   async lookupBooking(bookingId, email) {
@@ -388,7 +388,7 @@ class BookingService {
   }
 
   /**
-   * 📲 Update Guest Phone
+   *  Update Guest Phone
    * Allows guests to self-update their phone number.
    */
   async updateGuestPhone(bookingId, email, newPhone) {
