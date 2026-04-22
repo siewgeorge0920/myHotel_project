@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import ManagementSidebar from '../components/managementSidebar';
 import { COLORS } from '../colors';
+import ConfirmationWindow from '../components/ConfirmationWindow';
 
 export default function InventoryManagement() {
   const [rooms, setRooms] = useState([]);
@@ -19,13 +20,20 @@ export default function InventoryManagement() {
   });
   
   const [error, setError] = useState(null);
+  
+  // Custom Alert State
+  const [alertConfig, setAlertConfig] = useState({
+    isOpen: false,
+    title: '',
+    message: ''
+  });
 
   const fetchRooms = async (initial = false) => {
     try {
       // Initial load shows full-page loading state; background refresh does not.
       if (initial) setLoading(true);
-      const res = await axios.get('/api/v3/physical-rooms');
-      setRooms(res.data);
+      const res = await axios.get('/api/physical-rooms', { withCredentials: true });
+      setRooms(res.data.data || []);
     } catch (err) {
       setError('Failed to fetch inventory.');
     } finally {
@@ -62,34 +70,45 @@ export default function InventoryManagement() {
     try {
       // Same modal submit handles create and edit depending on mode.
       if (isEditing) {
-        await axios.put(`/api/v3/physical-rooms/${editingId}`, formData);
+        await axios.put(`/api/physical-rooms/${editingId}`, formData, { withCredentials: true });
       } else {
-        await axios.post('/api/v3/physical-rooms', formData);
+        await axios.post('/api/physical-rooms', formData, { withCredentials: true });
       }
       setShowModal(false);
       fetchRooms();
     } catch (err) {
-      alert(err.response?.data?.error || 'Operation failed.');
+      setAlertConfig({
+        isOpen: true,
+        title: "Vault Access Denied",
+        message: err.response?.data?.error || 'Operation failed — authentication required.'
+      });
     }
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm("Sanctify decommission? This unit will be removed from the Manor's core registry.")) return;
     try {
-      await axios.delete(`/api/v3/physical-rooms/${id}`);
+      await axios.delete(`/api/physical-rooms/${id}`, { withCredentials: true });
       fetchRooms();
     } catch (err) {
-      alert('Deactivation failed.');
+      setAlertConfig({
+        isOpen: true,
+        title: "Permission Required",
+        message: err.response?.data?.error || 'Your current rank is insufficient for deactivation.'
+      });
     }
   };
 
   const updateQuickStatus = async (id, status) => {
     // Lightweight status transition from the table view.
     try {
-      await axios.put(`/api/v3/physical-rooms/${id}`, { current_status: status });
+      await axios.put(`/api/physical-rooms/${id}`, { current_status: status }, { withCredentials: true });
       fetchRooms();
     } catch (err) {
-      alert('Status update failed.');
+      setAlertConfig({
+        isOpen: true,
+        title: "Sync Error",
+        message: 'Unable to update status — please refresh registry.'
+      });
     }
   };
 
@@ -264,6 +283,16 @@ export default function InventoryManagement() {
           </div>
         )}
       </main>
+
+      {/* 🛡️ Sanctuary Alert Portal */}
+      <ConfirmationWindow 
+        isOpen={alertConfig.isOpen}
+        title={alertConfig.title}
+        message={alertConfig.message}
+        isAlert={true}
+        confirmText="Acknowledge"
+        onConfirm={() => setAlertConfig(prev => ({ ...prev, isOpen: false }))}
+      />
     </div>
   );
 }

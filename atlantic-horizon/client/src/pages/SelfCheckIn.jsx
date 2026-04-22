@@ -22,7 +22,7 @@ export default function SelfCheckIn() {
     setStatus({ type: '', msg: '' });
 
     try {
-      const res = await axios.post('/api/v3/bookings/manage-lookup', formData);
+      const res = await axios.post('/api/bookings/manage-lookup', formData);
       setBooking(res.data.data.booking);
       setStage('view');
     } catch (err) {
@@ -36,7 +36,7 @@ export default function SelfCheckIn() {
   const handleCheckIn = async () => {
     setIsLoading(true);
     try {
-      const res = await axios.post('/api/v3/bookings/self-check-in', formData);
+      const res = await axios.post('/api/bookings/self-check-in', formData);
       setBooking(res.data.data.booking);
       setStage('success');
       flash('Check-in successful! Welcome to the Manor.', 'success');

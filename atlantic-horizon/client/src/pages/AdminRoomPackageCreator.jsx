@@ -64,8 +64,8 @@ export default function AdminRoomPackageCreator({ onPackageCreated, editData, on
     setMessage('');
 
     const url = editData 
-      ? `/api/v3/rooms/${editData._id}`
-      : `/api/v3/rooms`;
+      ? `/api/rooms/${editData._id}`
+      : `/api/rooms`;
     
     const method = editData ? 'PUT' : 'POST';
 
@@ -73,7 +73,8 @@ export default function AdminRoomPackageCreator({ onPackageCreated, editData, on
       const res = await fetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(formData),
+        credentials: 'include'
       });
 
       const data = await res.json();

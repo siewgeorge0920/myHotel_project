@@ -8,21 +8,14 @@ export default function SanctuaryOperations() {
   const user = JSON.parse(localStorage.getItem('user'));
   const isManagerMode = localStorage.getItem('managerMode') === 'true';
 
-  const [activeTab, setActiveTab] = useState('Cleanliness'); // 'Cleanliness' or 'Gastronomy'
   const [units, setUnits] = useState([]);
-  const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const fetchData = async (initial = false) => {
     try {
-      // Initial load uses blocking loader; subsequent refreshes are silent.
       if (initial) setLoading(true);
-      const [resUnits, resOrders] = await Promise.all([
-        axios.get('/api/v3/physical-rooms'),
-        axios.get('/api/v3/room-service/all-orders')
-      ]);
-      setUnits(resUnits.data || []);
-      setOrders(resOrders.data || []);
+      const resUnits = await axios.get('/api/physical-rooms', { withCredentials: true });
+      setUnits(resUnits.data.data || []);
     } catch (err) {
       console.error('Data sync failed:', err);
     } finally {
@@ -40,20 +33,10 @@ export default function SanctuaryOperations() {
   const updateCleaningStatus = async (id, status) => {
     // Push housekeeping state transition for a physical unit.
     try {
-      await axios.put(`/api/v3/physical-rooms/${id}`, { current_status: status });
+      await axios.put(`/api/physical-rooms/${id}`, { current_status: status }, { withCredentials: true });
       fetchData();
     } catch (err) {
       alert('Status update failed.');
-    }
-  };
-
-  const updateOrderStatus = async (id, status) => {
-    // Advance gastronomy workflow status for an order.
-    try {
-      await axios.put(`/api/v3/room-service/order/${id}`, { status });
-      fetchData();
-    } catch (err) {
-      alert('Order update failed.');
     }
   };
 
@@ -102,133 +85,74 @@ export default function SanctuaryOperations() {
           </div>
         ) : (
           <div className="animate-in fade-in duration-700">
-            {activeTab === 'Cleanliness' ? (
-              <div className="space-y-16">
-                {departments.length === 0 && (
-                   <div className="py-32 text-center border border-dashed border-white/10 opacity-30 text-[10px] uppercase tracking-[0.5em]">No physical units deployed in sanctuary.</div>
-                )}
-                {departments.map(dept => (
-                  <div key={dept} className="space-y-8">
-                    <h2 className="text-xl font-serif text-amber-500 italic border-l-2 border-amber-500 pl-6 uppercase tracking-widest">{dept || "Uncategorized"}</h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                      {units.filter(u => u.department === dept).map(unit => {
-                        const rName = unit.room_name || unit.roomName;
-                        const rType = unit.room_type_category || unit.roomType;
-                        const s = unit.current_status;
+            <div className="space-y-16">
+              {departments.length === 0 && (
+                 <div className="py-32 text-center border border-dashed border-white/10 opacity-30 text-[10px] uppercase tracking-[0.5em]">No physical units deployed in sanctuary.</div>
+              )}
+              {departments.map(dept => (
+                <div key={dept} className="space-y-8">
+                  <h2 className="text-xl font-serif text-amber-500 italic border-l-2 border-amber-500 pl-6 uppercase tracking-widest">{dept || "Uncategorized"}</h2>
+                  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                    {units.filter(u => u.department === dept).map(unit => {
+                      const rName = unit.room_name || unit.roomName;
+                      const rType = unit.room_type_category || unit.roomType;
+                      const s = unit.current_status;
 
-                        return (
-                          <div key={unit._id} className="bg-white/[0.02] border border-white/5 p-8 group hover:border-white/10 transition-all relative overflow-hidden">
-                            {s === 'Cleaning' && <div className="absolute top-0 right-0 w-24 h-24 bg-sky-500/10 rotate-45 translate-x-12 -translate-y-12 border border-sky-500/20" />}
-                            
-                            <div className="flex justify-between items-start mb-8 relative z-10">
-                              <div>
-                                 <h3 className="text-2xl font-serif text-white/80">{rName}</h3>
-                                 <p className="text-[10px] text-white/20 uppercase tracking-widest mt-2">{rType}</p>
-                              </div>
-                              <span className={`px-3 py-1.5 border text-[9px] font-black uppercase tracking-widest ${getStatusStyle(s)}`}>
-                                {s}
-                              </span>
+                      return (
+                        <div key={unit._id} className="bg-white/[0.02] border border-white/5 p-8 group hover:border-white/10 transition-all relative overflow-hidden">
+                          {s === 'Cleaning' && <div className="absolute top-0 right-0 w-24 h-24 bg-sky-500/10 rotate-45 translate-x-12 -translate-y-12 border border-sky-500/20" />}
+                          
+                          <div className="flex justify-between items-start mb-8 relative z-10">
+                            <div>
+                               <h3 className="text-2xl font-serif text-white/80">{rName}</h3>
+                               <p className="text-[10px] text-white/20 uppercase tracking-widest mt-2">{rType}</p>
                             </div>
-                            
-                            <div className="grid grid-cols-2 gap-2 relative z-10">
-                               {s !== 'Ready' && (
-                                 <button 
-                                   onClick={() => updateCleaningStatus(unit._id, 'Ready')}
-                                   className="col-span-2 py-3 text-[9px] uppercase tracking-[0.3em] font-black bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500 hover:text-white transition-all mb-2"
-                                 >
-                                   Mark as Ready
-                                 </button>
-                               )}
-
-                               {s === 'Ready' && (
-                                 <button 
-                                   onClick={() => updateCleaningStatus(unit._id, 'Cleaning')}
-                                   className="py-3 text-[9px] uppercase tracking-[0.2em] font-black border border-sky-500/20 hover:border-sky-500/60 text-sky-400/60 hover:text-sky-400 transition-all bg-sky-500/5 flex items-center justify-center gap-2"
-                                 >
-                                   Apply Cleaning
-                                 </button>
-                               )}
-
-                               {(s === 'Ready' || s === 'Cleaning') && (
-                                 <button 
-                                   onClick={() => updateCleaningStatus(unit._id, 'Maintenance')}
-                                   className={`py-3 text-[9px] uppercase tracking-[0.2em] font-black border border-red-500/20 hover:border-red-500/60 text-red-400/60 hover:text-red-400 transition-all bg-red-500/5 ${s !== 'Ready' ? 'col-span-1' : 'col-span-1'}`}
-                                 >
-                                   Set Maintenance
-                                 </button>
-                               )}
-
-                               {s === 'Occupied' && (
-                                 <p className="col-span-2 text-[9px] uppercase text-white/20 italic text-center py-3 border border-dashed border-white/5">
-                                   Unit Managed by Front Desk
-                                 </p>
-                               )}
-                            </div>
+                            <span className={`px-3 py-1.5 border text-[9px] font-black uppercase tracking-widest ${getStatusStyle(s)}`}>
+                              {s}
+                            </span>
                           </div>
-                        )
-                      })}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="space-y-8">
-                <div className="flex justify-between items-center mb-8 border-b border-white/5 pb-6">
-                   <h2 className="text-xl font-serif italic text-white/60">Active Gastronomy Workflow</h2>
-                   <div className="flex gap-4 text-[9px] uppercase tracking-widest text-white/20">
-                      <span>Total: {orders.length}</span>
-                      <span>Pending: {orders.filter(o => o.order_status === 'Pending').length}</span>
-                   </div>
-                </div>
-                
-                <div className="grid grid-cols-1 gap-4">
-                   {orders.length === 0 && (
-                     <div className="py-32 text-center border border-dashed border-white/10 opacity-30 text-[10px] uppercase tracking-[0.5em]">No active orders processed by Gastronomy yet.</div>
-                   )}
-                   {orders.map(order => (
-                     <div key={order._id} className="bg-white/[0.02] border border-white/5 p-8 flex flex-col md:flex-row justify-between items-center gap-10 hover:bg-white/[0.03] transition-all">
-                        <div className="flex-1 space-y-4">
-                           <div className="flex items-center gap-4">
-                              <span className="text-amber-500 font-black text-[10px] tracking-widest px-3 py-1 bg-amber-500/5 border border-amber-500/20 uppercase">Order #{order._id.slice(-6)}</span>
-                              <span className={`px-4 py-1 border text-[9px] font-black uppercase tracking-widest ${getOrderBadge(order.order_status)}`}>
-                                {order.order_status}
-                              </span>
-                              <span className="text-white/20 text-[10px] uppercase tracking-widest italic">{new Date(order.createdAt).toLocaleTimeString()}</span>
-                           </div>
-                           <div className="flex gap-8">
-                              <div className="flex-1">
-                                 <p className="text-[9px] uppercase tracking-[0.4em] text-white/20 font-black mb-2">Requested Items</p>
-                                 <div className="space-y-1">
-                                    {order.items.map((it, idx) => (
-                                      <p key={idx} className="text-sm text-white/70 font-light italic">
-                                        <span className="text-amber-500/60 font-black mr-2">{it.quantity}x</span> {it.name}
-                                      </p>
-                                    ))}
-                                 </div>
-                              </div>
-                              <div className="min-w-[120px]">
-                                 <p className="text-[9px] uppercase tracking-[0.4em] text-white/20 font-black mb-2">Total Folio</p>
-                                 <p className="text-xl font-serif text-white/80 italic">€{order.total_amount}</p>
-                              </div>
-                           </div>
-                        </div>
+                          
+                          <div className="grid grid-cols-2 gap-2 relative z-10">
+                             {s !== 'Ready' && (
+                               <button 
+                                 onClick={() => updateCleaningStatus(unit._id, 'Ready')}
+                                 className="col-span-2 py-3 text-[9px] uppercase tracking-[0.3em] font-black bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500 hover:text-white transition-all mb-2"
+                               >
+                                 Mark as Ready
+                               </button>
+                             )}
 
-                        <div className="flex gap-2 flex-wrap justify-end">
-                           {['Pending', 'Preparing', 'Delivering', 'Completed'].filter(s => s !== order.order_status).map(s => (
-                             <button 
-                               key={s}
-                               onClick={() => updateOrderStatus(order._id, s)}
-                               className="px-6 py-3 text-[9px] uppercase font-black tracking-widest border border-white/10 hover:border-amber-500/40 text-white/30 hover:text-white transition-all"
-                             >
-                               Set {s}
-                             </button>
-                           ))}
+                             {s === 'Ready' && (
+                               <button 
+                                 onClick={() => updateCleaningStatus(unit._id, 'Cleaning')}
+                                 className="py-3 text-[9px] uppercase tracking-[0.2em] font-black border border-sky-500/20 hover:border-sky-500/60 text-sky-400/60 hover:text-sky-400 transition-all bg-sky-500/5 flex items-center justify-center gap-2"
+                               >
+                                 Apply Cleaning
+                               </button>
+                             )}
+
+                             {(s === 'Ready' || s === 'Cleaning') && (
+                               <button 
+                                 onClick={() => updateCleaningStatus(unit._id, 'Maintenance')}
+                                 className={`py-3 text-[9px] uppercase tracking-[0.2em] font-black border border-red-500/20 hover:border-red-500/60 text-red-400/60 hover:text-red-400 transition-all bg-red-500/5 ${s !== 'Ready' ? 'col-span-1' : 'col-span-1'}`}
+                               >
+                                 Set Maintenance
+                               </button>
+                             )}
+
+                             {s === 'Occupied' && (
+                               <p className="col-span-2 text-[9px] uppercase text-white/20 italic text-center py-3 border border-dashed border-white/5">
+                                 Unit Managed by Front Desk
+                               </p>
+                             )}
+                          </div>
                         </div>
-                     </div>
-                   ))}
+                      )
+                    })}
+                  </div>
                 </div>
-              </div>
-            )}
+              ))}
+            </div>
           </div>
         )}
       </main>

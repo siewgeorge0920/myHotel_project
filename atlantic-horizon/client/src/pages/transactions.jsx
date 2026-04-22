@@ -19,7 +19,7 @@ export default function Transactions() {
 
   useEffect(() => {
     // Retrieve all transaction rows for dashboard metrics and table view.
-    fetch('/api/v3/transactions')
+    fetch('/api/transactions', { credentials: 'include' })
       .then(r => r.json())
       .then(data => { setTxns(data.data || []); setLoading(false); })
       .catch(() => setLoading(false));

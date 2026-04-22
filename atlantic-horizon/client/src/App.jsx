@@ -199,7 +199,7 @@ export default function App() {
   const handleCookieSave = async (preference) => {
     try {
       localStorage.setItem('ath_cookie_preference', preference);
-      await fetch('/api/v3/cookie-consent', {
+      await fetch('/api/cookie-consent', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ preference })

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ManagementSidebar from '../components/managementSidebar';
 import { COLORS } from '../colors';
-import ConfirmationDelete from '../components/ConfirmationDelete';
+import ConfirmationWindow from '../components/ConfirmationWindow';
 
 // Default form shape for creating/editing staff accounts.
 const EMPTY = { _id: '', name: '', username: '', password: '', role: 'staff', status: 'Active' };
@@ -24,18 +24,20 @@ export default function AdminIAM() {
 
   // Fetch all staff accounts.
   const fetchStaff = () => {
-    fetch('/api/v3/staff', {
-      headers: { 'Authorization': `Bearer ${user?.token}` }
+    fetch('/api/staff', {
+      headers: { 'Authorization': `Bearer ${user?.token}` },
+      credentials: 'include'
     })
       .then(r => r.json())
-      .then(json => setStaffList(json || []));
+      .then(json => setStaffList(json.data || []));
   };
   
   const navigate = useNavigate();
   
   // Initial data load on first render + Security Check
   useEffect(() => { 
-    if (!user || user.role !== 'admin') {
+    const userRole = user?.role?.toLowerCase() || '';
+    if (!user || userRole !== 'admin') {
       navigate('/staffDashboard');
       return;
     }
@@ -52,7 +54,7 @@ export default function AdminIAM() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    const url = isEdit ? `/api/v3/staff/${form._id}` : '/api/v3/staff';
+    const url = isEdit ? `/api/staff/${form._id}` : '/api/staff';
     const method = isEdit ? 'PUT' : 'POST';
     const payload = { ...form };
     if (!isEdit) delete payload._id;
@@ -90,7 +92,7 @@ const requestDelete = (id, name) => {
 const confirmDelete = async () => {
   const { id } = deleteModal;
   setDeleteModal({ isOpen: false, id: null, name: null });
-  await fetch(`/api/v3/staff/${id}`, { 
+  await fetch(`/api/staff/${id}`, { 
     method: 'DELETE',
     headers: { 'Authorization': `Bearer ${user?.token}` }
   });
@@ -215,11 +217,10 @@ const confirmDelete = async () => {
 
       </main>
 
-      <ConfirmationDelete 
+      <ConfirmationWindow 
         isOpen={deleteModal.isOpen}
         title="Delete Account"
         message={`Are you absolutely sure you want to permanently delete the account "${deleteModal.name}"? This is irreversible.`}
-        isAlert={false}
         isDestructive={true}
         onConfirm={confirmDelete}
         onCancel={() => setDeleteModal({ isOpen: false, id: null, name: null })}

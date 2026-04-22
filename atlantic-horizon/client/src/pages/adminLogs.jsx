@@ -21,7 +21,7 @@ export default function AdminLogs() {
 
   // Fetch audit logs and update refresh timestamp.
   const fetchLogs = () => {
-    fetch('/api/v3/logs')
+    fetch('/api/logs')
       .then(r => r.json())
       .then(data => {
         setLogs(data.data || []);

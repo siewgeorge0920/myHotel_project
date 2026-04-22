@@ -13,11 +13,11 @@ export default function ManagementSidebar({ user }) {
 
   // Strategic Grouping
   const menuItems = [
-    { name: 'Dashboard', path: '/staffDashboard', icon: '' },
-    { name: 'Room Inventory', path: '/roomInventory', icon: '', adminOnly: true },
-    { name: 'Team Management', path: '/adminIam', icon: '', adminStrict: true },
-    { name: 'Gift Cards', path: '/admin/gift-cards', icon: '', adminOnly: true },
-    { name: 'Settings', path: '/adminSettings', icon: '', adminOnly: true }
+    { name: 'Dashboard', path: '/staffDashboard', roles: ['staff', 'manager', 'admin'] },
+    { name: 'Room Inventory', path: '/roomInventory', roles: ['manager', 'admin'] },
+    { name: 'Team Management', path: '/adminIam', roles: ['admin'] },
+    { name: 'Gift Cards', path: '/admin/gift-cards', roles: ['manager', 'admin'] },
+    { name: 'Settings', path: '/adminSettings', roles: ['admin'] }
   ];
 
   return (
@@ -26,11 +26,10 @@ export default function ManagementSidebar({ user }) {
         <h2 className="text-xl font-serif italic tracking-tighter">Horizon Manor</h2>
       </div>
 
-      <nav className="space-y-2">
+      <nav className="space-y-1">
         {menuItems.map((item) => {
-          const isVisible = item.adminStrict 
-            ? user.role === 'admin'
-            : (!item.adminOnly || user.role === 'admin' || user.role === 'manager');
+          const userRole = user?.role?.toLowerCase() || 'staff';
+          const isVisible = item.roles.includes(userRole);
 
           return isVisible && (
             <Link 

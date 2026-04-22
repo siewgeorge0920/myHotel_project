@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { COLORS } from '../colors';
 import ManagementSidebar from '../components/managementSidebar';
 import LuxuryLoader from '../components/luxuryLoader';
-import ConfirmationDelete from '../components/ConfirmationDelete';
+import ConfirmationWindow from '../components/ConfirmationWindow';
 
 export default function Inventory() {
   const [rooms, setRooms] = useState([]);
@@ -12,7 +12,7 @@ export default function Inventory() {
 
   useEffect(() => {
     // Pull room-type inventory snapshot for management view.
-    fetch('/api/v3/rooms')
+    fetch('/api/rooms')
       .then(res => res.json())
       .then(data => { setRooms(data.data || data); setLoading(false); });
   }, []);
@@ -72,7 +72,7 @@ export default function Inventory() {
         </div>
       </main>
 
-      <ConfirmationDelete 
+      <ConfirmationWindow 
         isOpen={alertObj.isOpen}
         title="Admin Alert"
         message={alertObj.text}

@@ -14,7 +14,7 @@ export default function StaffDashboard() {
 
   const fetchStats = async () => {
     try {
-      const res = await fetch('/api/v3/dashboard/stats', {
+      const res = await fetch('/api/dashboard/stats', {
         credentials: 'include' // Crucial for sending HttpOnly session cookies
       });
       const data = await res.json();
@@ -41,7 +41,8 @@ export default function StaffDashboard() {
 
   if (!user) return null;
 
-  const isManager = user.role === 'manager' || user.role === 'admin';
+  const userRole = user?.role?.toLowerCase() || 'staff';
+  const isManager = userRole === 'manager' || userRole === 'admin';
 
   return (
     <div className="flex min-h-screen text-white font-sans selection:bg-amber-500/30" style={{ backgroundColor: COLORS.bgDeep }}>
@@ -92,9 +93,21 @@ export default function StaffDashboard() {
         <div className="mt-12 max-w-5xl relative z-10">
            <h4 className="text-[10px] uppercase tracking-[0.4em] text-white/40 mb-6 font-black">Overall</h4>
            <div className="grid grid-cols-3 gap-6">
-              <StatCard label="Pending" value={stats.upcoming} />
-              <StatCard label="Check-In" value={stats.expectedArrivals} />
-              <StatCard label="Check-Out" value={stats.pendingDepartures} />
+              <StatCard 
+                label="Pending" 
+                value={stats.upcoming} 
+                onClick={() => navigate('/bookings', { state: { filter: 'pending' } })}
+              />
+              <StatCard 
+                label="Check-In" 
+                value={stats.expectedArrivals} 
+                onClick={() => navigate('/bookings', { state: { filter: 'checkin' } })}
+              />
+              <StatCard 
+                label="Check-Out" 
+                value={stats.pendingDepartures} 
+                onClick={() => navigate('/bookings', { state: { filter: 'checkout' } })}
+              />
            </div>
         </div>
 
@@ -122,11 +135,14 @@ function ActionCard({ title, icon, desc, primaryBtn, onPrimaryClick, bgGradient,
   );
 }
 
-function StatCard({ label, value }) {
+function StatCard({ label, value, onClick }) {
   return (
-    <div className="p-6 rounded-2xl bg-white/[0.02] border border-white/5">
-      <h4 className="text-3xl font-light mb-1">{value}</h4>
+    <button 
+      onClick={onClick}
+      className="p-6 rounded-2xl bg-white/[0.02] border border-white/5 hover:bg-white/[0.05] hover:border-amber-500/30 transition-all text-left w-full group"
+    >
+      <h4 className="text-3xl font-light mb-1 group-hover:text-amber-500 transition-colors">{value}</h4>
       <p className="text-[9px] uppercase tracking-[0.2em] text-white/30 font-semibold">{label}</p>
-    </div>
+    </button>
   );
 }

@@ -40,7 +40,7 @@ function CheckoutForm({ clientSecret, bookingId, refId, totalPrice, onPaymentSuc
       if (onPaymentSuccess) onPaymentSuccess();
       
       // Update payment status (Public endpoint)
-      await fetch(`/api/v3/bookings/${bookingId}/payment-status`, {
+      await fetch(`/api/bookings/${bookingId}/payment-status`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: 'Paid' })
@@ -104,7 +104,7 @@ export default function PaymentPage() {
       return;
     }
 
-    fetch('/api/v3/create-payment-intent', {
+    fetch('/api/create-payment-intent', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

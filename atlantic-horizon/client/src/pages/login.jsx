@@ -38,7 +38,7 @@ export default function Login() {
     setError('');
     setIsLoading(true);
     try {
-      const res = await axios.post('/api/v3/auth/login', formData, {
+      const res = await axios.post('/api/auth/login', formData, {
          withCredentials: true
       });
       // Logic: Extract from data.data due to standardized V3 wrapper
@@ -112,7 +112,7 @@ export default function Login() {
             onClick={async () => {
               setIsLoading(true);
               try {
-                await axios.post('/api/v3/auth/seed-admin?force=true');
+                await axios.post('/api/auth/seed-admin?force=true');
                 alert('Identity Core Initialized! Use "boss" / "123" to login.');
               } catch (e) {
                 alert('Seeding failed! Is the server running?');

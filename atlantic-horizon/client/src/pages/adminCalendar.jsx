@@ -15,8 +15,8 @@ export default function AdminCalendar() {
   // Load booking records and physical-unit inventory in parallel on first render.
   useEffect(() => {
     Promise.all([
-      fetch('/api/v3/bookings'),
-      fetch('/api/v3/physical-rooms')
+      fetch('/api/bookings'),
+      fetch('/api/physical-rooms')
     ])
       .then(([resB, resP]) => Promise.all([resB.json(), resP.json()]))
       .then(([dataB, dataP]) => {

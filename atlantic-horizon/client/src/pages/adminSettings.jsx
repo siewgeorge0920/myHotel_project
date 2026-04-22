@@ -27,7 +27,7 @@ export default function AdminSettings() {
   useEffect(() => {
     const fetchSettings = async () => {
       try {
-        const { data } = await axios.get('/api/v3/settings/email');
+        const { data } = await axios.get('/api/settings/email', { withCredentials: true });
         const settings = data.data || {};
         setEmailConfig({
           email_user: settings.email_user || '',
@@ -58,7 +58,7 @@ export default function AdminSettings() {
         email_host: emailConfig.email_host,
         email_port: emailConfig.email_port
       };
-      await axios.post('/api/v3/settings/email', smtpData);
+      await axios.post('/api/settings/email', smtpData, { withCredentials: true });
       setSmtpMessage({ text: 'SMTP Gateway Configuration Saved.', type: 'success' });
     } catch (err) {
       setSmtpMessage({ text: 'Failed to save SMTP settings: ' + (err.response?.data?.error || err.message), type: 'error' });
@@ -77,7 +77,7 @@ export default function AdminSettings() {
         email_template_checkin: emailConfig.email_template_checkin,
         email_template_giftcard: emailConfig.email_template_giftcard
       };
-      await axios.post('/api/v3/settings/email', templateData);
+      await axios.post('/api/settings/email', templateData, { withCredentials: true });
       setTemplateMessage({ text: 'HTML Notification Templates Synchronized.', type: 'success' });
     } catch (err) {
       setTemplateMessage({ text: 'Failed to sync templates: ' + (err.response?.data?.error || err.message), type: 'error' });
@@ -86,7 +86,8 @@ export default function AdminSettings() {
     }
   };
 
-  if (user?.role !== 'admin' && user?.role !== 'manager') {
+  const userRole = user?.role?.toLowerCase() || '';
+  if (userRole !== 'admin' && userRole !== 'manager') {
      return <div className="p-20 text-center text-red-500 font-black uppercase tracking-widest mt-12">Access Denied. Admin or Manager role required.</div>;
   }
 

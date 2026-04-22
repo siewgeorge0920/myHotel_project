@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import ManagementSidebar from '../components/managementSidebar';
 import { COLORS } from '../colors';
 import RoomInventoryRegisterWindow from '../components/RoomInventoryRegisterWindow';
+import ConfirmationWindow from '../components/ConfirmationWindow';
 
 export default function PhysicalRoomManager() {
   const user = JSON.parse(localStorage.getItem('user'));
@@ -26,12 +27,21 @@ export default function PhysicalRoomManager() {
   const [editName, setEditName] = useState('');
   const [bulkModal, setBulkModal] = useState({ isOpen: false, roomType: '', department: '' });
 
+  // Custom Confirmation Dialog State
+  const [confirmDialog, setConfirmDialog] = useState({
+    isOpen: false,
+    title: '',
+    message: '',
+    onConfirm: () => {},
+    isDestructive: false
+  });
+
   const fetchData = async () => {
     try {
       setLoading(true);
       const [resRooms, resUnits] = await Promise.all([
-        fetch('/api/v3/rooms').catch(() => ({ json: () => [] })),
-        fetch('/api/v3/physical-rooms')
+        fetch('/api/rooms').catch(() => ({ json: () => [] })),
+        fetch('/api/physical-rooms')
       ]);
       const dataRooms = await resRooms.json();
       const dataUnits = await resUnits.json();
@@ -112,7 +122,7 @@ export default function PhysicalRoomManager() {
     }
 
     try {
-      const res = await fetch('/api/v3/physical-rooms', {
+      const res = await fetch('/api/physical-rooms', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -134,19 +144,27 @@ export default function PhysicalRoomManager() {
   };
 
   const handleDelete = async (id) => {
-    if(!window.confirm("Permanently delete this physical unit?")) return;
-    try {
-      await fetch(`/api/v3/physical-rooms/${id}`, { method: 'DELETE' });
-      fetchData();
-    } catch (error) {
-      console.error(error);
-    }
+    setConfirmDialog({
+      isOpen: true,
+      title: "Decommission Unit",
+      message: "Permanently delete this physical unit? This action is irreversible.",
+      isDestructive: true,
+      onConfirm: async () => {
+        try {
+          await fetch(`/api/physical-rooms/${id}`, { method: 'DELETE' });
+          fetchData();
+        } catch (error) {
+          console.error(error);
+        }
+        setConfirmDialog(prev => ({ ...prev, isOpen: false }));
+      }
+    });
   };
 
   const handleEditSubmit = async (id) => {
     if(!editName) return;
     try {
-      const res = await fetch(`/api/v3/physical-rooms/${id}`, {
+      const res = await fetch(`/api/physical-rooms/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ room_name: editName.toUpperCase() })
@@ -310,6 +328,18 @@ export default function PhysicalRoomManager() {
         onComplete={(resMsg) => {
           fetchData();
         }}
+      />
+      
+
+      <ConfirmationWindow 
+        isOpen={confirmDialog.isOpen}
+        title={confirmDialog.title}
+        message={confirmDialog.message}
+        isDestructive={confirmDialog.isDestructive}
+        onConfirm={confirmDialog.onConfirm}
+        onCancel={() => setConfirmDialog(prev => ({ ...prev, isOpen: false }))}
+        confirmText="Proceed"
+        cancelText="Cancel"
       />
     </div>
   );

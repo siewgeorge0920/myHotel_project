@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import ManagementSidebar from '../components/managementSidebar';
 import { COLORS } from '../colors';
 import axios from 'axios';
@@ -15,16 +16,19 @@ import {
   Server,
   HelpCircle
 } from 'lucide-react';
+import ConfirmationWindow from '../components/ConfirmationWindow';
 
 export default function BookingManagement() {
+  const location = useLocation();
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [activeFilter, setActiveFilter] = useState('pending');
+  const [activeFilter, setActiveFilter] = useState(location.state?.filter || 'pending');
   const [availableRooms, setAvailableRooms] = useState([]);
 
   const user = JSON.parse(localStorage.getItem('user')) || { role: 'staff' };
-  const isAdmin = user.role === 'admin';
-  const isManager = user.role === 'manager';
+  const userRole = user.role?.toLowerCase() || 'staff';
+  const isAdmin = userRole === 'admin';
+  const isManager = userRole === 'manager';
   const canEdit = isAdmin || isManager;
   const canDelete = isAdmin;
 
@@ -37,6 +41,15 @@ export default function BookingManagement() {
 
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [editingId, setEditingId] = useState(null);
+  
+  // Custom Confirmation Dialog State
+  const [confirmDialog, setConfirmDialog] = useState({
+    isOpen: false,
+    title: '',
+    message: '',
+    onConfirm: () => {},
+    isDestructive: false
+  });
   
   // Extension State
   const [extensionHours, setExtensionHours] = useState(1);
@@ -54,7 +67,7 @@ export default function BookingManagement() {
   const fetchData = async (silent = false) => {
     try {
       if (!silent) setLoading(true);
-      const res = await axios.get('/api/v3/bookings');
+      const res = await axios.get('/api/bookings', { withCredentials: true });
       setBookings(res.data.data || []);
     } catch (err) {
       console.error("Error fetching bookings:", err);
@@ -65,8 +78,8 @@ export default function BookingManagement() {
 
   const fetchAvailableRooms = async () => {
     try {
-      const res = await axios.get('/api/v3/physical-rooms');
-      setAvailableRooms(res.data);
+      const res = await axios.get('/api/physical-rooms', { withCredentials: true });
+      setAvailableRooms(res.data.data || []);
     } catch (err) {
       console.error("Error fetching rooms:", err);
     }
@@ -82,7 +95,7 @@ export default function BookingManagement() {
    */
   const handleConfirm = async (id, roomName = 'auto') => {
     try {
-      await axios.put(`/api/v3/bookings/${id}/confirm`, { assigned_room: roomName });
+      await axios.put(`/api/bookings/${id}/confirm`, { assigned_room: roomName }, { withCredentials: true });
       setIsConfirmModalOpen(false);
       fetchData(true);
     } catch (err) {
@@ -92,7 +105,7 @@ export default function BookingManagement() {
 
   const handleCheckIn = async (id, swapedRoom = null) => {
     try {
-      await axios.put(`/api/v3/bookings/${id}/checkin`, { swaped_room: swapedRoom });
+      await axios.put(`/api/bookings/${id}/checkin`, { swaped_room: swapedRoom }, { withCredentials: true });
       setIsCheckInModalOpen(false);
       fetchData(true);
     } catch (err) {
@@ -102,7 +115,7 @@ export default function BookingManagement() {
 
   const handleExtend = async (id) => {
     try {
-      await axios.put(`/api/v3/bookings/${id}/extend`, { hours: extensionHours });
+      await axios.put(`/api/bookings/${id}/extend`, { hours: extensionHours }, { withCredentials: true });
       setIsCheckoutModalOpen(false);
       fetchData(true);
     } catch (err) {
@@ -112,7 +125,7 @@ export default function BookingManagement() {
 
   const handleCheckoutNow = async (id) => {
     try {
-      await axios.put(`/api/v3/bookings/${id}/complete-checkout`);
+      await axios.put(`/api/bookings/${id}/complete-checkout`, {}, { withCredentials: true });
       setIsCheckoutModalOpen(false);
       fetchData(true);
     } catch (err) {
@@ -121,20 +134,27 @@ export default function BookingManagement() {
   };
 
   const handleRefund = async (id) => {
-    if (window.confirm("CRITICAL: This will trigger a REAL financial refund via Stripe. Proceed?")) {
-      try {
-        await axios.post(`/api/v3/bookings/${id}/refund`);
-        fetchData(true);
-      } catch (err) {
-        alert(err.response?.data?.error || "Refund failed");
+    setConfirmDialog({
+      isOpen: true,
+      title: "Confirm Refund",
+      message: "CRITICAL: This will trigger a REAL financial refund via Stripe. Proceed?",
+      isDestructive: true,
+      onConfirm: async () => {
+        try {
+          await axios.post(`/api/bookings/${id}/refund`, {}, { withCredentials: true });
+          fetchData(true);
+        } catch (err) {
+          alert(err.response?.data?.error || "Refund failed");
+        }
+        setConfirmDialog(prev => ({ ...prev, isOpen: false }));
       }
-    }
+    });
   };
 
   const handleDelete = async (id) => {
     if (window.confirm("CRITICAL: Delete this record?")) {
       try {
-        await axios.delete(`/api/v3/bookings/${id}`);
+        await axios.delete(`/api/bookings/${id}`, { withCredentials: true });
         setBookings(prev => prev.filter(b => b._id !== id));
       } catch (err) {
         alert(err.response?.data?.error || "Delete failed");
@@ -178,12 +198,12 @@ export default function BookingManagement() {
     e.preventDefault();
     try {
       if (editingId) {
-        await axios.put(`/api/v3/bookings/${editingId}`, formData);
+        await axios.put(`/api/bookings/${editingId}`, formData, { withCredentials: true });
       } else {
-        await axios.post('/api/v3/bookings/admin-create', {
+        await axios.post('/api/bookings/admin-create', {
           ...formData,
           booking_id: `ATL-${Math.floor(Math.random() * 900000 + 100000)}` 
-        });
+        }, { withCredentials: true });
       }
       setIsModalOpen(false);
       fetchData(true);
@@ -434,9 +454,16 @@ export default function BookingManagement() {
                             disabled={!isSelectable}
                             onClick={() => {
                               if (isCleaning) {
-                                if (window.confirm("Bilik ni tengah CLEANING boss. Betul ke nak assign jugak? Guest kena tunggu kejap tau.")) {
-                                  handleConfirm(selectedBooking._id, rName);
-                                }
+                                setConfirmDialog({
+                                  isOpen: true,
+                                  title: "Status Alert",
+                                  message: "Bilik ni tengah CLEANING boss. Betul ke nak assign jugak? Guest kena tunggu kejap tau.",
+                                  isDestructive: false,
+                                  onConfirm: () => {
+                                    handleConfirm(selectedBooking._id, rName);
+                                    setConfirmDialog(prev => ({ ...prev, isOpen: false }));
+                                  }
+                                });
                               } else {
                                 handleConfirm(selectedBooking._id, rName);
                               }
@@ -546,9 +573,16 @@ export default function BookingManagement() {
                                 key={room._id}
                                 disabled={!isSelectable || isCurrent}
                                 onClick={() => {
-                                   if (window.confirm(`Swap to Room ${rName}? Current assignment will be released.`)) {
-                                      handleCheckIn(selectedBooking._id, rName);
-                                   }
+                                   setConfirmDialog({
+                                      isOpen: true,
+                                      title: "Confirm Room Swap",
+                                      message: `Swap to Room ${rName}? Current assignment will be released.`,
+                                      isDestructive: false,
+                                      onConfirm: () => {
+                                        handleCheckIn(selectedBooking._id, rName);
+                                        setConfirmDialog(prev => ({ ...prev, isOpen: false }));
+                                      }
+                                   });
                                 }}
                                 className={`p-5 rounded-2xl border transition-all text-center relative ${
                                   isCurrent ? 'bg-amber-500/20 border-amber-500 ring-1 ring-amber-500/50' : 
@@ -769,6 +803,18 @@ export default function BookingManagement() {
           </div>
         )}
       </main>
+
+      {/* 🛡️ Global Confirmation Portal */}
+      <ConfirmationWindow 
+        isOpen={confirmDialog.isOpen}
+        title={confirmDialog.title}
+        message={confirmDialog.message}
+        isDestructive={confirmDialog.isDestructive}
+        onConfirm={confirmDialog.onConfirm}
+        onCancel={() => setConfirmDialog(prev => ({ ...prev, isOpen: false }))}
+        confirmText="Confirm Action"
+        cancelText="Abort"
+      />
     </div>
   );
 }

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import ManagementSidebar from '../components/managementSidebar';
 import { COLORS } from '../colors';
-import ConfirmationDelete from '../components/ConfirmationDelete';
+import ConfirmationWindow from '../components/ConfirmationWindow';
 import AdminRoomPackageCreator from './AdminRoomPackageCreator'; 
 import RoomInventoryRegisterWindow from '../components/RoomInventoryRegisterWindow'; 
 
@@ -25,10 +25,12 @@ export default function RoomPackage() {
   const fetchRooms = async () => {
     setLoading(true);
     try {
+      const authHeader = user?.token ? { 'Authorization': `Bearer ${user.token}` } : {};
       const [resRooms, resUnits] = await Promise.all([
-        fetch('/api/v3/rooms'),
-        fetch('/api/v3/physical-rooms', {
-           headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } 
+        fetch('/api/rooms', { credentials: 'include', headers: authHeader }),
+        fetch('/api/physical-rooms', {
+           credentials: 'include',
+           headers: authHeader
         })
       ]);
       const jsonRooms = await resRooms.json();
@@ -73,7 +75,7 @@ export default function RoomPackage() {
 
   const confirmDelete = async () => {
     try {
-      const res = await fetch(`/api/v3/rooms/${deleteModal.id}`, { method: 'DELETE' });
+      const res = await fetch(`/api/rooms/${deleteModal.id}`, { method: 'DELETE' });
       if (res.ok) {
         flash('Luxury Package deleted successfully ✅');
         fetchRooms();
@@ -257,11 +259,11 @@ export default function RoomPackage() {
       </main>
       
       {/* Security Check Modal */}
-      <ConfirmationDelete 
+      <ConfirmationWindow 
         isOpen={deleteModal.isOpen}
         title="Delete Luxury Package"
         message={`Are you sure you want to permanently delete "${deleteModal.name}"? This will remove all associated physical houses from the database. This action cannot be undone.`}
-        isAlert={true}
+        isDestructive={true}
         onConfirm={confirmDelete}
         onCancel={() => setDeleteModal({ isOpen: false, id: null, name: null })}
         confirmText="Yes, Delete Package"

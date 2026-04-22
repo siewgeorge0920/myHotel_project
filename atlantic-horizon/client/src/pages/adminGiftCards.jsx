@@ -12,7 +12,7 @@ export default function AdminGiftCards() {
   const [selectedCard, setSelectedCard] = useState(null);
 
   const fetchCards = () => {
-    fetch('/api/v3/gift-cards/all')
+    fetch('/api/gift-cards/all', { credentials: 'include' })
       .then(r => r.json())
       .then(data => {
         setCards(data.data || []);
@@ -152,7 +152,7 @@ function HistoryModal({ code, onClose }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`/api/v3/gift-cards/${code}/history`)
+    fetch(`/api/gift-cards/${code}/history`, { credentials: 'include' })
       .then(r => r.json())
       .then(json => {
         setData(json.data);

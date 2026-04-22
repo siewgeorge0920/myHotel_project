@@ -15,7 +15,7 @@ export default function MichelineQualityFood() {
             <div className="h-[1px] w-12 bg-amber-500"></div>
             <span className="text-amber-500 uppercase tracking-[0.5em] text-xs font-black">The Gastronomy Collection</span>
           </div>
-          <h1 className="font-cinzel text-5xl md:text-7xl lg:text-9xl tracking-tighter uppercase leading-[1.1] md:leading-[0.9] text-transparent bg-clip-text bg-gradient-to-br from-white via-white/80 to-amber-500/50 drop-shadow-2xl">Michelin<br />Excellence</h1>
+          <h1 className="font-cinzel text-5xl md:text-7xl lg:text-[110px] tracking-tighter uppercase leading-[1.1] md:leading-[0.9] text-transparent bg-clip-text bg-gradient-to-br from-white via-white/80 to-amber-500/50 drop-shadow-2xl">Michelin<br />Excellence</h1>
         </div>
       </section>
 

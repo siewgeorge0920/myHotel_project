@@ -29,7 +29,7 @@ export default function GiftCardSuccess() {
     const verify = async () => {
       try {
         // Confirm payment session and retrieve the generated gift card payload.
-        const res = await axios.post('/api/v3/gift-cards/verify-purchase', { sessionId });
+        const res = await axios.post('/api/gift-cards/verify-purchase', { sessionId });
         // Mapping: res.data.data because of sendSuccess wrapper
         setGiftCard(res.data.data);
       } catch (err) {

@@ -111,7 +111,7 @@ export default function BookingFlow() {
     setGcLoading(true);
     setGcMsg('');
     try {
-      const res = await fetch('/api/v3/gift-cards/validate', {
+      const res = await fetch('/api/gift-cards/validate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ code: giftCardInfo.code })
@@ -140,7 +140,7 @@ export default function BookingFlow() {
       
       setIsChecking(true);
       
-      fetch('/api/v3/check-availability', {
+      fetch('/api/check-availability', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ checkIn, checkOut }),
@@ -177,7 +177,7 @@ export default function BookingFlow() {
       const realDepartment = deptMap[category] || category;
 
       // Step 1: Create the Booking record in our DB (status = Pending)
-      const bookingRes = await fetch('/api/v3/bookings/create', {
+      const bookingRes = await fetch('/api/bookings/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

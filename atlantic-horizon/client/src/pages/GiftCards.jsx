@@ -22,7 +22,7 @@ export default function GiftCards() {
     setLoading(true);
     try {
       // Create a Stripe checkout session and redirect the buyer to payment.
-      const res = await axios.post('/api/v3/gift-cards/checkout', formData);
+      const res = await axios.post('/api/gift-cards/checkout', formData);
       console.log("V3 GC Debug Response:", res.data);
 
       const checkoutUrl = res.data.data?.url || res.data.url;
@@ -49,7 +49,7 @@ export default function GiftCards() {
     setLoading(true);
     try {
       // Instant purchase path issues voucher immediately and forwards to success page.
-      const res = await axios.post('/api/v3/gift-cards/instant-purchase', formData);
+      const res = await axios.post('/api/gift-cards/instant-purchase', formData);
       const { code, stripe_session_id } = res.data.data;
       window.location.href = `/gift-card-success?session_id=${stripe_session_id}`;
     } catch (error) {
