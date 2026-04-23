@@ -1,7 +1,7 @@
 import bookingService from './booking.service.js';
 import catchAsync from '../../shared/utils/catchAsync.js';
 import { sendSuccess } from '../../shared/utils/responseHandler.js';
-import { getStripe } from '../../config/stripe.js';
+import { getStripe } from '../../startupLog/stripe.js';
 import { getSetting } from '../../shared/utils/configHelper.js';
 import { recordLog } from '../../shared/utils/logger.js';
 

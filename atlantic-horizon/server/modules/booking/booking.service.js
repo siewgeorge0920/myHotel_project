@@ -208,7 +208,7 @@ class BookingService {
     if (!booking) throw new Error("Booking not found");
 
     if (booking.stripe_session_id) {
-      const { getStripe } = await import('../../config/stripe.js');
+      const { getStripe } = await import('../../startupLog/stripe.js');
       const stripe = await getStripe();
       const session = await stripe.checkout.sessions.retrieve(booking.stripe_session_id);
       if (session && session.payment_intent) {

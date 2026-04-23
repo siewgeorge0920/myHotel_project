@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
-import connectDB from './config/db.js';
+import connectDB from './startupLog/db.js';
 import mainRouter from './api.js';
 import { AppError } from './shared/utils/responseHandler.js';
 
