@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 
+// The booking sql schema format to db
 const bookingSchema = new mongoose.Schema({
   booking_id: { 
     type: String, 

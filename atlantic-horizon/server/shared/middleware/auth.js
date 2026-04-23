@@ -7,7 +7,7 @@ import { isSessionExpired } from '../utils/24HrsLogout.js';
 export const protect = async (req, res, next) => {
   try {
     const token = req.cookies.sessionToken || req.headers.authorization?.split(' ')[1];
-    
+
     if (!token) {
       return res.status(401).json({ error: "Access denied. Please sign in." });
     }
@@ -19,14 +19,14 @@ export const protect = async (req, res, next) => {
 
     const userId = parts[1];
     const timestamp = parseInt(parts[2]);
-    
-    // 🛡️ Guard against invalid ID formats or missing timestamps
+
+    //  Guard against invalid ID formats or missing timestamps
     if (!userId || userId.length !== 24 || !timestamp) {
       console.warn(`[Auth Warning] Malformed session token: "${token}"`);
       return res.status(401).json({ error: "Invalid session structure." });
     }
 
-    // ⏳ 24-Hour Strict Expiration Check (Server-Side)
+    //  24-Hour Strict Expiration Check (Server-Side)
     if (isSessionExpired(timestamp)) {
       console.log(`[Auth Alert] Session expired for UID: ${userId}`);
       return res.status(401).json({ error: "Session expired. Please sign in again." });

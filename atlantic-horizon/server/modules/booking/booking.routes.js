@@ -2,6 +2,7 @@ import express from 'express';
 import bookingController from './booking.controller.js';
 import { protect, restrictTo } from '../../shared/middleware/auth.js';
 
+// The booking routes sql schema format to db
 const router = express.Router();
 
 // Public Routes (Guest Portal)
@@ -25,7 +26,7 @@ router.post('/resend-payment-link', restrictTo('admin', 'manager'), bookingContr
 
 // Targeted Operations
 router.route('/:id')
-  .get(restrictTo('admin', 'manager', 'staff'), bookingController.updateBooking) // getOne is basically update form fetch
+  .get(restrictTo('admin', 'manager', 'staff'), bookingController.updateBooking) 
   .put(restrictTo('admin', 'manager', 'staff'), bookingController.updateBooking)
   .delete(restrictTo('admin'), bookingController.deleteBooking);
 

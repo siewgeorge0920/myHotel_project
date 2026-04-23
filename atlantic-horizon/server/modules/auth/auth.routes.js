@@ -8,7 +8,7 @@ router.post('/login', authController.login);
 router.post('/seed', authController.seed);
 router.get('/verify', protect, authController.verify);
 
-// 👤 Staff Management Routes (Explicit)
+// Staff Management Routes (Explicit)
 router.get('/staff', protect, restrictTo('admin', 'manager'), authController.getAllStaff);
 router.post('/staff', protect, restrictTo('admin'), authController.createStaff);
 router.put('/staff/:id', protect, restrictTo('admin', 'manager'), authController.updateStaff);

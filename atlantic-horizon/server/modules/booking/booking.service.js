@@ -4,6 +4,8 @@ import UserLog from '../../shared/models/UserLog.model.js';
 import inventoryService from '../room/inventory.service.js';
 import emailService from '../../shared/services/emailService.js';
 
+
+// The booking collect data from the frontend and save it to the database
 class BookingService {
   calculateNights(checkIn, checkOut) {
     const start = new Date(checkIn);

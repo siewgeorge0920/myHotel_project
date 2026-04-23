@@ -20,13 +20,13 @@ class AuthController {
     
     res.cookie('sessionToken', token, { 
       maxAge: 24 * 60 * 60 * 1000, 
-      httpOnly: false, // 🟢 Allow frontend to read for secondary checks
+      httpOnly: false, // Allow frontend to read for secondary checks
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
-      path: '/' // 🟢 Crucial: Ensure cookie is sent for all /api/* routes
+      path: '/' // Crucial: Ensure cookie is sent for all /api/* routes
     });
 
-    // 🛡️ Record the Entrance Session (Login Log)
+    // Record the Entrance Session (Login Log)
     try {
       const userAgent = req.headers['user-agent'] || 'Unknown';
       const ip = req.ip || req.headers['x-forwarded-for'] || '127.0.0.1';
@@ -59,7 +59,7 @@ class AuthController {
   });
 
   verify = catchAsync(async (req, res) => {
-    // 🛡️ If the 'protect' middleware passed, the session is valid
+    //  If the 'protect' middleware passed, the session is valid
     sendSuccess(res, {
       id: req.user._id,
       name: req.user.name,

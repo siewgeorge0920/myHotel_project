@@ -4,7 +4,7 @@ import path from 'path';
 const searchDir = './';
 const searchString = 'roomType.controller';
 
-console.log("🔍 Scanning for the 'Ghost' reference...");
+console.log("Scanning for the 'Ghost' reference...");
 
 function scan(dir) {
     const files = fs.readdirSync(dir);
@@ -26,7 +26,7 @@ function scan(dir) {
 
 try {
     scan(searchDir);
-    console.log("🏁 Scan complete.");
+    console.log("Scan complete.");
 } catch (err) {
-    console.error("❌ Scan failed:", err.message);
+    console.error("Scan failed:", err.message);
 }
