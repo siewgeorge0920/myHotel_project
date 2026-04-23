@@ -48,7 +48,6 @@ import Jacuzzi from './pages/Derrick/Jacuzzi';
 
 // Staff/Admin Portal
 import StaffDashboard from './pages/staffDashboard';
-import Inventory from './pages/inventory';
 import AdminIAM from './pages/adminIAM';
 import AdminCalendar from './pages/adminCalendar';
 import RoomManagement from './pages/roomManagement';
