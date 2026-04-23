@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 /**
- * 📝 UserLog Model (Audit Trail)
+ * UserLog Model (Audit Trail)
  * Records actions performed by staff and system events.
  */
 const userLogSchema = new mongoose.Schema({

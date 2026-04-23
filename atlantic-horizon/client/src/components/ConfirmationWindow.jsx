@@ -2,7 +2,7 @@ import React from 'react';
 import { COLORS } from '../colors';
 
 /**
- * 🛡️ The Atlantic Horizon - Universal Confirmation & Alert Window
+ * The Atlantic Horizon - Universal Confirmation & Alert Window
  * Centralized portal for all system-wide prompts (Confirmations, Warnings, Alerts).
  */
 export default function ConfirmationWindow({ 

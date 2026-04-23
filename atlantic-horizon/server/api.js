@@ -9,7 +9,7 @@ import cookieRoutes from './modules/cookies/cookies.routes.js';
 
 const router = express.Router();
 
-// 🚦 Modular Mounting (Priority: Specific -> Generic)
+//  Modular Mounting (Priority: Specific -> Generic)
 router.use('/auth', authRoutes);
 router.use('/rooms', roomRoutes);
 router.use('/logs', logRoutes);
@@ -18,7 +18,7 @@ router.use('/billing', billingRoutes);
 router.use('/settings', settingsRoutes);
 router.use('/cookies', cookieRoutes);
 
-// 🌐 Catch-all mountings for backward compatibility or direct root access
+//  Catch-all mountings for backward compatibility or direct root access
 router.use('/', authRoutes);      // Matches /staff, /login, /verify
 router.use('/', roomRoutes);      // Matches /physical-rooms, /rooms
 router.use('/', bookingRoutes);   // Matches /dashboard/stats, /bookings

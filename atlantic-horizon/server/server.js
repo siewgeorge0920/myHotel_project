@@ -3,7 +3,7 @@ import app from './app.js';
 const PORT = process.env.PORT || 5001; // Updated to 5001 as seen in terminal output earlier
 
 /**
- * 🛰️ Atlantic Horizon Manor - Backend (Modular Production Entry)
+ *  Atlantic Horizon Manor - Backend (Modular Production Entry)
  */
 if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
   app.listen(PORT, () => {

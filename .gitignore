@@ -1,16 +1,16 @@
-# 📦 Dependency Directories
+#  Dependency Directories
 node_modules/
 **/node_modules/
 jspm_packages/
 
-# 🏗️ Build Artifacts
+#  Build Artifacts
 dist/
 build/
 .vercel/
 .next/
 out/
 
-# 🛠️ System Files
+#  System Files
 .DS_Store
 .DS_Store?
 ._*
@@ -19,7 +19,7 @@ out/
 ehthumbs.db
 Thumbs.db
 
-# 🔑 Secrets & Environment
+#  Secrets & Environment
 .env
 .env.local
 .env.development.local
@@ -27,7 +27,7 @@ Thumbs.db
 .env.production.local
 **/.env
 
-# 📝 Logs & Temporary
+#  Logs & Temporary
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
@@ -35,5 +35,5 @@ yarn-error.log*
 .eslintcache
 *.log
 
-# 📸 Media (Optional - uncomment if you want to skip tracking images in RoomTypes)
+#  Media (Optional - uncomment if you want to skip tracking images in RoomTypes)
 # RoomTypes/

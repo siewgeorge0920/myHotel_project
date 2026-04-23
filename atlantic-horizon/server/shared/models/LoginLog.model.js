@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 /**
- * 🗝️ LoginLog Model
+ * LoginLog Model
  * Records staff entrance sessions, capturing location and expiration.
  */
 const loginLogSchema = new mongoose.Schema({
@@ -13,7 +13,7 @@ const loginLogSchema = new mongoose.Schema({
   name: { type: String, required: true },
   role: { type: String, required: true },
   
-  // 📍 Location captures BOTH IP and User-Agent as requested
+  // Location captures BOTH IP and User-Agent as requested
   location: { 
     ip: { type: String },
     device: { type: String }, // Browser/OS info

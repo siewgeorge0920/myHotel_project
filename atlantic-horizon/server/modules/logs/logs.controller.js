@@ -5,7 +5,7 @@ import catchAsync from '../../shared/utils/catchAsync.js';
 
 class LogsController {
   /**
-   * 📜 Fetch entrance session logs (Login logs with location & timeleft)
+   * Fetch entrance session logs (Login logs with location & timeleft)
    */
   getLoginLogs = catchAsync(async (req, res) => {
     const logs = await LoginLog.find()
@@ -16,7 +16,7 @@ class LogsController {
   });
 
   /**
-   * 📜 Fetch activity audit logs (Who did what)
+   *  Fetch activity audit logs (Who did what)
    */
   getSystemLogs = catchAsync(async (req, res) => {
     const logs = await UserLog.find()

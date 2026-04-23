@@ -1,5 +1,5 @@
 /**
- * ⏳ sessionExpiry.js (24HrsLogout Logic)
+ * \ sessionExpiry.js (24HrsLogout Logic)
  * Centralized algorithm for session validity duration.
  */
 

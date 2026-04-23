@@ -157,7 +157,7 @@ export default function App() {
   const lenisRef = useRef(null);
 
   useEffect(() => {
-    // 🛡️ GLOBAL SECURITY INTERCEPTOR
+    // GLOBAL SECURITY INTERCEPTOR
     // This catches ANY 401/403 error from the backend (like 24h session expiry)
     // and automatically initiates a logout and redirect.
     const interceptor = axios.interceptors.response.use(
