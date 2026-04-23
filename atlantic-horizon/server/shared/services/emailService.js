@@ -85,7 +85,7 @@ class EmailService {
       };
       return await transporter.sendMail(mailOptions);
     } catch (error) {
-      console.error(`🛑 Email Transmission Failure to ${to}:`, error.message);
+      console.error(`Email Transmission Failure to ${to}:`, error.message);
       throw error;
     }
   }
