@@ -2,7 +2,6 @@ import crypto from 'crypto';
 import GiftCard from './GiftCard.model.js';
 import UserLog from '../../shared/models/UserLog.model.js';
 import { getStripe } from '../../config/stripe.js';
-import configHelper from '../../shared/utils/configHelper.js';
 import emailService from '../../shared/services/emailService.js';
 
 class GiftCardService {
