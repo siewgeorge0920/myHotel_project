@@ -15,6 +15,18 @@
       "destination": "/server/server.js"
     },
     {
+      "source": "/system-status",
+      "destination": "/server/server.js"
+    },
+    {
+      "source": "/booking-success",
+      "destination": "/server/server.js"
+    },
+    {
+      "source": "/gift-card-success",
+      "destination": "/server/server.js"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
