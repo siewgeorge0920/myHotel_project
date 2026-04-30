@@ -113,7 +113,7 @@ const bookingController = {
       }],
       mode: 'payment',
       success_url: `${process.env.SERVER_URL || 'http://localhost:5001'}/booking-success?status=success`,
-      cancel_url: `${baseUrl}/calendar?status=cancel`,
+      cancel_url: `${process.env.CLIENT_URL || 'https://www.theatlantichorizon.ie'}/calendar?status=cancel`,
     });
 
     sendSuccess(res, { url: session.url });
@@ -164,7 +164,7 @@ const bookingController = {
       }],
       mode: 'payment',
       success_url: `${process.env.SERVER_URL || 'http://localhost:5001'}/booking-success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${baseUrl}/calendar`,
+      cancel_url: `${process.env.CLIENT_URL || 'https://www.theatlantichorizon.ie'}/calendar`,
     });
 
     sendSuccess(res, { url: session.url });

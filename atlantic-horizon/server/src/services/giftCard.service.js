@@ -35,7 +35,7 @@ class GiftCardService {
         ...metadataStringified
       },
       success_url: `${process.env.SERVER_URL || 'http://localhost:5001'}/gift-card-success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${baseUrl}/gift-cards?status=cancel`,
+      cancel_url: `${process.env.CLIENT_URL || 'https://www.theatlantichorizon.ie'}/gift-cards?status=cancel`,
     });
   }
 

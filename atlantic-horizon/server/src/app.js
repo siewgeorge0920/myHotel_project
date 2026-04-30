@@ -29,7 +29,10 @@ app.use(express.static(path.join(__dirname, 'public'))); // For any CSS/Images s
 // View Controller Import
 import viewController from './controllers/view.controller.js';
 
-// Core Initialization - Lazy Connect Middleware
+// Core Initialization
+connectDB();
+
+// Connect Middleware (Safety for Vercel)
 app.use(async (req, res, next) => {
   try {
     await connectDB();
@@ -42,9 +45,9 @@ app.use(async (req, res, next) => {
 const allowedOrigins = [
   'http://localhost:5173',
   'http://127.0.0.1:5173',
-  'https://my-hotel-project-siewgeorge0920.vercel.app',
-  'https://theatlantichorizon.ie',
   'https://www.theatlantichorizon.ie',
+  'https://theatlantichorizon.ie',
+  'https://my-hotel-project-siewgeorge0920.vercel.app',
   'https://theatlantichorizion.com',
   'https://www.theatlantichorizion.com'
 ];
@@ -92,7 +95,8 @@ app.use((req, res, next) => {
   if (req.accepts('html')) {
     return res.status(404).render('error-404', { 
       title: 'Page Not Found | Atlantic Horizon',
-      url: req.originalUrl 
+      url: req.originalUrl,
+      clientUrl: process.env.CLIENT_URL || 'https://www.theatlantichorizon.ie'
     });
   }
   next(new AppError(`Can't find ${req.originalUrl} on this manor's server!`, 404));
@@ -105,6 +109,7 @@ app.use((err, req, res, next) => {
   res.status(err.statusCode).json({
     success: false,
     message: err.message,
+    error: process.env.NODE_ENV === 'development' ? err : undefined,
     stack: process.env.NODE_ENV === 'development' ? err.stack : undefined
   });
 });

@@ -6,14 +6,15 @@ class ViewController {
     const { bookingId } = req.query;
     res.render('booking-success', { 
       bookingId: bookingId || 'ATH-PENDING',
-      title: 'Reservation Confirmed | Atlantic Horizon'
+      title: 'Reservation Confirmed | Atlantic Horizon',
+      clientUrl: process.env.CLIENT_URL || 'https://www.theatlantichorizon.ie'
     });
   });
 
   getGiftCardSuccess = catchAsync(async (req, res) => {
-    const { sessionId } = req.query;
     res.render('gift-card-success', { 
-      title: 'Gift Voucher Issued | Atlantic Horizon'
+      title: 'Gift Voucher Issued | Atlantic Horizon',
+      clientUrl: process.env.CLIENT_URL || 'https://www.theatlantichorizon.ie'
     });
   });
 
@@ -24,7 +25,8 @@ class ViewController {
       nodeVersion: process.version,
       platform: process.platform,
       uptime: Math.floor(process.uptime()),
-      title: 'System Status | Atlantic Horizon'
+      title: 'System Status | Atlantic Horizon',
+      clientUrl: process.env.CLIENT_URL || 'https://www.theatlantichorizon.ie'
     });
   });
 }
