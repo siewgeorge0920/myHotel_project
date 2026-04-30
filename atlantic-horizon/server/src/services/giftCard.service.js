@@ -34,7 +34,7 @@ class GiftCardService {
         type: 'gift_card', 
         ...metadataStringified
       },
-      success_url: `${baseUrl}/gift-card-success?session_id={CHECKOUT_SESSION_ID}`,
+      success_url: `${process.env.SERVER_URL || 'http://localhost:5001'}/gift-card-success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${baseUrl}/gift-cards?status=cancel`,
     });
   }

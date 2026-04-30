@@ -13,6 +13,7 @@
     "install-server": "cd server && npm install"
   },
   "dependencies": {
+    "ejs": "^5.0.2",
     "vercel": "^50.42.0"
   }
 }

@@ -111,7 +111,7 @@ const bookingController = {
         quantity: 1,
       }],
       mode: 'payment',
-      success_url: `${baseUrl}/booking-success?status=success`,
+      success_url: `${process.env.SERVER_URL || 'http://localhost:5001'}/booking-success?status=success`,
       cancel_url: `${baseUrl}/calendar?status=cancel`,
     });
 
@@ -162,7 +162,7 @@ const bookingController = {
         quantity: 1,
       }],
       mode: 'payment',
-      success_url: `${baseUrl}/booking-success?session_id={CHECKOUT_SESSION_ID}`,
+      success_url: `${process.env.SERVER_URL || 'http://localhost:5001'}/booking-success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${baseUrl}/calendar`,
     });
 

@@ -2,7 +2,11 @@ import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import connectDB from './config/db.js';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 import { AppError } from './utils/responseHandler.js';
 
 // Route Imports
@@ -16,6 +20,14 @@ import cookieRoutes from './routes/cookies.routes.js';
 
 dotenv.config();
 const app = express();
+
+// View Engine Configuration (MVC)
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+app.use(express.static(path.join(__dirname, 'public'))); // For any CSS/Images shared with views
+
+// View Controller Import
+import viewController from './controllers/view.controller.js';
 
 // Core Initialization
 connectDB();
@@ -44,6 +56,11 @@ app.use(cors({
 app.use(cookieParser());
 app.use(express.json());
 
+// Traditional View Routes (Server-Side Rendering)
+app.get('/booking-success', viewController.getBookingSuccess);
+app.get('/gift-card-success', viewController.getGiftCardSuccess);
+app.get('/system-status', viewController.getSystemStatus);
+
 // Strategic API Mounting
 app.use('/api/auth', authRoutes);
 app.use('/api/rooms', roomRoutes);
@@ -61,8 +78,16 @@ app.use('/api', logRoutes);
 app.use('/api', billingRoutes);
 app.use('/api', cookieRoutes);
 
-// Handle Undefined Routes
+
+
+// Handle Undefined Routes (Professional 404 View)
 app.use((req, res, next) => {
+  if (req.accepts('html')) {
+    return res.status(404).render('error-404', { 
+      title: 'Page Not Found | Atlantic Horizon',
+      url: req.originalUrl 
+    });
+  }
   next(new AppError(`Can't find ${req.originalUrl} on this manor's server!`, 404));
 });
 
