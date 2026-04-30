@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;600&display=swap');
+      body { margin: 0; padding: 0; background-color: #0d0f0b; font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
+      .container { max-width: 600px; margin: 40px auto; background-color: #0d0f0b; border: 1px solid rgba(212, 175, 55, 0.2); border-radius: 8px; overflow: hidden; }
+      .header { background: linear-gradient(to bottom, #1a1d17, #0d0f0b); padding: 50px 20px; text-align: center; border-bottom: 1px solid rgba(212, 175, 55, 0.1); }
+      .logo { height: 70px; width: auto; opacity: 0.9; margin-bottom: 20px; }
+      .title { font-family: 'Cinzel', serif; color: #d4af37; text-transform: uppercase; letter-spacing: 5px; font-size: 14px; margin: 0; }
+      .content { padding: 50px 40px; color: rgba(255, 255, 255, 0.85); line-height: 1.8; font-size: 15px; }
+      .content b, .content strong { color: #d4af37; font-weight: 600; }
+      .footer { padding: 30px; text-align: center; background-color: #080a07; font-size: 11px; color: rgba(255, 255, 255, 0.3); border-top: 1px solid rgba(255, 255, 255, 0.05); }
+      .footer p { margin: 5px 0; text-transform: uppercase; letter-spacing: 2px; }
+      .divider { height: 1px; width: 60px; background: #d4af37; margin: 30px auto; opacity: 0.3; }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <img src="https://theatlantichorizon.ie/images/Logo.png" alt="Manor Crest" class="logo">
+        <p class="title">{{title}}</p>
+      </div>
+      <div class="content">
+        {{body}}
+        <div class="divider"></div>
+        <p style="font-style: italic; font-size: 14px; color: rgba(212, 175, 55, 0.6);">Warmest Regards,<br/><b>The Atlantic Horizon Management</b></p>
+      </div>
+      <div class="footer">
+        <p>The Atlantic Horizon Manor</p>
+        <p>Ireland's Southwest Coast • Established for Perfection</p>
+      </div>
+    </div>
+  </body>
+</html>
