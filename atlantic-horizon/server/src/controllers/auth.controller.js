@@ -1,6 +1,6 @@
 import Staff from '../models/staff.model.js';
 import LoginLog from '../models/loginLog.model.js';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import { sendSuccess } from '../utils/responseHandler.js';
 import { recordLog } from '../utils/logger.js';
 import catchAsync from '../utils/catchAsync.js';

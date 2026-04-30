@@ -66,7 +66,7 @@ export default function Login() {
 
         {error && (
           <div className="mb-6 bg-red-500/5 border border-red-500/20 text-red-400 text-[11px] p-3 text-center leading-relaxed backdrop-blur-md">
-            {error}
+            {typeof error === 'object' ? (error.message || JSON.stringify(error)) : error}
           </div>
         )}
 
@@ -112,7 +112,7 @@ export default function Login() {
             onClick={async () => {
               setIsLoading(true);
               try {
-                await axios.post('/api/auth/seed-admin?force=true');
+                await axios.post('/api/auth/seed?force=true');
                 alert('Identity Core Initialized! Use "boss" / "123" to login.');
               } catch (e) {
                 alert('Seeding failed! Is the server running?');
