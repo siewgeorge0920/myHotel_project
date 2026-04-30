@@ -29,8 +29,15 @@ app.use(express.static(path.join(__dirname, 'public'))); // For any CSS/Images s
 // View Controller Import
 import viewController from './controllers/view.controller.js';
 
-// Core Initialization
-connectDB();
+// Core Initialization - Lazy Connect Middleware
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (err) {
+    next(err);
+  }
+});
 
 const allowedOrigins = [
   'http://localhost:5173',
