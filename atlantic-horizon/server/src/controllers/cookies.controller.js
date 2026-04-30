@@ -1,4 +1,4 @@
-import CookieConsent from '../models/CookieConsent.model.js';
+import CookieConsent from '../models/cookieConsent.model.js';
 import { sendSuccess } from '../utils/responseHandler.js';
 
 class CookieController {
