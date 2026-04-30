@@ -1,0 +1,19 @@
+meta {
+  name: Check Availability
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/api/bookings/check-availability
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "checkIn": "2026-05-01",
+    "checkOut": "2026-05-05",
+    "roomCategory": "The Sovereign Mansion"
+  }
+}

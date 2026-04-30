@@ -1,0 +1,15 @@
+meta {
+  name: Get All Bookings
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/api/bookings
+  body: none
+  auth: none
+}
+
+docs {
+  This request requires a valid authentication cookie. Make sure to run the 'Login' request first.
+}

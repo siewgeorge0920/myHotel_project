@@ -1,0 +1,15 @@
+meta {
+  name: System Status
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/system-status
+  body: none
+  auth: none
+}
+
+headers {
+  Accept: text/html
+}

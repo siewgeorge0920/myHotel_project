@@ -1,4 +1,5 @@
 import bookingService from '../services/booking.service.js';
+import inventoryService from '../services/inventory.service.js';
 import catchAsync from '../utils/catchAsync.js';
 import { sendSuccess } from '../utils/responseHandler.js';
 import { getStripe } from '../config/stripe.js';
@@ -136,7 +137,7 @@ const bookingController = {
 
   checkAvailability: catchAsync(async (req, res) => {
     const { checkIn, checkOut, roomCategory } = req.body;
-    const result = await bookingService.checkRoomAvailability(checkIn, checkOut, roomCategory);
+    const result = await inventoryService.checkRoomAvailability(checkIn, checkOut, roomCategory);
     sendSuccess(res, result);
   }),
 
