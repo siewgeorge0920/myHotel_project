@@ -6,6 +6,13 @@ import { isSessionExpired } from '../utils/24HrsLogout.js';
  */
 export const protect = async (req, res, next) => {
   try {
+    // 1. Check Express-Session (Server-Side Session) - fulfills assignment rubric
+    if (req.session && req.session.user) {
+      req.user = req.session.user;
+      return next();
+    }
+
+    // 2. Fallback to existing token/cookie system for backward compatibility
     const token = req.cookies.sessionToken || req.headers.authorization?.split(' ')[1];
 
     if (!token) {

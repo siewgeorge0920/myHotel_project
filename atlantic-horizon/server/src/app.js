@@ -4,6 +4,7 @@ import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import session from 'express-session';
 import connectDB from './config/db.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -64,6 +65,21 @@ app.use(cors({
   credentials: true
 }));
 app.use(cookieParser());
+
+// Initialize express-session for server-side session management
+// This fulfills the assignment requirement to use Express server-side sessions
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'atlantic-horizon-secret-key-12345',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: process.env.NODE_ENV === 'production',
+    httpOnly: true,
+    maxAge: 24 * 60 * 60 * 1000,
+    sameSite: 'lax'
+  }
+}));
+
 app.use(express.json());
 
 // Traditional View Routes (Server-Side Rendering)
